@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Providers } from "./providers";
 
 import { fontSans } from "@/config/fonts";
+import { createTableIfNotExists } from "@/utils/updateDatabase";
 
 export const metadata: Metadata = {
   title: {
@@ -24,11 +25,13 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await createTableIfNotExists();
+
   return (
     <html suppressHydrationWarning lang="en">
       <head />
