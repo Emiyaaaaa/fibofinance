@@ -4,6 +4,7 @@
   },
   "finance": {
     "name": "名称",
+    "description": "描述",
     "type": "类型",
     "currency": "货币类型",
     "USD": "美元",
@@ -25,6 +26,7 @@
     "confirmButton": "添加",
     "title": "添加资产",
     "defaultCurrency": "CNY",
-    "delete": "删除"
+    "delete": "删除",
+    "updateButton": "更新"
   }
 }

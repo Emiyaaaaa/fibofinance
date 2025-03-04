@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
+import useRefresh from "@/utils/store/useRefresh";
 interface Finance {
   id: number;
   name: string;
@@ -23,6 +24,7 @@ export default function FinanceTable() {
   const t = useTranslations("finance");
 
   const [data, setData] = useState<Finance[]>([]);
+  const { refresh } = useRefresh();
   const { onOpen } = useFinanceModel();
 
   useEffect(() => {
@@ -30,13 +32,11 @@ export default function FinanceTable() {
       const res = await fetch("/api/finance");
       const data = await res.json();
 
-      console.log(data);
-
       setData(data);
     };
 
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
     <>
@@ -55,9 +55,11 @@ export default function FinanceTable() {
                 onOpen({ data: item, hasDelete: true, submitType: "update" })
               }
             >
-              <TableCell>{item.name}</TableCell>
+              <TableCell className="font-bold">{item.name}</TableCell>
               <TableCell>{item.type}</TableCell>
-              <TableCell>{item.amount}</TableCell>
+              <TableCell className="font-bold text-primary">
+                {item.amount}
+              </TableCell>
               <TableCell>{t(item.currency)}</TableCell>
             </TableRow>
           ))}

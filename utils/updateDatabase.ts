@@ -14,7 +14,6 @@ export const createTableIfNotExists = async () => {
   ).then((res) => Boolean(res[0]));
 
   if (!tableExists) {
-    // 名称，类型，金额，货币类型
     await sql(
       `
         CREATE TABLE IF NOT EXISTS finance_data (
@@ -22,11 +21,26 @@ export const createTableIfNotExists = async () => {
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           name VARCHAR(255) NOT NULL,
+          description TEXT,
           type VARCHAR(255),
           amount DECIMAL(10, 2) NOT NULL,
           currency VARCHAR(255) NOT NULL
         )
       `
     );
+  }
+
+  // check if description column exists
+  const descriptionExists = await sql(
+    `
+    SELECT column_name 
+    FROM information_schema.columns 
+    WHERE table_name = 'finance_data' 
+    AND column_name = 'description';
+  `
+  ).then((res) => Boolean(res[0]));
+
+  if (!descriptionExists) {
+    await sql(`ALTER TABLE finance_data ADD COLUMN description TEXT`);
   }
 };

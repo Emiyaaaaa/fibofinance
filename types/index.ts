@@ -7,7 +7,8 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 export interface Finance {
   id: number;
   name: string;
-  type: string;
+  description?: string;
+  type?: string;
   amount: number;
   currency: string;
 }
