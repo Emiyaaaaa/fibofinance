@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-
-import { Providers } from "./providers";
+import { getLocale, getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 
 import { fontSans } from "@/config/fonts";
 import { createTableIfNotExists } from "@/utils/updateDatabase";
@@ -32,8 +32,11 @@ export default async function RootLayout({
 }) {
   await createTableIfNotExists();
 
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang={locale}>
       <head />
       <body
         className={clsx(
@@ -41,13 +44,13 @@ export default async function RootLayout({
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+        <NextIntlClientProvider messages={messages}>
           <div className="relative flex flex-col h-screen">
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+            <main className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
               {children}
             </main>
           </div>
-        </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

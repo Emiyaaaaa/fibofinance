@@ -1,0 +1,30 @@
+{
+  "home": {
+    "addFinance": "Add Finance"
+  },
+  "finance": {
+    "name": "Name",
+    "type": "Type",
+    "currency": "Currency",
+    "USD": "USD",
+    "CNY": "人民币",
+    "EUR": "欧元",
+    "GBP": "英镑",
+    "JPY": "日元",
+    "amount": "金额",
+    "cash": "现金",
+    "current": "活期存款",
+    "realEstate": "不动产",
+    "fixed": "定期存款",
+    "high": "高风险投资",
+    "medium": "中风险投资",
+    "low": "低风险投资",
+    "other": "其他"
+  },
+  "addFinance": {
+    "confirmButton": "添加",
+    "title": "添加资产",
+    "defaultCurrency": "CNY",
+    "delete": "删除"
+  }
+}
