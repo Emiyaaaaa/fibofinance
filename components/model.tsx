@@ -16,12 +16,11 @@ export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
   const { onRefresh } = useRefresh();
   const t = useTranslations();
+  const submitType = props?.submitType ?? "create";
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
-
-    const submitType = props?.submitType ?? "create";
 
     if (submitType === "create") {
       fetch("/api/finance", {
@@ -141,7 +140,7 @@ export default function FinanceModel() {
                     </Button>
                   )}
                   <Button color="primary" type="submit">
-                    {props?.submitType === "create"
+                    {submitType === "create"
                       ? t("addFinance.confirmButton")
                       : t("addFinance.updateButton")}
                   </Button>
