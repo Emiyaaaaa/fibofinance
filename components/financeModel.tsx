@@ -8,14 +8,23 @@ import { NumberInput } from "@heroui/number-input";
 import { Select, SelectItem } from "@heroui/select";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useRefresh from "@/utils/store/useRefresh";
+import { currencyMap } from "@/utils";
 
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
-  const { onRefresh } = useRefresh();
   const t = useTranslations();
+
+  const [currency, setCurrency] = useState<keyof typeof currencyMap>(
+    props?.data?.currency ??
+      (t("addFinance.defaultCurrency") as keyof typeof currencyMap)
+  );
+
+  console.log(currency);
+  const { onRefresh } = useRefresh();
   const submitType = props?.submitType ?? "create";
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -105,6 +114,9 @@ export default function FinanceModel() {
                     defaultValue={props?.data?.amount}
                     label={t("finance.amount")}
                     name="amount"
+                    startContent={
+                      <div className="text-sm">{currencyMap[currency]}</div>
+                    }
                   />
                   <Select
                     className="w-2/5"
@@ -113,6 +125,9 @@ export default function FinanceModel() {
                     ]}
                     label={t("finance.currency")}
                     name="currency"
+                    onSelectionChange={(e) => {
+                      setCurrency(e.currentKey as keyof typeof currencyMap);
+                    }}
                   >
                     <SelectItem key={"CNY"}>{t("finance.CNY")}</SelectItem>
                     <SelectItem key={"USD"}>{t("finance.USD")}</SelectItem>

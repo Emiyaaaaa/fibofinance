@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 import { Providers } from "./providers";
 
-import FinanceModel from "@/components/model";
+import FinanceModel from "@/components/financeModel";
 import FinanceTable from "@/components/financeTable";
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import { GithubIcon, Logo } from "@/components/icons";
