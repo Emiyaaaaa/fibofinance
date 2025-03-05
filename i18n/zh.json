@@ -1,6 +1,7 @@
 {
   "home": {
-    "addFinance": "添加资产"
+    "addFinance": "添加资产",
+    "title": "斐波纳财"
   },
   "finance": {
     "name": "名称",

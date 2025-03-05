@@ -1,6 +1,7 @@
 {
   "home": {
-    "addFinance": "Add Finance"
+    "addFinance": "Add Finance",
+    "title": "FiboFinance"
   },
   "finance": {
     "name": "Name",

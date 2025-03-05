@@ -19,6 +19,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
@@ -45,11 +49,7 @@ export default async function RootLayout({
         )}
       >
         <NextIntlClientProvider messages={messages}>
-          <div className="relative flex flex-col h-screen">
-            <main className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
-              {children}
-            </main>
-          </div>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>
