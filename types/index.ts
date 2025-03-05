@@ -11,6 +11,7 @@ export interface Finance {
   type?: string;
   amount: number;
   currency: string;
+  updated_at: string;
 }
 
 export interface FinanceModelProps {

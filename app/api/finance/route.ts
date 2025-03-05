@@ -39,8 +39,8 @@ export async function PATCH(request: Request) {
     await request.json();
 
   const result = await sql(
-    "UPDATE finance_data SET name = $1, type = $2, amount = $3, description = $4, currency = $5 WHERE id = $6",
-    [name, type, amount, description, currency, id]
+    "UPDATE finance_data SET name = $1, type = $2, amount = $3, description = $4, currency = $5, updated_at = $6 WHERE id = $7",
+    [name, type, amount, description, currency, new Date().toISOString(), id]
   );
 
   return NextResponse.json(result);

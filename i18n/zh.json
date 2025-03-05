@@ -21,7 +21,8 @@
     "high": "高风险投资",
     "medium": "中风险投资",
     "low": "低风险投资",
-    "other": "其他"
+    "other": "其他",
+    "updateTime": "上次更新"
   },
   "addFinance": {
     "confirmButton": "添加",

@@ -21,7 +21,8 @@
     "high": "High Risk",
     "medium": "Medium Risk",
     "low": "Low Risk",
-    "other": "Other"
+    "other": "Other",
+    "updateTime": "Update Time"
   },
   "addFinance": {
     "confirmButton": "Add",

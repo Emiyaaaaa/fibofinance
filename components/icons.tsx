@@ -23,7 +23,7 @@ export const I18nIcon: React.FC<IconSvgProps> = ({
 );
 
 export const Logo: React.FC<IconSvgProps> = ({
-  size = 24,
+  size = 20,
   height,
   ...props
 }) => (

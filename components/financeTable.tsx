@@ -12,13 +12,8 @@ import { useEffect, useState } from "react";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useRefresh from "@/utils/store/useRefresh";
-interface Finance {
-  id: number;
-  name: string;
-  type: string;
-  amount: number;
-  currency: string;
-}
+import { currencyMap } from "@/utils";
+import { Finance } from "@/types";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -31,6 +26,8 @@ export default function FinanceTable() {
     const fetchData = async () => {
       const res = await fetch("/api/finance");
       const data = await res.json();
+
+      console.log(data);
 
       setData(data);
     };
@@ -45,7 +42,7 @@ export default function FinanceTable() {
           <TableColumn>{t("name")}</TableColumn>
           <TableColumn>{t("type")}</TableColumn>
           <TableColumn>{t("amount")}</TableColumn>
-          <TableColumn>{t("currency")}</TableColumn>
+          <TableColumn>{t("updateTime")}</TableColumn>
         </TableHeader>
         <TableBody>
           {data.map((item) => (
@@ -58,9 +55,12 @@ export default function FinanceTable() {
               <TableCell className="font-bold">{item.name}</TableCell>
               <TableCell>{item.type}</TableCell>
               <TableCell className="font-bold text-primary">
+                {currencyMap[item.currency as keyof typeof currencyMap]}
                 {item.amount}
               </TableCell>
-              <TableCell>{t(item.currency)}</TableCell>
+              <TableCell>
+                {new Date(item.updated_at).toLocaleString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

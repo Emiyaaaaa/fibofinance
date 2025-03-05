@@ -13,13 +13,20 @@ export const createTableIfNotExists = async () => {
   `
   ).then((res) => Boolean(res[0]));
 
+  await sql(
+    `ALTER TABLE finance_data ALTER COLUMN created_at TYPE TIMESTAMPTZ`
+  );
+  await sql(
+    `ALTER TABLE finance_data ALTER COLUMN updated_at TYPE TIMESTAMPTZ`
+  );
+
   if (!tableExists) {
     await sql(
       `
         CREATE TABLE IF NOT EXISTS finance_data (
           id SERIAL PRIMARY KEY,
-          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
           name VARCHAR(255) NOT NULL,
           description TEXT,
           type VARCHAR(255),
