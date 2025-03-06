@@ -18,12 +18,8 @@ export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
   const t = useTranslations();
 
-  const [currency, setCurrency] = useState<keyof typeof currencyMap>(
-    props?.data?.currency ??
-      (t("addFinance.defaultCurrency") as keyof typeof currencyMap)
-  );
+  const [currency, setCurrency] = useState<keyof typeof currencyMap>();
 
-  console.log(currency);
   const { onRefresh } = useRefresh();
   const submitType = props?.submitType ?? "create";
 
@@ -115,7 +111,17 @@ export default function FinanceModel() {
                     label={t("finance.amount")}
                     name="amount"
                     startContent={
-                      <div className="text-sm">{currencyMap[currency]}</div>
+                      <div className="text-sm">
+                        {
+                          currencyMap[
+                            currency ??
+                              props?.data?.currency ??
+                              (t(
+                                "addFinance.defaultCurrency"
+                              ) as keyof typeof currencyMap)
+                          ]
+                        }
+                      </div>
                     }
                   />
                   <Select
