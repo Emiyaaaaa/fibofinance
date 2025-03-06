@@ -31,7 +31,7 @@ function LocaleSelector() {
       }}
     >
       <DropdownTrigger>
-        <I18nIcon />
+        <I18nIcon className="cursor-pointer" />
       </DropdownTrigger>
       <DropdownMenu aria-label="Locale">
         {localeList.map(({ key, label }) => (

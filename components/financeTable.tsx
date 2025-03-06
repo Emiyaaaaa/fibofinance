@@ -6,14 +6,18 @@ import {
   TableColumn,
   TableRow,
   TableCell,
+  getKeyValue,
 } from "@heroui/table";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import Time from "./time";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useRefresh from "@/utils/store/useRefresh";
-import { currencyMap } from "@/utils";
 import { Finance } from "@/types";
+import useClientWidth from "@/utils/hook/useClientWidth";
+import { currencyMap } from "@/utils";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -21,13 +25,41 @@ export default function FinanceTable() {
   const [data, setData] = useState<Finance[]>([]);
   const { refresh } = useRefresh();
   const { onOpen } = useFinanceModel();
+  const clientWidth = useClientWidth();
+
+  const showUpdateTime = clientWidth > 768;
+
+  const columns = useMemo(() => {
+    return [
+      { key: "name", label: t("name") },
+      { key: "type", label: t("type") },
+      { key: "amount", label: t("amount") },
+      showUpdateTime ? { key: "updated_at", label: t("updateTime") } : null,
+    ].filter(Boolean) as { key: string; label: string }[];
+  }, [showUpdateTime, t]);
+
+  const rows = useMemo(() => {
+    return data.map((item) => ({
+      raw: item,
+      key: item.id,
+      name: <span className="font-bold">{item.name}</span>,
+      type: item.type,
+      amount: (
+        <span className="font-bold text-primary">
+          {currencyMap[item.currency as keyof typeof currencyMap]}
+          {item.amount}
+        </span>
+      ),
+      updated_at: (
+        <Time date={new Date(item.updated_at)} format="YYYY-MM-DD HH:mm" />
+      ),
+    }));
+  }, [data]);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("/api/finance");
       const data = await res.json();
-
-      console.log(data);
 
       setData(data);
     };
@@ -37,30 +69,21 @@ export default function FinanceTable() {
 
   return (
     <>
-      <Table aria-label="Example static collection table">
-        <TableHeader>
-          <TableColumn>{t("name")}</TableColumn>
-          <TableColumn>{t("type")}</TableColumn>
-          <TableColumn>{t("amount")}</TableColumn>
-          <TableColumn>{t("updateTime")}</TableColumn>
+      <Table aria-label="Finance Table">
+        <TableHeader columns={columns}>
+          {(column) => <TableColumn>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody>
-          {data.map((item) => (
+          {rows.map((row) => (
             <TableRow
-              key={item.id}
+              key={row.key}
               onClick={() =>
-                onOpen({ data: item, hasDelete: true, submitType: "update" })
+                onOpen({ data: row.raw, hasDelete: true, submitType: "update" })
               }
             >
-              <TableCell className="font-bold">{item.name}</TableCell>
-              <TableCell>{item.type}</TableCell>
-              <TableCell className="font-bold text-primary">
-                {currencyMap[item.currency as keyof typeof currencyMap]}
-                {item.amount}
-              </TableCell>
-              <TableCell>
-                {new Date(item.updated_at).toLocaleString()}
-              </TableCell>
+              {(columnKey) => (
+                <TableCell>{getKeyValue(row, columnKey)}</TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
