@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.suggestion-html {
+  white-space: pre-wrap;
+}
+
+.suggestion-html pre {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.suggestion-html span {
+  display: inline-block;
+  text-wrap: initial;
+}

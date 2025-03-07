@@ -10,6 +10,7 @@ import FinanceTable from "@/components/financeTable";
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import { GithubIcon, Logo } from "@/components/icons";
 import LocaleSelector from "@/components/locelSelector";
+import FinanceAI from "@/components/financeAI";
 
 const Page = () => {
   const { onOpen } = useFinanceModel();
@@ -33,6 +34,8 @@ const Page = () => {
         </Button>
         <FinanceModel />
         <FinanceTable />
+        <div className="mt-16" />
+        <FinanceAI />
       </main>
     </Providers>
   );

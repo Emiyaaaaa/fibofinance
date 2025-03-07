@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "github-markdown-css/github-markdown.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { getLocale, getMessages } from "next-intl/server";
