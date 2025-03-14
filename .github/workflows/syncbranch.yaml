@@ -1,26 +1,19 @@
-name: Sync
+name: Sync branch
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  sync-branches:
+  sync-branch:
+    name: Update test branch
     runs-on: ubuntu-latest
-    name: Syncing branches
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Node
-        uses: actions/setup-node@v1
+      - name: Checkout repository
+        uses: actions/checkout@master
+      - uses: connor-baer/action-sync-branch@main
         with:
-          node-version: 20
-      - name: Opening pull request
-        id: pull
-        uses: sansx/sync-branches@1.0.0
-        with:
-          PULL_REQUEST_TITLE: "Sync main to demo"
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PULL_REQUEST_AUTO_MERGE_METHOD: "squash"
-          FROM_BRANCH: "main"
-          TO_BRANCH: "demo"
+          branch: demo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
