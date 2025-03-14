@@ -7,11 +7,15 @@ on:
 
 jobs:
   sync-branch:
-    name: Update test branch
+    name: Update demo branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
       - uses: connor-baer/action-sync-branch@main
         with:
           branch: demo
