@@ -1,0 +1,39 @@
+{
+  "home": {
+    "language": "english",
+    "addFinance": "Add Finance",
+    "defaultCurrency": "USD",
+    "title": "FiboFinance",
+    "getAIAdvice": "Get AI Advice"
+  },
+  "finance": {
+    "name": "Name",
+    "owner": "Owner",
+    "description": "Description",
+    "type": "Type",
+    "currency": "Currency",
+    "USD": "USD",
+    "CNY": "CNY",
+    "EUR": "EUR",
+    "GBP": "GBP",
+    "JPY": "JPY",
+    "amount": "Amount",
+    "cash": "Cash",
+    "current": "Current",
+    "realEstate": "Real Estate",
+    "fixed": "Fixed",
+    "high": "High Risk",
+    "medium": "Medium Risk",
+    "low": "Low Risk",
+    "other": "Other",
+    "updateTime": "Update Time",
+    "empty-content": "Click the button above to add assets~"
+  },
+  "addFinance": {
+    "confirmButton": "Add",
+    "updateButton": "Update",
+    "title": "Add Finance",
+    "defaultCurrency": "USD",
+    "delete": "Delete"
+  }
+}

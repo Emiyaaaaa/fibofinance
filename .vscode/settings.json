@@ -1,0 +1,6 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": ["Fibofinance"],
+  "i18n-ally.localesPaths": ["i18n", "public/locales", "utils/i18n"],
+  "i18n-ally.keystyle": "nested"
+}

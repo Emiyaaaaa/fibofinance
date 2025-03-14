@@ -1,0 +1,39 @@
+{
+  "home": {
+    "language": "chinese",
+    "addFinance": "添加资产",
+    "defaultCurrency": "CNY",
+    "title": "斐波纳财",
+    "getAIAdvice": "获取AI建议"
+  },
+  "finance": {
+    "name": "名称",
+    "owner": "所属人",
+    "description": "描述",
+    "type": "类型",
+    "currency": "货币类型",
+    "USD": "美元",
+    "CNY": "人民币",
+    "EUR": "欧元",
+    "GBP": "英镑",
+    "JPY": "日元",
+    "amount": "金额",
+    "cash": "现金",
+    "current": "活期存款",
+    "realEstate": "不动产",
+    "fixed": "定期存款",
+    "high": "高风险投资",
+    "medium": "中风险投资",
+    "low": "低风险投资",
+    "other": "其他",
+    "updateTime": "上次更新",
+    "empty-content": "点击上方按钮添加资产吧~"
+  },
+  "addFinance": {
+    "confirmButton": "添加",
+    "title": "添加资产",
+    "defaultCurrency": "CNY",
+    "delete": "删除",
+    "updateButton": "更新"
+  }
+}
