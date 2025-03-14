@@ -11,33 +11,7 @@ const useFinanceData = create<{
   updateAiData: (data: AssetAdvice[]) => void;
 }>((set) => ({
   data: [],
-  aiData: [
-    {
-      id: 6,
-      name: "OCBC",
-      amount: 6000,
-    },
-    {
-      id: 5,
-      name: "股票",
-      amount: 5000,
-    },
-    {
-      id: 2,
-      name: "基金",
-      amount: 23000,
-    },
-    {
-      id: 4,
-      name: "中国银行",
-      amount: 56200,
-    },
-    {
-      id: 3,
-      name: "建设银行",
-      amount: 23500,
-    },
-  ],
+  aiData: [],
   initializing: true,
   updating: false,
   updateData: async () => {
