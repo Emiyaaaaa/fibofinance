@@ -57,7 +57,7 @@ export default function FinanceTable() {
         amount: (
           <div
             className={classNames(
-              "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max items-end",
+              "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max",
               { "text-sm": hasOffset }
             )}
           >
