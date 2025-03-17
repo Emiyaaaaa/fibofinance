@@ -46,20 +46,14 @@ export default function FinanceAI() {
 
         - 需要注意以下几点：
           - 2025年全球经济形势：不乐观，需要较多低风险资产或投资
-          
           - 需要考虑资产中的汇率因素，资产调整前后的总资产不变
-
           - 资产配置建议需要考虑资产的流动性、风险性、收益性等因素
-
           - 需要考虑一些资产的最小值限制，例如股票，定期存款等
-
           - 建议资产结果精确到小数点后两位
-
           - 建议金额需要和原有资产金额相等
-
           - 每项的建议金额的单位需要和原有资产金额的单位一致
-
-          - 输出结果前，主动检查结果总资产和原有总资产是否相等并输出到 "beforeTotal" 和 "afterTotal" 中
+          - 输出结果前，主动检查结果总资产和原有总资产是否相等，并输出到 "beforeTotal" 和 "afterTotal" 中
+          - reason 使用 ${t("language")} 输出
 
         - 输出格式：'json'
           {
@@ -77,8 +71,6 @@ export default function FinanceAI() {
         `,
       },
     ];
-
-    console.log(prompt);
 
     pushMessage(prompt);
   };
