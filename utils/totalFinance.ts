@@ -1,17 +1,9 @@
-import { Finance } from "@/types";
+import { DEFAULT_EXCHANGE_RATE } from "./exchangeRate";
 
-export const DEFAULT_EXCHANGE_RATE = {
-  base: "CNY",
-  rates: {
-    CNY: 1,
-    USD: 0.1368,
-    EUR: 0.1326,
-    GBP: 0.1104,
-    JPY: 20.7843,
-  },
-};
-
-export const getTotalFinance = (data: Finance[], targetCurrency: string) => {
+export const getTotalFinance = (
+  data: { amount: number; currency: string }[],
+  targetCurrency: string
+) => {
   const totalAmountCNY = data.reduce((acc, item) => {
     const rate = DEFAULT_EXCHANGE_RATE.rates[item.currency];
 

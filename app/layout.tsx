@@ -1,12 +1,11 @@
 import "@/styles/globals.css";
-import "github-markdown-css/github-markdown.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
 import { fontSans } from "@/config/fonts";
-import { createTableIfNotExists } from "@/utils/updateDatabase";
+import { syncDatabase } from "@/utils/syncDatabase";
 
 export const metadata: Metadata = {
   title: {
@@ -35,7 +34,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await createTableIfNotExists();
+  await syncDatabase();
 
   const locale = await getLocale();
   const messages = await getMessages();

@@ -25,7 +25,6 @@ export default function FinanceTable() {
 
   const { data, aiData, updating, initializing } = useFinanceData();
 
-  console.log(aiData);
   const { onOpen } = useFinanceModel();
   const clientWidth = useClientWidth();
 

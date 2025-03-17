@@ -1,17 +1,27 @@
 import { NextResponse } from "next/server";
-import { neon } from "@neondatabase/serverless";
+
+import { sql } from "@/utils/sql";
+import { getTotalFinance } from "@/utils/totalFinance";
+
+const syncTotalData = async () => {
+  // select amount and currency from finance_data
+  const rows = await sql("SELECT amount, currency FROM finance_data");
+
+  const total = getTotalFinance(
+    rows as { amount: number; currency: string }[],
+    "USD"
+  );
+
+  await sql("INSERT INTO finance_change_data (total_usd) VALUES ($1)", [total]);
+};
 
 export async function GET() {
-  const sql = neon(`${process.env.DATABASE_URL}`);
-
   const rows = await sql("SELECT * FROM finance_data ORDER BY created_at DESC");
 
   return NextResponse.json(rows);
 }
 
 export async function POST(request: Request) {
-  const sql = neon(`${process.env.DATABASE_URL}`);
-
   const { name, type, amount, description, currency, owner } =
     await request.json();
 
@@ -20,22 +30,22 @@ export async function POST(request: Request) {
     [name, type, amount, description, currency, owner]
   );
 
+  syncTotalData();
+
   return NextResponse.json(result);
 }
 
 export async function DELETE(request: Request) {
-  const sql = neon(`${process.env.DATABASE_URL}`);
-
   const { id } = await request.json();
 
   const result = await sql("DELETE FROM finance_data WHERE id = $1", [id]);
+
+  syncTotalData();
 
   return NextResponse.json(result);
 }
 
 export async function PATCH(request: Request) {
-  const sql = neon(`${process.env.DATABASE_URL}`);
-
   const { id, name, type, amount, description, currency, owner } =
     await request.json();
 
@@ -52,6 +62,8 @@ export async function PATCH(request: Request) {
       id,
     ]
   );
+
+  syncTotalData();
 
   return NextResponse.json(result);
 }
