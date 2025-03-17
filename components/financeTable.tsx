@@ -45,7 +45,7 @@ export default function FinanceTable() {
       const adviceAmount =
         aiData.find((advice) => advice.id === item.id)?.amount ?? item.amount;
 
-      const offset = adviceAmount - item.amount;
+      const offset = Math.round((adviceAmount - item.amount) * 100) / 100;
 
       const hasOffset = offset !== 0;
 

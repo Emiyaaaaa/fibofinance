@@ -59,7 +59,7 @@ export default function FinanceAI() {
 
           - 每项的建议金额的单位需要和原有资产金额的单位一致
 
-          - 输出结果前，主动检查结果总资产和原有总资产是否相等
+          - 输出结果前，主动检查结果总资产和原有总资产是否相等并输出到 "beforeTotal" 和 "afterTotal" 中
 
         - 输出格式：'json'
           {
@@ -68,6 +68,8 @@ export default function FinanceAI() {
                 "id": number,
                 "name": string,
                 "amount": number,
+                "beforeTotal": number,
+                "afterTotal": number
               },
             ],
             "reason": string
