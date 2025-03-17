@@ -5,14 +5,18 @@ import { getTotalFinance } from "@/utils/totalFinance";
 
 const syncTotalData = async () => {
   // select amount and currency from finance_data
-  const rows = await sql("SELECT amount, currency FROM finance_data");
+  const rows = (await sql("SELECT amount, currency FROM finance_data")) as {
+    amount: number;
+    currency: string;
+  }[];
 
-  const total = getTotalFinance(
-    rows as { amount: number; currency: string }[],
-    "USD"
+  const totalUSD = getTotalFinance(rows, "USD");
+  const totalCNY = getTotalFinance(rows, "CNY");
+
+  await sql(
+    "INSERT INTO finance_change_data (total_usd, total_cny) VALUES ($1, $2)",
+    [totalUSD, totalCNY]
   );
-
-  await sql("INSERT INTO finance_change_data (total_usd) VALUES ($1)", [total]);
 };
 
 export async function GET() {

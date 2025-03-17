@@ -13,14 +13,18 @@ import { GithubIcon, Logo } from "@/components/icons";
 import LocaleSelector from "@/components/locelSelector";
 import FinanceAI from "@/components/financeAI";
 import useFinanceData from "@/utils/store/useFinanceData";
+import FinanceChart from "@/components/financeChart";
+import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 
 const Page = () => {
   const { onOpen } = useFinanceModel();
-  const { updateData } = useFinanceData();
+  const { updateData: updateFinanceData } = useFinanceData();
+  const { updateData: updateFinanceChangeData } = useFinanceChangeData();
   const t = useTranslations("home");
 
   useEffect(() => {
-    updateData();
+    updateFinanceData();
+    updateFinanceChangeData();
   }, []);
 
   return (
@@ -43,6 +47,7 @@ const Page = () => {
         <FinanceTable />
         <div className="mt-16" />
         <FinanceAI />
+        <FinanceChart />
       </main>
     </Providers>
   );

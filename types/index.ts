@@ -17,6 +17,13 @@ export interface Finance {
   updated_at: string;
 }
 
+export interface FinanceChange {
+  id: number;
+  total_usd: number;
+  total_cny: number;
+  created_at: string;
+}
+
 export interface AssetAdvice {
   id: number;
   name: string;

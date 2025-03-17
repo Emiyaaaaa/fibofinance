@@ -86,7 +86,8 @@ const syncFinanceChangeData = async () => {
         CREATE TABLE IF NOT EXISTS finance_change_data (
           id SERIAL PRIMARY KEY,
           created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          total_usd DECIMAL(10, 2) NOT NULL
+          total_usd DECIMAL(10, 2) NOT NULL,
+          total_cny DECIMAL(10, 2) NOT NULL
         )
     `
     );
