@@ -23,7 +23,9 @@ export default function FinanceModel() {
   const { data, updateData } = useFinanceData();
   const submitType = props?.submitType ?? "create";
 
-  const ownerList = data.map((item) => item.owner).filter(Boolean);
+  const ownerList = [
+    ...new Set(data.map((item) => item.owner).filter(Boolean)),
+  ];
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
