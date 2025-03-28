@@ -14,14 +14,21 @@ export interface Finance {
   type?: string;
   amount: number;
   currency: keyof typeof currencyMap;
+  group_id: number;
   updated_at: string;
 }
 
 export interface FinanceChange {
   id: number;
-  total_usd: number;
+  group_id: number;
   total_cny: number;
   created_at: string;
+  finance_json: string;
+}
+
+export interface FinanceGroup {
+  id: number;
+  name: string;
 }
 
 export interface AssetAdvice {

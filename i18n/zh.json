@@ -4,7 +4,20 @@
     "addFinance": "添加资产",
     "defaultCurrency": "CNY",
     "title": "斐波纳财",
-    "getAIAdvice": "获取AI建议"
+    "getAIAdvice": "获取AI建议",
+    "changeGroupSuccess": "已成功切换至 - {groupName}"
+  },
+  "addGroup": {
+    "Default Group": "默认组",
+    "editEntry": "编辑当前组",
+    "deleteCurrentGroup": "删除当前组",
+    "createTitle": "新增组",
+    "editTitle": "编辑组",
+    "namePlaceholder": "组名称",
+    "addSubmitButton": "添加",
+    "editSubmitButton": "更新",
+    "addEntry": "新增组",
+    "deleteGroup": "删除后不可撤销，确定删除？"
   },
   "finance": {
     "name": "名称",
@@ -35,5 +48,14 @@
     "defaultCurrency": "CNY",
     "delete": "删除",
     "updateButton": "更新"
+  },
+  "confirmModel": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "warning": "警告"
+  },
+  "chart": {
+    "defaultCurrency": "CNY",
+    "total": "总资产"
   }
 }

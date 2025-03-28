@@ -34,8 +34,6 @@ import {
 } from "./utils/chartUtils";
 import { useOnWindowResize } from "./utils/useOnWindowResize";
 
-//#region Legend
-
 interface LegendItemProps {
   name: string;
   color: AvailableChartColorsKeys;

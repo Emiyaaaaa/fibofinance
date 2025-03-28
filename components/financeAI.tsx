@@ -79,7 +79,13 @@ export default function FinanceAI() {
     <div className="flex flex-col gap-4 items-center">
       <Button
         color="primary"
-        startContent={isLoading ? <Spinner size="sm" /> : <AIIcon size={18} />}
+        startContent={
+          isLoading ? (
+            <Spinner size="sm" variant="gradient" />
+          ) : (
+            <AIIcon size={18} />
+          )
+        }
         variant="ghost"
         onPress={handleSuggestion}
       >

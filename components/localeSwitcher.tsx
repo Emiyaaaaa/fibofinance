@@ -5,13 +5,12 @@ import {
   DropdownItem,
 } from "@heroui/dropdown";
 import { useEffect, useState } from "react";
-
-import { I18nIcon } from "./icons";
+import { RiTranslate2 } from "@remixicon/react";
 
 import { Locale, localeList } from "@/utils/i18n/config";
 import { getUserLocale, setUserLocale } from "@/utils/i18n/locale";
 
-function LocaleSelector() {
+function LocaleSwitcher() {
   const [currentLocale, setCurrentLocale] = useState<Locale>();
 
   useEffect(() => {
@@ -31,7 +30,7 @@ function LocaleSelector() {
       }}
     >
       <DropdownTrigger>
-        <I18nIcon className="cursor-pointer" />
+        <RiTranslate2 className="cursor-pointer" size={22} />
       </DropdownTrigger>
       <DropdownMenu aria-label="Locale">
         {localeList.map(({ key, label }) => (
@@ -51,4 +50,4 @@ function LocaleSelector() {
   );
 }
 
-export default LocaleSelector;
+export default LocaleSwitcher;

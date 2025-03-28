@@ -17,13 +17,13 @@ import Time from "./time";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useClientWidth from "@/utils/hook/useClientWidth";
-import { currencyMap } from "@/utils";
+import { currencyMap, toFixed2 } from "@/utils";
 import useFinanceData from "@/utils/store/useFinanceData";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
 
-  const { data, aiData, updating, initializing } = useFinanceData();
+  const { data, aiData, updating } = useFinanceData();
 
   const { onOpen } = useFinanceModel();
   const clientWidth = useClientWidth();
@@ -44,7 +44,7 @@ export default function FinanceTable() {
       const adviceAmount =
         aiData.find((advice) => advice.id === item.id)?.amount ?? item.amount;
 
-      const offset = Math.round((adviceAmount - item.amount) * 100) / 100;
+      const offset = toFixed2(adviceAmount - item.amount);
 
       const hasOffset = offset !== 0;
 
@@ -92,8 +92,14 @@ export default function FinanceTable() {
         </TableHeader>
         <TableBody
           emptyContent={t("empty-content")}
-          isLoading={initializing || updating}
-          loadingContent={<Spinner size="md" />}
+          isLoading={updating}
+          loadingContent={
+            <div className="relative h-full w-full">
+              <div className="absolute flex items-center justify-center h-[calc(100%-50px)] w-full bottom-0">
+                <Spinner size="md" variant="gradient" />
+              </div>
+            </div>
+          }
         >
           {rows.map((row) => (
             <TableRow

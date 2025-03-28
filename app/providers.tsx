@@ -15,7 +15,7 @@ export interface ProvidersProps {
 export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <HeroUIProvider>
-      <ToastProvider />
+      <ToastProvider placement="bottom-center" toastProps={{ timeout: 1000 }} />
       <NextThemesProvider attribute="class" defaultTheme="dark" {...themeProps}>
         {children}
       </NextThemesProvider>

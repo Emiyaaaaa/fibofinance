@@ -12,17 +12,25 @@ export const DEFAULT_EXCHANGE_RATE: {
   },
 };
 
+export const toFixed2 = (amount: number) => {
+  return Math.round(amount * 100) / 100;
+};
+
 export const convertCurrency = (amount: number, from: string, to: string) => {
-  return (
-    (amount * DEFAULT_EXCHANGE_RATE.rates[from]) /
-    DEFAULT_EXCHANGE_RATE.rates[to]
+  if (from === to) {
+    return amount;
+  }
+
+  return toFixed2(
+    (amount / DEFAULT_EXCHANGE_RATE.rates[from]) *
+      DEFAULT_EXCHANGE_RATE.rates[to]
   );
 };
 
 export const USD2CNY = (amount: number) => {
-  return amount / DEFAULT_EXCHANGE_RATE.rates.USD;
+  return toFixed2(amount / DEFAULT_EXCHANGE_RATE.rates.USD);
 };
 
 export const CNY2USD = (amount: number) => {
-  return amount * DEFAULT_EXCHANGE_RATE.rates.USD;
+  return toFixed2(amount * DEFAULT_EXCHANGE_RATE.rates.USD);
 };

@@ -4,7 +4,21 @@
     "addFinance": "Add Finance",
     "defaultCurrency": "USD",
     "title": "FiboFinance",
-    "getAIAdvice": "Get AI Advice"
+    "getAIAdvice": "Get AI Advice",
+    "changeGroupSuccess": "Successfully switched to - {groupName}"
+  },
+  "addGroup": {
+    "Default Group": "Default Group",
+    "editEntry": "Edit Current Group",
+    "createTitle": "New Group",
+    "editTitle": "Edit Group",
+    "namePlaceholder": "Group Name",
+    "addSubmitButton": "Add",
+    "editSubmitButton": "Update",
+    "name": "Group Name",
+    "addEntry": "Add Group",
+    "deleteGroup": "This action cannot be undone, are you sure to delete?",
+    "deleteCurrentGroup": "Delete Current Group"
   },
   "finance": {
     "name": "Name",
@@ -35,5 +49,14 @@
     "title": "Add Finance",
     "defaultCurrency": "USD",
     "delete": "Delete"
+  },
+  "confirmModel": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
+  "chart": {
+    "defaultCurrency": "USD",
+    "total": "Total Finance"
   }
 }

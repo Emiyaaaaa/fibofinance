@@ -1,3 +1,5 @@
+export * from "./exchangeRate";
+
 export const currencyMap = {
   USD: "$",
   CNY: "¥",
