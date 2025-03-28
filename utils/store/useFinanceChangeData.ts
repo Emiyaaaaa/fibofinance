@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 
+import { transformDate } from "../transformDate";
+
 import { useGroup } from "./useGroup";
 import useFinanceData from "./useFinanceData";
 
@@ -24,8 +26,7 @@ const useFinanceChangeDataStore = create<StoreType>((set) => ({
 
     // 日期去重
     data.forEach((item) => {
-      // const date = transformDate(new Date(item.created_at), "YYYY-MM-DD");
-      const date = item.created_at;
+      const date = transformDate(new Date(item.created_at), "YYYY-MM-DD");
 
       if (date === dataWithFinanceData[dataWithFinanceData.length - 1]?.date) {
         return;
