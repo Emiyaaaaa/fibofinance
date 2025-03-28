@@ -2,7 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
+import { Card, CardHeader, CardBody } from "@heroui/card";
+import { Divider } from "@heroui/divider";
+import { Chip } from "@heroui/chip";
 
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
 import { convertCurrency } from "@/utils/exchangeRate";
@@ -29,9 +31,26 @@ function CustomTooltip(props: TooltipProps) {
 
   return (
     <Card shadow="lg">
-      <CardHeader>{t("total")}</CardHeader>
-      <CardBody>{total}</CardBody>
-      <CardFooter>{data.date}</CardFooter>
+      <CardHeader className="flex items-center justify-between text-base text-primary font-bold">
+        {total}
+        <Chip className="ml-3" size="sm">
+          {data.date}
+        </Chip>
+      </CardHeader>
+      <Divider />
+      <CardBody className="flex flex-col gap-2 text-xs">
+        {data.finance.map((item) => (
+          <div key={item.id} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full" />
+              {item.name}
+            </div>
+            <div className="pl-2">
+              {currencyMap[item.currency]}${item.amount}
+            </div>
+          </div>
+        ))}
+      </CardBody>
     </Card>
   );
 }
