@@ -134,7 +134,7 @@ export default function FinanceChart() {
   }
 
   return (
-    <div className="relative w-full p-4">
+    <div className="relative w-full px-4">
       <LineChart
         categories={["total"]}
         className="h-80"
