@@ -46,7 +46,7 @@ function GroupSwitcher() {
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
     if (isEdit) {
-      fetch(`/api/financeGroup`, {
+      fetch(`/api/finance/group`, {
         method: "PATCH",
         body: JSON.stringify({
           id: groupId,
@@ -54,7 +54,7 @@ function GroupSwitcher() {
         }),
       }).then(refreshGroupList);
     } else {
-      fetch(`/api/financeGroup`, {
+      fetch(`/api/finance/group`, {
         method: "POST",
         body: JSON.stringify({
           name: data.name,
@@ -77,7 +77,7 @@ function GroupSwitcher() {
       return;
     }
 
-    fetch(`/api/financeGroup`, {
+    fetch(`/api/finance/group`, {
       method: "DELETE",
       body: JSON.stringify({
         id: groupId,

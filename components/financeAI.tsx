@@ -14,8 +14,20 @@ import { mdToHtml } from "@/utils/mdToHtml";
 export default function FinanceAI() {
   const t = useTranslations("home");
   const { content, pushMessage, isLoading } = useAI();
+  const [hasAI, setHasAI] = useState<boolean>(false);
   const [html, setHtml] = useState<string>("");
   const { data, updateAiData } = useFinanceData();
+
+  useEffect(() => {
+    const checkAI = async () => {
+      const res = await fetch("/api/suggestion/check");
+      const { hasAI } = await res.json();
+
+      setHasAI(hasAI);
+    };
+
+    checkAI();
+  }, []);
 
   useEffect(() => {
     if (!content) return;
@@ -74,6 +86,8 @@ export default function FinanceAI() {
 
     pushMessage(prompt);
   };
+
+  if (!hasAI) return null;
 
   return (
     <div className="flex flex-col gap-4 items-center">

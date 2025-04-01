@@ -19,7 +19,7 @@ const useFinanceChangeDataStore = create<StoreType>((set) => ({
   updating: true,
   updateData: async (group_id: number) => {
     set({ updating: true });
-    const res = await fetch(`/api/changeData?group_id=${group_id}`);
+    const res = await fetch(`/api/finance/changeData?group_id=${group_id}`);
     const data: FinanceChange[] = await res.json();
 
     const dataWithFinanceData: StoreType["data"] = [];
