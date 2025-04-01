@@ -19,9 +19,11 @@ import { useState } from "react";
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap } from "@/utils";
+import { useGroup } from "@/utils/store/useGroup";
 
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
+  const { groupId } = useGroup();
   const t = useTranslations();
 
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
@@ -40,14 +42,18 @@ export default function FinanceModel() {
     if (submitType === "create") {
       fetch("/api/finance", {
         method: "POST",
-        body: JSON.stringify({ ...data, group_id: 1 }),
+        body: JSON.stringify({ ...data, group_id: groupId }),
       }).finally(() => {
         updateData();
       });
     } else if (submitType === "update" && props?.data?.id !== undefined) {
       fetch("/api/finance", {
         method: "PATCH",
-        body: JSON.stringify({ ...data, id: props!.data!.id, group_id: 1 }),
+        body: JSON.stringify({
+          ...data,
+          id: props!.data!.id,
+          group_id: groupId,
+        }),
       }).finally(() => {
         updateData();
       });

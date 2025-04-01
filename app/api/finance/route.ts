@@ -34,6 +34,9 @@ const syncFinanceData = async (group_id: number) => {
 export async function GET(request: NextRequest) {
   // get by group_id
   const group_id = request.nextUrl.searchParams.get("group_id");
+
+  console.log({ group_id });
+
   const rows = await sql(
     "SELECT * FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
     [group_id]
