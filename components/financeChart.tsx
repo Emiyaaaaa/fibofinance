@@ -68,6 +68,10 @@ export default function FinanceChart() {
     [changeData, t]
   );
 
+  if (!chartdata.length) {
+    return null;
+  }
+
   return (
     <div className="relative w-full p-4">
       <LineChart
