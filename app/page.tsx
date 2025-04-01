@@ -38,13 +38,12 @@ const Page = () => {
           {t("addFinance")}
         </Button>
         <FinanceModel />
-        <FinanceTable />
-        <div className="mt-8" />
-        <FinanceChart />
-        <div className="mt-8" />
-        <FinanceAI />
-        <div className="mt-16" />
-        <div className="text-center text-sm opacity-80">
+        <div className="flex flex-col gap-[8px]">
+          <FinanceTable />
+          <FinanceChart />
+          <FinanceAI />
+        </div>
+        <div className="text-center mt-16 text-sm opacity-80">
           <span>Powered by </span>
           <Link className="text-primary" href="https://github.com/emiyaaaaa">
             Haozheng Li

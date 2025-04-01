@@ -14,6 +14,7 @@ import { useMemo } from "react";
 import classNames from "classnames";
 
 import Time from "./time";
+import AmountOffset from "./amountOffset";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useClientWidth from "@/utils/hook/useClientWidth";
@@ -68,17 +69,7 @@ export default function FinanceTable() {
               {currencyMap[item.currency as keyof typeof currencyMap]}
               {Number(item.amount)}
             </div>
-            {hasOffset && (
-              <div
-                className={classNames({
-                  "text-green-500": offset > 0,
-                  "text-red-500": offset < 0,
-                })}
-              >
-                {offset > 0 ? "+" : "-"}
-                {Math.abs(offset)}
-              </div>
-            )}
+            <AmountOffset currency={item.currency} offset={offset} />
           </div>
         ),
         updated_at: (

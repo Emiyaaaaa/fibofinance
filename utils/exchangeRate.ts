@@ -16,6 +16,17 @@ export const toFixed2 = (amount: number) => {
   return Math.round(amount * 100) / 100;
 };
 
+export const subAmount = (
+  a: { amount: number; currency: string },
+  b: { amount: number; currency: string },
+  targetCurrency: string
+) => {
+  const aAmount = convertCurrency(a.amount, a.currency, targetCurrency);
+  const bAmount = convertCurrency(b.amount, b.currency, targetCurrency);
+
+  return toFixed2(aAmount - bAmount);
+};
+
 export const convertCurrency = (amount: number, from: string, to: string) => {
   if (from === to) {
     return amount;
