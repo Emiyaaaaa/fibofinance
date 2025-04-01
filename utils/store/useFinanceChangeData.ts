@@ -56,9 +56,16 @@ export const useFinanceChangeData = () => {
       return;
     }
 
+    financeChangeDataStore.updateData(groupId);
     setTimeout(() => {
       financeChangeDataStore.updateData(groupId);
-    }, 5000);
+    }, 1000);
+    setTimeout(() => {
+      financeChangeDataStore.updateData(groupId);
+    }, 2000);
+    setTimeout(() => {
+      financeChangeDataStore.updateData(groupId);
+    }, 3000);
   }, [groupId, financeData]);
 
   return {
