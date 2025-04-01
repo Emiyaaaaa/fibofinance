@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Divider } from "@heroui/divider";
-import { Chip } from "@heroui/chip";
 
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
 import { convertCurrency } from "@/utils/exchangeRate";
@@ -31,11 +30,11 @@ function CustomTooltip(props: TooltipProps) {
 
   return (
     <Card shadow="lg">
-      <CardHeader className="flex items-center justify-between text-base text-primary font-bold">
-        {total}
-        <Chip className="ml-3" size="sm">
+      <CardHeader className="flex items-center justify-between ">
+        <span className="text-primary font-bold text-base">{total}</span>
+        <div className="ml-3 bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">
           {data.date}
-        </Chip>
+        </div>
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-2 text-xs">
@@ -56,7 +55,7 @@ function CustomTooltip(props: TooltipProps) {
 }
 
 export default function FinanceChart() {
-  const { data: changeData, financeData } = useFinanceChangeData();
+  const { data: changeData } = useFinanceChangeData();
   const t = useTranslations("chart");
   const chartdata = useMemo(
     () =>

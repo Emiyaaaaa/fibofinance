@@ -52,7 +52,11 @@ export default function FinanceTable() {
         raw: item,
         key: item.id,
         name: <span className="font-bold">{item.name}</span>,
-        type: item.type,
+        type: (
+          <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">
+            {item.type}
+          </span>
+        ),
         amount: (
           <div
             className={classNames(

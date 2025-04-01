@@ -3,82 +3,48 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-15.0.4-black)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
+[![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-FiboFinance is an AI-powered asset allocation application that uses the Golden Ratio (Fibonacci sequence) principle to help users manage their financial portfolios more effectively.
+斐波纳财(FiboFinance) 是一个个人资产记录应用，可以通过 AI 分析你的资产情况，并给出资产配置建议。
 
-## ✨ Features
+## ✨ 功能
 
-- **Smart Asset Allocation** - Optimize your portfolio based on the Golden Ratio principle
-- **AI Financial Advisor** - Get personalized financial advice with OpenAI integration
-- **Real-time Streaming Response** - Experience seamless AI interactions with streaming API responses
-- **Multi-language Support** - Available in English and Chinese
-- **Modern UI** - Clean, responsive interface built with HeroUI components
-- **Dark/Light Mode** - Customizable theme to suit your preference
+- **智能资产配置** - 基于黄金比例原则使用AI优化你的资产配置
+- **支持资产分组** - 支持配置多组资产，私房钱也可单独管理
+- **资产趋势查看** - 简洁图表展示资产变化趋势，轻松跟踪每月收支
+- **数据泄露保护** - 私有部署，数据不泄露
 
-## 🛠️ Tech Stack
+## 🚀 快速开始
 
-- **Framework**: [Next.js 15](https://nextjs.org/)
-- **UI Components**: HeroUI
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
-- **AI Integration**: [OpenAI API](https://openai.com/)
-- **Internationalization**: [next-intl](https://next-intl-docs.vercel.app/)
-- **Development**: TypeScript, ESLint, Prettier
+### Vercel 一键部署
 
-## 🚀 Getting Started
+[![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-### Prerequisites
+### 新增数据库
 
-- Node.js 18.17 or later
-- npm or yarn
+在 vercel 中添加 nero 数据库
 
-### Installation
+![Nero 数据库](./public/database.png)
 
-1. Clone the repository:
+### 连接数据库
 
-   ```bash
-   git clone https://github.com/emiyaaaaa/fibofinance.git
-   cd fibofinance
-   ```
+点击 connect database 按钮，选择你的 fibofinance 项目
+![](./public/connect-database.png)
 
-2. Install dependencies:
+### 配置 AI 模型（可选，不配置则无法使用 AI 分析功能）
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+在 vercel env 中配置 OpenAI api 或任何其他兼容 OpenAI api 的模型（豆包、deepseek、claude 等）
 
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory with the following variables:
+需配置：
 
-   ```
-   OPENAI_API_KEY=your_openai_api_key
-   OPENAI_MODEL=gpt-4o  # or your preferred model
-   ```
+- OPENAI_BASE_URL
+- OPENAI_API_KEY
+- OPENAI_MODEL
 
-4. Run the development server:
+![配置环境变量](./public/settings-env.png)
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+## 🙏 鸣谢
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🔧 Configuration
-
-- **OpenAI**: Configure OpenAI settings in `.env.local`
-- **Language**: Set default language or add more languages in `i18n` directory
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgements
-
-- [Next.js](https://nextjs.org/) for the amazing framework
-- [OpenAI](https://openai.com/) for the powerful AI capabilities
-- [HeroUI](https://github.com/heroui) for the beautiful UI components
+- [Next.js](https://nextjs.org/)
+- [OpenAI](https://openai.com/)
+- [HeroUI](https://github.com/heroui)

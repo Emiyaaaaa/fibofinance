@@ -881,7 +881,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
                     : 1
                 }
                 strokeWidth={2}
-                type="linear"
+                type="monotone"
               />
             ))}
             {/* hidden lines to increase clickable target area */}
@@ -899,7 +899,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
                     strokeOpacity={0}
                     strokeWidth={12}
                     tooltipType="none"
-                    type="linear"
+                    type="monotone"
                     onClick={(props: any, event) => {
                       event.stopPropagation();
                       const { name } = props;

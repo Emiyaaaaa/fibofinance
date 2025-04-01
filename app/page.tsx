@@ -39,9 +39,18 @@ const Page = () => {
         </Button>
         <FinanceModel />
         <FinanceTable />
-        <div className="mt-16" />
-        <FinanceAI />
+        <div className="mt-8" />
         <FinanceChart />
+        <div className="mt-8" />
+        <FinanceAI />
+        <div className="mt-16" />
+        <div className="text-center text-sm opacity-80">
+          <span>Powered by </span>
+          <Link className="text-primary" href="https://github.com/emiyaaaaa">
+            Haozheng Li
+          </Link>
+        </div>
+        <div className="mt-4" />
       </main>
     </Providers>
   );
