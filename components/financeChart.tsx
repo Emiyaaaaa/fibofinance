@@ -21,7 +21,7 @@ function CustomTooltip(props: TooltipProps) {
     finance: Finance[];
   };
 
-  if (!data) {
+  if (!data?.finance.length) {
     return null;
   }
 
@@ -46,7 +46,7 @@ function CustomTooltip(props: TooltipProps) {
               {item.name}
             </div>
             <div className="pl-2">
-              {currencyMap[item.currency]}${item.amount}
+              {`${currencyMap[item.currency]}${item.amount}`}
             </div>
           </div>
         ))}
