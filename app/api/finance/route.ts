@@ -3,9 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/utils/sql";
 import { getTotalFinance } from "@/utils/totalFinance";
 
-const getTotalAmount = async () => {
+const getTotalAmount = async (group_id: number) => {
   // select amount and currency from finance_data
-  const rows = (await sql("SELECT amount, currency FROM finance_data")) as {
+  const rows = (await sql(
+    "SELECT amount, currency FROM finance_data WHERE group_id = $1",
+    [group_id]
+  )) as {
     amount: number;
     currency: string;
   }[];
@@ -16,7 +19,7 @@ const getTotalAmount = async () => {
 };
 
 const syncFinanceData = async (group_id: number) => {
-  const { totalCNY } = await getTotalAmount();
+  const { totalCNY } = await getTotalAmount(group_id);
 
   const finance_json = await sql(
     "SELECT id, name, amount, currency FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
