@@ -23,12 +23,14 @@ import { useMemo, useState } from "react";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
 import { Button } from "@heroui/button";
+import { Checkbox } from "@heroui/checkbox";
 
 import { useGroup } from "@/utils/store/useGroup";
 import { useConfirm } from "@/utils/hook/useComfirm";
 
 function GroupSwitcher() {
-  const { groupId, groupList, changeGroup, refreshGroupList } = useGroup();
+  const { groupId, groupList, changeGroup, refreshGroupList, setGroupList } =
+    useGroup();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isEdit, setIsEdit] = useState(false);
   const t = useTranslations("addGroup");
@@ -86,6 +88,28 @@ function GroupSwitcher() {
 
     onClose();
     changeGroup(groupList.filter((group) => group.id !== groupId)[0].id);
+  };
+
+  const handleSetIsDefault = () => {
+    const currentGroup = groupList.find((group) => group.id === groupId);
+
+    if (!currentGroup) return;
+
+    if (currentGroup.is_default) {
+      return;
+    }
+
+    const newGroupList = groupList.map((group) => ({
+      ...group,
+      is_default: group.id === groupId,
+    }));
+
+    setGroupList(newGroupList);
+
+    fetch("/api/finance/group/default", {
+      method: "POST",
+      body: JSON.stringify({ id: groupId }),
+    }).then(refreshGroupList);
   };
 
   return (
@@ -158,6 +182,22 @@ function GroupSwitcher() {
               }}
             >
               {t("editEntry")}
+            </DropdownItem>
+            <DropdownItem
+              key={"setDefault"}
+              endContent={
+                <Checkbox
+                  className="translate-x-[0.5rem]"
+                  isSelected={
+                    groupList.find((group) => group.id === groupId)?.is_default
+                  }
+                  size="sm"
+                  onSelect={handleSetIsDefault}
+                />
+              }
+              onPress={handleSetIsDefault}
+            >
+              {t("setToDefault")}
             </DropdownItem>
             {groupList.length > 1 ? (
               <DropdownItem

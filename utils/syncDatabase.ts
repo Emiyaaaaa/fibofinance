@@ -77,6 +77,12 @@ const syncFinanceData = async () => {
 
   if (!groupIdExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN group_id INTEGER`);
+    await sql(
+      `
+        UPDATE finance_data 
+        SET group_id = 1;
+      `
+    );
   }
 
   // set group_id default value to 1
@@ -119,21 +125,36 @@ const syncFinanceGroupData = async () => {
     `
   ).then((res) => Boolean(res[0]));
 
-  console.log(finance_group_data_tableEexists);
   if (!finance_group_data_tableEexists) {
     await sql(
       `
         CREATE TABLE IF NOT EXISTS finance_group_data (
           id SERIAL PRIMARY KEY,
           created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          name VARCHAR(255) NOT NULL
+          name VARCHAR(255) NOT NULL,
+          is_default BOOLEAN NOT NULL DEFAULT FALSE
         )
       `
     );
     await sql(
       `
-        INSERT INTO finance_group_data (name) VALUES ('Default Group');
+        INSERT INTO finance_group_data (name, is_default) VALUES ('Default Group', TRUE);
       `
+    );
+  }
+
+  const is_defaultExist = await sql(
+    `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'finance_group_data' 
+      AND column_name = 'is_default';
+    `
+  ).then((res) => Boolean(res[0]));
+
+  if (!is_defaultExist) {
+    await sql(
+      `ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`
     );
   }
 };

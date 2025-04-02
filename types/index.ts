@@ -16,6 +16,7 @@ export interface Finance {
   currency: keyof typeof currencyMap;
   group_id: number;
   updated_at: string;
+  created_at: string;
 }
 
 export interface FinanceChange {
@@ -28,6 +29,7 @@ export interface FinanceChange {
 export interface FinanceGroup {
   id: number;
   name: string;
+  is_default: boolean;
 }
 
 export interface AssetAdvice {

@@ -8,6 +8,7 @@
     "changeGroupSuccess": "Successfully switched to - {groupName}"
   },
   "addGroup": {
+    "setToDefault": "Set Current Group to Default",
     "Default Group": "Default Group",
     "editEntry": "Edit Current Group",
     "createTitle": "New Group",

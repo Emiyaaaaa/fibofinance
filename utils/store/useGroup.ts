@@ -11,7 +11,7 @@ type GroupStore = {
   groupList: FinanceGroup[];
   setGroupId: (id: number) => void;
   setGroupList: (list: FinanceGroup[]) => void;
-  fetchGroupList: () => Promise<void>;
+  fetchGroupList: () => Promise<FinanceGroup[]>;
 };
 
 export const useGroupStore = create<GroupStore>((set) => ({
@@ -25,6 +25,8 @@ export const useGroupStore = create<GroupStore>((set) => ({
       const data = await res.json();
 
       set({ groupList: data });
+
+      return data;
     } catch (error) {
       console.error("Failed to fetch group list:", error);
     }
@@ -33,7 +35,8 @@ export const useGroupStore = create<GroupStore>((set) => ({
 
 // 创建一个 hook 来处理路由和初始化逻辑
 export const useGroup = () => {
-  const { groupId, groupList, setGroupId, fetchGroupList } = useGroupStore();
+  const { groupId, groupList, setGroupId, fetchGroupList, setGroupList } =
+    useGroupStore();
   const query = useSearchParams();
   const router = useRouter();
   const t = useTranslations("home");
@@ -42,12 +45,20 @@ export const useGroup = () => {
   useEffect(() => {
     const queryGroupId = query.get("group_id");
 
-    setGroupId(queryGroupId ? Number(queryGroupId) : 1);
+    if (queryGroupId) {
+      setGroupId(Number(queryGroupId));
+    }
   }, []);
 
   // 初始化 groupList
   useEffect(() => {
-    fetchGroupList();
+    fetchGroupList().then((data) => {
+      const defaultGroup = data.find((group) => group.is_default);
+
+      if (defaultGroup) {
+        setGroupId(defaultGroup.id);
+      }
+    });
   }, []);
 
   const changeGroup = (newGroupId: number) => {
@@ -70,5 +81,6 @@ export const useGroup = () => {
     groupList,
     changeGroup,
     refreshGroupList,
+    setGroupList,
   };
 };

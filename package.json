@@ -13,6 +13,7 @@
     "@heroui/autocomplete": "^2.3.16",
     "@heroui/button": "2.2.13",
     "@heroui/card": "^2.2.15",
+    "@heroui/checkbox": "^2.3.15",
     "@heroui/chip": "^2.2.12",
     "@heroui/code": "2.2.10",
     "@heroui/divider": "^2.2.11",

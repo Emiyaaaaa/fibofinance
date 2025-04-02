@@ -19,10 +19,19 @@ const syncFinanceData = async (group_id: number) => {
 export async function GET(request: NextRequest) {
   // get by group_id
   const group_id = request.nextUrl.searchParams.get("group_id");
+  const orderBy = request.nextUrl.searchParams.get("order_by") || "created_at";
+  const order = request.nextUrl.searchParams.get("order") || "DESC";
+
+  if (!["created_at", "amount"].includes(orderBy)) {
+    return NextResponse.json({ error: "Invalid orderBy" }, { status: 400 });
+  }
+
+  if (!["ASC", "DESC"].includes(order)) {
+    return NextResponse.json({ error: "Invalid order" }, { status: 400 });
+  }
 
   const rows = await sql(
-    "SELECT * FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
-    [group_id]
+    `SELECT * FROM finance_data WHERE group_id = ${group_id} ORDER BY ${orderBy} ${order}`
   );
 
   return NextResponse.json(rows);
