@@ -115,10 +115,10 @@ export default function FinanceChart() {
 
         return {
           date: item.date,
-          total: convertCurrency(item.total_cny, "CNY", t("defaultCurrency")),
+          total: convertCurrency(item.totalCny, "CNY", t("defaultCurrency")),
           totalOffset: lastItem
             ? convertCurrency(
-                item.total_cny - lastItem.total_cny,
+                item.totalCny - lastItem.totalCny,
                 "CNY",
                 t("defaultCurrency")
               )

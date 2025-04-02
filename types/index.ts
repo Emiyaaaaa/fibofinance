@@ -21,7 +21,6 @@ export interface Finance {
 export interface FinanceChange {
   id: number;
   group_id: number;
-  total_cny: number;
   created_at: string;
   finance_json: string;
 }

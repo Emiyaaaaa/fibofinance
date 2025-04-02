@@ -29,7 +29,7 @@ export const subAmount = (
 
 export const convertCurrency = (amount: number, from: string, to: string) => {
   if (from === to) {
-    return amount;
+    return toFixed2(amount);
   }
 
   return toFixed2(

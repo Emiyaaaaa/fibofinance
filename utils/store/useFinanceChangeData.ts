@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { useEffect } from "react";
 
 import { transformDate } from "../transformDate";
+import { getTotalFinance } from "../totalFinance";
 
 import { useGroup } from "./useGroup";
 import useFinanceData from "./useFinanceData";
@@ -9,7 +10,11 @@ import useFinanceData from "./useFinanceData";
 import { FinanceChange, Finance } from "@/types";
 
 type StoreType = {
-  data: (FinanceChange & { financeData: Finance[]; date: string })[];
+  data: (FinanceChange & {
+    financeData: Finance[];
+    date: string;
+    totalCny: number;
+  })[];
   updating: boolean;
   updateData: (group_id: number) => void;
 };
@@ -32,10 +37,13 @@ const useFinanceChangeDataStore = create<StoreType>((set) => ({
         return;
       }
 
+      const financeData = JSON.parse(item.finance_json);
+
       dataWithFinanceData.push({
         ...item,
         date,
-        financeData: JSON.parse(item.finance_json),
+        totalCny: getTotalFinance(financeData, "CNY"),
+        financeData,
       });
     });
 

@@ -1,26 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
-import { getTotalFinance } from "@/utils/totalFinance";
-
-const getTotalAmount = async (group_id: number) => {
-  // select amount and currency from finance_data
-  const rows = (await sql(
-    "SELECT amount, currency FROM finance_data WHERE group_id = $1",
-    [group_id]
-  )) as {
-    amount: number;
-    currency: string;
-  }[];
-
-  const totalCNY = getTotalFinance(rows, "CNY");
-
-  return { totalCNY };
-};
 
 const syncFinanceData = async (group_id: number) => {
-  const { totalCNY } = await getTotalAmount(group_id);
-
   const finance_json = await sql(
     "SELECT id, name, amount, currency FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
     [group_id]
@@ -29,16 +11,14 @@ const syncFinanceData = async (group_id: number) => {
   const finance_json_string = JSON.stringify(finance_json);
 
   await sql(
-    "INSERT INTO finance_change_data (total_cny, finance_json, group_id) VALUES ($1, $2, $3)",
-    [totalCNY, finance_json_string, group_id]
+    "INSERT INTO finance_change_data (finance_json, group_id) VALUES ($1, $2)",
+    [finance_json_string, group_id]
   );
 };
 
 export async function GET(request: NextRequest) {
   // get by group_id
   const group_id = request.nextUrl.searchParams.get("group_id");
-
-  console.log({ group_id });
 
   const rows = await sql(
     "SELECT * FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
@@ -89,10 +69,10 @@ export async function PATCH(request: Request) {
       amount,
       description,
       currency,
+      group_id,
       owner,
       new Date().toISOString(),
       id,
-      group_id,
     ]
   );
 

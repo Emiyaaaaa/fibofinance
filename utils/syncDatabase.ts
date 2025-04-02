@@ -101,7 +101,6 @@ const syncFinanceChangeData = async () => {
           id SERIAL PRIMARY KEY,
           created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
           group_id INTEGER NOT NULL,
-          total_cny DECIMAL(10, 2) NOT NULL,
           finance_json TEXT NOT NULL
         )
     `
