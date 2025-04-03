@@ -10,6 +10,7 @@ import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import { DEFAULT_EXCHANGE_RATE } from "@/utils/exchangeRate";
 import { mdToHtml } from "@/utils/mdToHtml";
+import { useGroup } from "@/utils/store/useGroup";
 
 export default function FinanceAI() {
   const t = useTranslations("home");
@@ -17,6 +18,12 @@ export default function FinanceAI() {
   const [hasAI, setHasAI] = useState<boolean>(false);
   const [html, setHtml] = useState<string>("");
   const { data, updateAiData } = useFinanceData();
+  const { groupId } = useGroup();
+
+  useEffect(() => {
+    updateAiData([]);
+    setHtml("");
+  }, [groupId]);
 
   useEffect(() => {
     const checkAI = async () => {
@@ -93,24 +100,13 @@ export default function FinanceAI() {
     <div className="flex flex-col gap-4 items-center">
       <Button
         color="primary"
-        startContent={
-          isLoading ? (
-            <Spinner size="sm" variant="gradient" />
-          ) : (
-            <AIIcon size={18} />
-          )
-        }
+        startContent={isLoading ? <Spinner size="sm" variant="gradient" /> : <AIIcon size={18} />}
         variant="ghost"
         onPress={handleSuggestion}
       >
         {t("getAIAdvice")}
       </Button>
-      {html && (
-        <div
-          dangerouslySetInnerHTML={{ __html: html }}
-          className="w-full markdown-body p-4 rounded-lg"
-        />
-      )}
+      {html && <div dangerouslySetInnerHTML={{ __html: html }} className="w-full markdown-body p-4 rounded-lg" />}
     </div>
   );
 }

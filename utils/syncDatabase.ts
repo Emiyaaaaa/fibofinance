@@ -1,11 +1,7 @@
 import { sql } from "./sql";
 
 export const syncDatabase = async () => {
-  return Promise.all([
-    syncFinanceData(),
-    syncFinanceChangeData(),
-    syncFinanceGroupData(),
-  ]);
+  return Promise.all([syncFinanceData(), syncFinanceChangeData(), syncFinanceGroupData()]);
 };
 
 const syncFinanceData = async () => {
@@ -16,7 +12,7 @@ const syncFinanceData = async () => {
       FROM pg_catalog.pg_tables
       WHERE schemaname = 'public' 
       AND tablename = 'finance_data';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!finance_data_tableEexists) {
@@ -34,7 +30,7 @@ const syncFinanceData = async () => {
             currency VARCHAR(255) NOT NULL,
             group_id INTEGER NOT NULL DEFAULT 1
           )
-        `
+        `,
     );
   }
 
@@ -45,7 +41,7 @@ const syncFinanceData = async () => {
       FROM information_schema.columns 
       WHERE table_name = 'finance_data' 
       AND column_name = 'description';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!descriptionExists) {
@@ -59,7 +55,7 @@ const syncFinanceData = async () => {
       FROM information_schema.columns 
       WHERE table_name = 'finance_data' 
       AND column_name = 'owner';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!ownerExists) {
@@ -72,7 +68,7 @@ const syncFinanceData = async () => {
       FROM information_schema.columns 
       WHERE table_name = 'finance_data' 
       AND column_name = 'group_id';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!groupIdExists) {
@@ -81,7 +77,7 @@ const syncFinanceData = async () => {
       `
         UPDATE finance_data 
         SET group_id = 1;
-      `
+      `,
     );
   }
 
@@ -97,7 +93,7 @@ const syncFinanceChangeData = async () => {
       FROM pg_catalog.pg_tables
       WHERE schemaname = 'public' 
       AND tablename = 'finance_change_data';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!finance_change_data_tableEexists) {
@@ -109,7 +105,7 @@ const syncFinanceChangeData = async () => {
           group_id INTEGER NOT NULL,
           finance_json TEXT NOT NULL
         )
-    `
+    `,
     );
   }
 };
@@ -122,7 +118,7 @@ const syncFinanceGroupData = async () => {
       FROM pg_catalog.pg_tables
       WHERE schemaname = 'public' 
       AND tablename = 'finance_group_data';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!finance_group_data_tableEexists) {
@@ -134,12 +130,12 @@ const syncFinanceGroupData = async () => {
           name VARCHAR(255) NOT NULL,
           is_default BOOLEAN NOT NULL DEFAULT FALSE
         )
-      `
+      `,
     );
     await sql(
       `
         INSERT INTO finance_group_data (name, is_default) VALUES ('Default Group', TRUE);
-      `
+      `,
     );
   }
 
@@ -149,12 +145,10 @@ const syncFinanceGroupData = async () => {
       FROM information_schema.columns 
       WHERE table_name = 'finance_group_data' 
       AND column_name = 'is_default';
-    `
+    `,
   ).then((res) => Boolean(res[0]));
 
   if (!is_defaultExist) {
-    await sql(
-      `ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`
-    );
+    await sql(`ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`);
   }
 };
