@@ -8,7 +8,7 @@ import { NumberInput } from "@heroui/number-input";
 import { Select, SelectItem } from "@heroui/select";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useFinanceData from "@/utils/store/useFinanceData";
@@ -28,6 +28,12 @@ export default function FinanceModel() {
   const submitType = props?.submitType ?? "create";
 
   const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
+
+  useEffect(() => {
+    if (props?.data?.type) {
+      setType(props.data.type);
+    }
+  }, [props?.data?.type]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
