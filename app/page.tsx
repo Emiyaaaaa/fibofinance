@@ -1,13 +1,11 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { useTranslations } from "next-intl";
 import { RiGithubLine } from "@remixicon/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-
-import { Providers } from "./providers";
+import { useTranslations } from "next-intl";
 
 import FinanceModel from "@/components/financeModel";
 import FinanceTable from "@/components/financeTable";
@@ -51,7 +49,7 @@ const Page = () => {
   }, [groupId]);
 
   return (
-    <Providers>
+    <>
       <header className="w-full pt-6 px-6 flex items-center">
         <Logo />
         <div className="flex-1" />
@@ -81,7 +79,7 @@ const Page = () => {
         </div>
         <div className="mt-4" />
       </main>
-    </Providers>
+    </>
   );
 };
 

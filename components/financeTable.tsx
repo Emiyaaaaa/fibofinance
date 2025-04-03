@@ -8,14 +8,13 @@ import { SortDirection } from "@react-types/shared";
 
 import Time from "./time";
 import AmountOffset from "./amountOffset";
+import { financeTypeOrder } from "./financeModel";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import { currencyMap, toFixed2 } from "@/utils";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
-
-const financeTypeOrder = ["cash", "current", "fixed", "low", "medium", "high", "realEstate", "other", ""];
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -56,7 +55,9 @@ export default function FinanceTable() {
         raw: item,
         key: item.id,
         name: <span className="font-bold">{item.name}</span>,
-        type: <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{item.type}</span>,
+        type: item.type ? (
+          <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{t(item.type, undefined, {})}</span>
+        ) : null,
         amount: (
           <div
             className={classNames(

@@ -15,11 +15,15 @@ import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 
+export const financeType = ["cash", "current", "low", "medium", "high", "fixed", "realEstate", "other"];
+export const financeTypeOrder = [...financeType, ""];
+
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
   const { groupId } = useGroup();
   const addFinanceT = useTranslations("addFinance");
   const financeT = useTranslations("finance");
+  const [type, setType] = useState(props?.data?.type ?? "current");
 
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
 
@@ -35,7 +39,7 @@ export default function FinanceModel() {
     if (submitType === "create") {
       fetch("/api/finance", {
         method: "POST",
-        body: JSON.stringify({ ...data, group_id: groupId }),
+        body: JSON.stringify({ ...data, type, group_id: groupId }),
       }).finally(() => {
         updateData();
       });
@@ -45,6 +49,7 @@ export default function FinanceModel() {
         body: JSON.stringify({
           ...data,
           id: props!.data!.id,
+          type,
           group_id: groupId,
         }),
       }).finally(() => {
@@ -87,11 +92,17 @@ export default function FinanceModel() {
                 className="w-2/5"
                 defaultInputValue={props?.data?.type ?? financeT("current")}
                 defaultSelectedKey={props?.data?.type}
+                inputValue={financeT(type)}
                 label={financeT("type")}
                 name="type"
+                onInputChange={(value) => {
+                  setType(value);
+                }}
               >
-                {["cash", "current", "fixed", "high", "medium", "low", "realEstate", "other"].map((item) => (
-                  <AutocompleteItem key={item}>{financeT(item)}</AutocompleteItem>
+                {financeType.map((item) => (
+                  <AutocompleteItem key={item} textValue={item}>
+                    {financeT(item)}
+                  </AutocompleteItem>
                 ))}
               </Autocomplete>
             </div>
