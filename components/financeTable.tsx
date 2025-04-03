@@ -57,7 +57,7 @@ export default function FinanceTable() {
         type: item.type ? (
           <span
             className={classNames(
-              "text-xs py-1 px-[6px] rounded",
+              "text-[10px] py-1 px-[6px] rounded",
               /* eslint-disable */
                 item.type === "cash"       ? "bg-green-200  text-green-950"
               : item.type === "current"    ? "bg-blue-200   text-blue-950"
