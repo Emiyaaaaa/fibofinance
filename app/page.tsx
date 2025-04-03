@@ -4,6 +4,8 @@ import { Button } from "@heroui/button";
 import { useTranslations } from "next-intl";
 import { RiGithubLine } from "@remixicon/react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { Providers } from "./providers";
 
@@ -15,10 +17,38 @@ import LocaleSwitcher from "@/components/localeSwitcher";
 import FinanceAI from "@/components/financeAI";
 import FinanceChart from "@/components/financeChart";
 import GroupSwitcher from "@/components/groupSwitcher";
+import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
+import { useGroup } from "@/utils/store/useGroup";
+import { useFinanceData } from "@/utils/store/useFinanceData";
 
 const Page = () => {
   const { onOpen } = useFinanceModel();
   const t = useTranslations("home");
+  const query = useSearchParams();
+
+  const { initData: initGroupData, groupId, setGroupId } = useGroup();
+  const { initData: initFinanceChangeData } = useFinanceChangeData();
+  const { initData: initFinanceData } = useFinanceData();
+
+  // 初始化 groupId
+  useEffect(() => {
+    const queryGroupId = query.get("group_id");
+
+    if (queryGroupId) {
+      setGroupId(Number(queryGroupId));
+    }
+  }, []);
+
+  useEffect(() => {
+    initGroupData();
+  }, []);
+
+  useEffect(() => {
+    if (groupId) {
+      initFinanceData(groupId);
+      initFinanceChangeData(groupId);
+    }
+  }, [groupId]);
 
   return (
     <Providers>

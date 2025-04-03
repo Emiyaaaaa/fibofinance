@@ -19,10 +19,10 @@ const syncFinanceData = async (group_id: number) => {
 export async function GET(request: NextRequest) {
   // get by group_id
   const group_id = request.nextUrl.searchParams.get("group_id");
-  const orderBy = request.nextUrl.searchParams.get("order_by") || "created_at";
+  const orderBy = request.nextUrl.searchParams.get("order_by") || "updated_at";
   const order = request.nextUrl.searchParams.get("order") || "DESC";
 
-  if (!["created_at", "amount"].includes(orderBy)) {
+  if (!["amount", "updated_at"].includes(orderBy)) {
     return NextResponse.json({ error: "Invalid orderBy" }, { status: 400 });
   }
 

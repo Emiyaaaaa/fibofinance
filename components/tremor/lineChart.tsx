@@ -752,7 +752,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
               isAnimationActive={true}
               offset={20}
               position={{ y: 0 }}
-              wrapperStyle={{ outline: "none" }}
+              wrapperStyle={{ outline: "none", zIndex: 100 }}
             />
 
             {showLegend ? (

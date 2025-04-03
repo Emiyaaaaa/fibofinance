@@ -6,23 +6,28 @@ import { useGroup } from "./useGroup";
 import { Finance, AssetAdvice } from "@/types";
 
 interface FinanceDataStore {
-  orderBy: keyof Pick<Finance, "created_at" | "amount">;
+  orderBy: keyof Pick<Finance, "amount" | "updated_at">;
   order: "ASC" | "DESC";
   data: Finance[];
   updating: boolean;
+  timeoutId?: NodeJS.Timeout | null;
+  inited: boolean;
   aiData: AssetAdvice[];
+  setData: (data: Finance[]) => void;
   updateData: (groupId: number) => Promise<void>;
   updateAiData: (data: AssetAdvice[]) => void;
-  toggleOrder: () => void;
-  setOrderBy: (orderBy: FinanceDataStore["orderBy"]) => void;
+  initData: (groupId: number) => void;
+  debounceUpdateData: (groupId: number) => void;
 }
 
 const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
-  orderBy: "created_at",
+  orderBy: "updated_at",
   order: "DESC",
   data: [],
   aiData: [],
+  inited: false,
   updating: true,
+  setData: (data: Finance[]) => set({ data }),
   updateData: async (groupId: number) => {
     set({ updating: true });
     const res = await fetch(
@@ -33,16 +38,30 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
     set({ data });
     set({ updating: false });
   },
+  initData: (groupId: number) => {
+    if (get().inited) {
+      return;
+    }
+
+    get().updateData(groupId);
+    set({ inited: true });
+  },
+  debounceUpdateData: (groupId: number) => {
+    const timeoutId = get().timeoutId;
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    set({
+      timeoutId: setTimeout(() => {
+        if (get().inited) {
+          get().updateData(groupId);
+        }
+      }, 300),
+    });
+  },
   updateAiData: (data) => set({ aiData: data }),
-  toggleOrder: () => {
-    set((state) => ({
-      order: state.order === "ASC" ? "DESC" : "ASC",
-    }));
-  },
-  setOrderBy: (orderBy) => {
-    set({ orderBy });
-    set({ order: "DESC" });
-  },
 }));
 
 export const useFinanceData = () => {
@@ -50,7 +69,9 @@ export const useFinanceData = () => {
   const { groupId } = useGroup();
 
   useEffect(() => {
-    updateData();
+    if (groupId) {
+      financeDataStore.updateData(groupId);
+    }
   }, [groupId]);
 
   const updateData = useCallback(() => {
@@ -61,21 +82,9 @@ export const useFinanceData = () => {
     financeDataStore.updateData(groupId);
   }, [groupId]);
 
-  const setOrderBy = useCallback((orderBy: FinanceDataStore["orderBy"]) => {
-    financeDataStore.setOrderBy(orderBy);
-    updateData();
-  }, []);
-
-  const toggleOrder = useCallback(() => {
-    financeDataStore.toggleOrder();
-    updateData();
-  }, []);
-
   return {
     ...financeDataStore,
     updateData,
-    setOrderBy,
-    toggleOrder,
   };
 };
 

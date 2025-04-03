@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@heroui/modal";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
 import { Form } from "@heroui/form";
 import { Input, Textarea } from "@heroui/input";
 import { NumberInput } from "@heroui/number-input";
@@ -24,16 +18,15 @@ import { useGroup } from "@/utils/store/useGroup";
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
   const { groupId } = useGroup();
-  const t = useTranslations();
+  const addFinanceT = useTranslations("addFinance");
+  const financeT = useTranslations("finance");
 
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
 
   const { data, updateData } = useFinanceData();
   const submitType = props?.submitType ?? "create";
 
-  const ownerList = [
-    ...new Set(data.map((item) => item.owner).filter(Boolean)),
-  ];
+  const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,9 +65,7 @@ export default function FinanceModel() {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          {t("addFinance.title")}
-        </ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">{addFinanceT("title")}</ModalHeader>
         <Form
           onSubmit={(e) => {
             onSubmit(e);
@@ -88,27 +79,19 @@ export default function FinanceModel() {
                 autoComplete="off"
                 className="w-3/5"
                 defaultValue={props?.data?.name}
-                label={t("finance.name")}
+                label={financeT("name")}
                 name="name"
               />
               <Autocomplete
+                allowsCustomValue
                 className="w-2/5"
-                defaultInputValue={props?.data?.type ?? t("finance.current")}
+                defaultInputValue={props?.data?.type ?? financeT("current")}
                 defaultSelectedKey={props?.data?.type}
-                label={t("finance.type")}
+                label={financeT("type")}
                 name="type"
               >
-                {[
-                  t("finance.cash"),
-                  t("finance.current"),
-                  t("finance.fixed"),
-                  t("finance.high"),
-                  t("finance.medium"),
-                  t("finance.low"),
-                  t("finance.realEstate"),
-                  t("finance.other"),
-                ].map((item) => (
-                  <AutocompleteItem key={item}>{item}</AutocompleteItem>
+                {["cash", "current", "fixed", "high", "medium", "low", "realEstate", "other"].map((item) => (
+                  <AutocompleteItem key={item}>{financeT(item)}</AutocompleteItem>
                 ))}
               </Autocomplete>
             </div>
@@ -117,7 +100,7 @@ export default function FinanceModel() {
                 isRequired
                 className="w-5/12"
                 defaultValue={props?.data?.amount}
-                label={t("finance.amount")}
+                label={financeT("amount")}
                 name="amount"
                 startContent={
                   <div className="text-sm">
@@ -125,9 +108,7 @@ export default function FinanceModel() {
                       currencyMap[
                         currency ??
                           props?.data?.currency ??
-                          (t(
-                            "addFinance.defaultCurrency"
-                          ) as keyof typeof currencyMap)
+                          (addFinanceT("defaultCurrency") as keyof typeof currencyMap)
                       ]
                     }
                   </div>
@@ -135,27 +116,26 @@ export default function FinanceModel() {
               />
               <Select
                 className="w-3/12"
-                defaultSelectedKeys={[
-                  props?.data?.currency ?? t("addFinance.defaultCurrency"),
-                ]}
-                label={t("finance.currency")}
+                defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
+                label={financeT("currency")}
                 name="currency"
                 onSelectionChange={(e) => {
                   setCurrency(e.currentKey as keyof typeof currencyMap);
                 }}
               >
-                <SelectItem key={"CNY"}>{t("finance.CNY")}</SelectItem>
-                <SelectItem key={"USD"}>{t("finance.USD")}</SelectItem>
-                <SelectItem key={"EUR"}>{t("finance.EUR")}</SelectItem>
-                <SelectItem key={"GBP"}>{t("finance.GBP")}</SelectItem>
-                <SelectItem key={"JPY"}>{t("finance.JPY")}</SelectItem>
+                <SelectItem key={"CNY"}>{financeT("CNY")}</SelectItem>
+                <SelectItem key={"USD"}>{financeT("USD")}</SelectItem>
+                <SelectItem key={"EUR"}>{financeT("EUR")}</SelectItem>
+                <SelectItem key={"GBP"}>{financeT("GBP")}</SelectItem>
+                <SelectItem key={"JPY"}>{financeT("JPY")}</SelectItem>
               </Select>
               {ownerList.length > 0 ? (
                 <Autocomplete
+                  allowsCustomValue
                   className="w-4/12"
                   defaultInputValue={props?.data?.owner}
                   defaultSelectedKey={props?.data?.owner}
-                  label={t("finance.owner")}
+                  label={financeT("owner")}
                   name="owner"
                 >
                   {ownerList.map((item) => (
@@ -163,17 +143,12 @@ export default function FinanceModel() {
                   ))}
                 </Autocomplete>
               ) : (
-                <Input
-                  className="w-4/12"
-                  defaultValue={props?.data?.owner}
-                  label={t("finance.owner")}
-                  name="owner"
-                />
+                <Input className="w-4/12" defaultValue={props?.data?.owner} label={financeT("owner")} name="owner" />
               )}
             </div>
             <Textarea
               defaultValue={props?.data?.description}
-              label={t("finance.description")}
+              label={financeT("description")}
               minRows={2}
               name="description"
             />
@@ -187,13 +162,11 @@ export default function FinanceModel() {
                   onClose();
                 }}
               >
-                {t("addFinance.delete")}
+                {addFinanceT("delete")}
               </Button>
             )}
             <Button color="primary" type="submit">
-              {submitType === "create"
-                ? t("addFinance.confirmButton")
-                : t("addFinance.updateButton")}
+              {submitType === "create" ? addFinanceT("confirmButton") : addFinanceT("updateButton")}
             </Button>
           </ModalFooter>
         </Form>

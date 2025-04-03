@@ -1,17 +1,10 @@
 "use client";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-  getKeyValue,
-} from "@heroui/table";
+import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, getKeyValue } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
+import { SortDirection } from "@react-types/shared";
 
 import Time from "./time";
 import AmountOffset from "./amountOffset";
@@ -20,11 +13,22 @@ import useFinanceModel from "@/utils/store/useFinanceModel";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import { currencyMap, toFixed2 } from "@/utils";
 import useFinanceData from "@/utils/store/useFinanceData";
+import { Finance } from "@/types";
+
+const financeTypeOrder = ["cash", "current", "fixed", "low", "medium", "high", "realEstate", "other", ""];
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
 
-  const { data, aiData, updating } = useFinanceData();
+  const { data, setData, aiData, updating } = useFinanceData();
+
+  const [sortDescriptor, setSortDescriptor] = useState<{
+    column: keyof Finance;
+    direction: SortDirection;
+  }>({
+    column: "updated_at",
+    direction: "descending",
+  });
 
   const { onOpen } = useFinanceModel();
   const clientWidth = useClientWidth();
@@ -42,8 +46,7 @@ export default function FinanceTable() {
 
   const rows = useMemo(() => {
     return data.map((item) => {
-      const adviceAmount =
-        aiData.find((advice) => advice.id === item.id)?.amount ?? item.amount;
+      const adviceAmount = aiData.find((advice) => advice.id === item.id)?.amount ?? item.amount;
 
       const offset = toFixed2(adviceAmount - item.amount);
 
@@ -53,16 +56,12 @@ export default function FinanceTable() {
         raw: item,
         key: item.id,
         name: <span className="font-bold">{item.name}</span>,
-        type: (
-          <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">
-            {item.type}
-          </span>
-        ),
+        type: <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{item.type}</span>,
         amount: (
           <div
             className={classNames(
               "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max",
-              { "text-sm": hasOffset }
+              { "text-sm": hasOffset },
             )}
           >
             <div className="text-primary">
@@ -72,18 +71,71 @@ export default function FinanceTable() {
             <AmountOffset currency={item.currency} offset={offset} />
           </div>
         ),
-        updated_at: (
-          <Time date={new Date(item.updated_at)} format="YYYY-MM-DD HH:mm" />
-        ),
+        updated_at: <Time date={new Date(item.updated_at)} format="YYYY-MM-DD HH:mm" />,
       };
     });
   }, [data, aiData]);
 
+  useEffect(() => {
+    console.log("datachange", data);
+  }, [data]);
+
   return (
     <>
-      <Table isStriped aria-label="Finance Table">
+      <Table
+        isStriped
+        aria-label="Finance Table"
+        sortDescriptor={sortDescriptor}
+        onSortChange={(_sortDescriptor) => {
+          const currentSortDescriptor = sortDescriptor;
+
+          const newSortDescriptor = {
+            column: _sortDescriptor.column,
+            direction:
+              _sortDescriptor.column === currentSortDescriptor.column
+                ? currentSortDescriptor.direction === "ascending"
+                  ? "descending"
+                  : "ascending"
+                : "descending",
+          } as {
+            column: keyof Finance;
+            direction: SortDirection;
+          };
+
+          setSortDescriptor(newSortDescriptor);
+
+          setData(
+            [...data].sort((a, b) => {
+              if (newSortDescriptor.column === "amount") {
+                return newSortDescriptor.direction === "ascending" ? a.amount - b.amount : b.amount - a.amount;
+              }
+
+              if (newSortDescriptor.column === "updated_at") {
+                return newSortDescriptor.direction === "ascending"
+                  ? new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+                  : new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+              }
+
+              if (newSortDescriptor.column === "name") {
+                return newSortDescriptor.direction === "ascending"
+                  ? a.name.localeCompare(b.name)
+                  : b.name.localeCompare(a.name);
+              }
+
+              if (newSortDescriptor.column === "type") {
+                const aIndex = financeTypeOrder.indexOf(a.type ?? "");
+                const bIndex = financeTypeOrder.indexOf(b.type ?? "");
+
+                return newSortDescriptor.direction === "ascending" ? aIndex - bIndex : bIndex - aIndex;
+              }
+
+              return 0;
+            }),
+          );
+        }}
+      >
         <TableHeader columns={columns}>
-          {(column) => <TableColumn>{column.label}</TableColumn>}
+          {(column) => <TableColumn allowsSorting>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody
           emptyContent={t("empty-content")}
@@ -100,13 +152,9 @@ export default function FinanceTable() {
             <TableRow
               key={row.key}
               className={`${updating ? "opacity-40" : "transition-opacity duration-100"}`}
-              onClick={() =>
-                onOpen({ data: row.raw, hasDelete: true, submitType: "update" })
-              }
+              onClick={() => onOpen({ data: row.raw, hasDelete: true, submitType: "update" })}
             >
-              {(columnKey) => (
-                <TableCell>{getKeyValue(row, columnKey)}</TableCell>
-              )}
+              {(columnKey) => <TableCell>{getKeyValue(row, columnKey)}</TableCell>}
             </TableRow>
           ))}
         </TableBody>

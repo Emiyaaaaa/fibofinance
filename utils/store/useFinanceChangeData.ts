@@ -15,13 +15,20 @@ type StoreType = {
     date: string;
     totalCny: number;
   })[];
+  inited: boolean;
   updating: boolean;
+  timeoutId?: NodeJS.Timeout | null;
+  setData: (data: StoreType["data"]) => void;
+  initData: (group_id: number) => void;
   updateData: (group_id: number) => void;
+  debounceUpdateData: (group_id: number) => void;
 };
 
-const useFinanceChangeDataStore = create<StoreType>((set) => ({
+const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
   data: [],
   updating: true,
+  inited: false,
+  setData: (data: StoreType["data"]) => set({ data }),
   updateData: async (group_id: number) => {
     set({ updating: true });
     const res = await fetch(`/api/finance/changeData?group_id=${group_id}`);
@@ -52,29 +59,47 @@ const useFinanceChangeDataStore = create<StoreType>((set) => ({
     set({ data: dataWithFinanceData });
     set({ updating: false });
   },
+  initData: (group_id: number) => {
+    if (get().inited) {
+      return;
+    }
+
+    get().updateData(group_id);
+    set({ inited: true });
+  },
+  debounceUpdateData: (group_id: number) => {
+    const timeoutId = get().timeoutId;
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    set({
+      timeoutId: setTimeout(() => {
+        if (get().inited) {
+          get().updateData(group_id);
+        }
+      }, 300),
+    });
+  },
 }));
 
 export const useFinanceChangeData = () => {
   const financeChangeDataStore = useFinanceChangeDataStore();
   const { data: financeData } = useFinanceData();
-  const { groupId } = useGroup();
+  const { groupId, changed } = useGroup();
+
+  useEffect(() => {
+    financeChangeDataStore.setData([]);
+  }, [groupId]);
 
   useEffect(() => {
     if (!groupId) {
       return;
     }
 
-    financeChangeDataStore.updateData(groupId);
-    setTimeout(() => {
-      financeChangeDataStore.updateData(groupId);
-    }, 1000);
-    setTimeout(() => {
-      financeChangeDataStore.updateData(groupId);
-    }, 2000);
-    setTimeout(() => {
-      financeChangeDataStore.updateData(groupId);
-    }, 3000);
-  }, [groupId, financeData]);
+    financeChangeDataStore.debounceUpdateData(groupId);
+  }, [groupId, changed, financeData]);
 
   return {
     ...financeChangeDataStore,

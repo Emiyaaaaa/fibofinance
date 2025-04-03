@@ -33,7 +33,7 @@ function CustomTooltip(props: TooltipProps) {
 
   return (
     <Card shadow="lg">
-      <CardHeader className="flex items-center justify-between">
+      <CardHeader className="flex items-start justify-between">
         <div>
           <div className="text-primary font-bold text-base">{total}</div>
           <AmountOffset
@@ -56,11 +56,7 @@ function CustomTooltip(props: TooltipProps) {
             </div>
             <div className="pl-2 flex flex-col items-end">
               <div className="text-primary">{`${currencyMap[item.currency]}${item.amount}`}</div>
-              <AmountOffset
-                className="text-xs"
-                currency={item.currency}
-                offset={item.offset}
-              />
+              <AmountOffset currency={item.currency} offset={item.offset} />
             </div>
           </div>
         ))}
