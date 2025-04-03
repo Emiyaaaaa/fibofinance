@@ -8,11 +8,10 @@ import { SortDirection } from "@react-types/shared";
 
 import Time from "./time";
 import AmountOffset from "./amountOffset";
-import { financeTypeOrder } from "./financeModel";
 
+import { financeTypeOrder, currencyMap, toFixed2 } from "@/utils";
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useClientWidth from "@/utils/hook/useClientWidth";
-import { currencyMap, toFixed2 } from "@/utils";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
 
@@ -56,7 +55,23 @@ export default function FinanceTable() {
         key: item.id,
         name: <span className="font-bold">{item.name}</span>,
         type: item.type ? (
-          <span className="bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{t(item.type, undefined, {})}</span>
+          <span
+            className={classNames(
+              "text-xs py-1 px-[6px] rounded",
+              /* eslint-disable */
+                item.type === "cash"       ? "bg-green-200  text-green-950"
+              : item.type === "current"    ? "bg-blue-200   text-blue-950"
+              : item.type === "low"        ? "bg-yellow-200 text-yellow-950"
+              : item.type === "medium"     ? "bg-orange-200 text-orange-950"
+              : item.type === "high"       ? "bg-red-300    text-red-950"
+              : item.type === "fixed"       ? "bg-purple-200 text-purple-950"
+              : item.type === "realEstate" ? "bg-purple-200 text-purple-950"
+                                           : "bg-gray-200   text-gray-950",
+              /* eslint-enable */
+            )}
+          >
+            {t(item.type)}
+          </span>
         ) : null,
         amount: (
           <div

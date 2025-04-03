@@ -12,11 +12,8 @@ import { useState } from "react";
 
 import useFinanceModel from "@/utils/store/useFinanceModel";
 import useFinanceData from "@/utils/store/useFinanceData";
-import { currencyMap } from "@/utils";
+import { currencyMap, financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
-
-export const financeType = ["cash", "current", "low", "medium", "high", "fixed", "realEstate", "other"];
-export const financeTypeOrder = [...financeType, ""];
 
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
