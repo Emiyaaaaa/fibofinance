@@ -1,24 +1,7 @@
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  DropdownSection,
-} from "@heroui/dropdown";
-import {
-  RiAddLine,
-  RiDeleteBinLine,
-  RiEditLine,
-  RiGroupLine,
-} from "@remixicon/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection } from "@heroui/dropdown";
+import { RiAddLine, RiDeleteBinLine, RiEditLine, RiGroupLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  useDisclosure,
-} from "@heroui/modal";
+import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { useMemo, useState } from "react";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
@@ -29,8 +12,7 @@ import { useGroup } from "@/utils/store/useGroup";
 import { useConfirm } from "@/utils/hook/useComfirm";
 
 function GroupSwitcher() {
-  const { groupId, groupList, changeGroup, refreshGroupList, setGroupList } =
-    useGroup();
+  const { groupId, groupList, changeGroup, refreshGroupList, setGroupList } = useGroup();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isEdit, setIsEdit] = useState(false);
   const t = useTranslations("addGroup");
@@ -117,9 +99,7 @@ function GroupSwitcher() {
       <ComfirmModel />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
-          <ModalHeader>
-            {isEdit ? t("editTitle") : t("createTitle")}
-          </ModalHeader>
+          <ModalHeader>{isEdit ? t("editTitle") : t("createTitle")}</ModalHeader>
           <Form onSubmit={handleSubmit}>
             <ModalBody className="w-full">
               <div className="flex w-full flex-row gap-4 pb-9">
@@ -128,6 +108,8 @@ function GroupSwitcher() {
                   defaultValue={
                     isEdit
                       ? groupList.find((group) => group.id === groupId)?.name
+                        ? t(groupList.find((group) => group.id === groupId)?.name)
+                        : ""
                       : ""
                   }
                   name="name"
@@ -145,20 +127,21 @@ function GroupSwitcher() {
         <DropdownTrigger>
           <RiGroupLine className="cursor-pointer" size={21} />
         </DropdownTrigger>
-        <DropdownMenu
-          disallowEmptySelection
-          selectedKeys={selectedKeys}
-          selectionMode="single"
-        >
+        <DropdownMenu disallowEmptySelection selectedKeys={selectedKeys} selectionMode="single">
           <DropdownSection showDivider>
-            {groupList.map(({ id, name }) => (
+            {groupList.map(({ id, name, is_default }) => (
               <DropdownItem
                 key={id.toString()}
                 className={id === groupId ? "text-primary" : ""}
                 color={id === groupId ? "primary" : "default"}
                 onPress={() => changeGroup(id)}
               >
-                {name === "Default Group" ? t("Default Group") : name}
+                {t(name)}
+                {is_default && (
+                  <span className="bg-white bg-opacity-7 rounded text-[10px] px-[5px] py-[2px] ml-[8px]">
+                    {t("default")}
+                  </span>
+                )}
               </DropdownItem>
             ))}
           </DropdownSection>
@@ -188,9 +171,7 @@ function GroupSwitcher() {
               endContent={
                 <Checkbox
                   className="translate-x-[0.5rem]"
-                  isSelected={
-                    groupList.find((group) => group.id === groupId)?.is_default
-                  }
+                  isSelected={groupList.find((group) => group.id === groupId)?.is_default}
                   size="sm"
                   onSelect={handleSetIsDefault}
                 />

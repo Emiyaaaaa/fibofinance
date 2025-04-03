@@ -8,6 +8,7 @@
     "changeGroupSuccess": "已成功切换至 - {groupName}"
   },
   "addGroup": {
+    "default": "默认",
     "setToDefault": "设为默认组",
     "Default Group": "组",
     "editEntry": "编辑当前组",
