@@ -14,6 +14,7 @@ import useFinanceModel from "@/utils/store/useFinanceModel";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap, financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
+import { fetchWithTime } from "@/utils/fetchWithTime";
 
 export default function FinanceModel() {
   const { isOpen, onClose, modelProps: props } = useFinanceModel();
@@ -40,14 +41,14 @@ export default function FinanceModel() {
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
     if (submitType === "create") {
-      fetch("/api/finance", {
+      fetchWithTime("/api/finance", {
         method: "POST",
         body: JSON.stringify({ ...data, type, group_id: groupId }),
       }).finally(() => {
         updateData();
       });
     } else if (submitType === "update" && props?.data?.id !== undefined) {
-      fetch("/api/finance", {
+      fetchWithTime("/api/finance", {
         method: "PATCH",
         body: JSON.stringify({
           ...data,
@@ -62,7 +63,7 @@ export default function FinanceModel() {
   };
 
   const onDelete = () => {
-    fetch("/api/finance", {
+    fetchWithTime("/api/finance", {
       method: "DELETE",
       body: JSON.stringify({ id: props!.data!.id }),
     }).finally(() => {

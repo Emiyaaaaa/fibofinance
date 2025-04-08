@@ -5,8 +5,10 @@ export default function useClientWidth() {
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth);
+      setWidth(document.documentElement.clientWidth);
     };
+
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 

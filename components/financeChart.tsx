@@ -27,24 +27,16 @@ function CustomTooltip(props: TooltipProps) {
     return null;
   }
 
-  const total = `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${
-    data.total
-  }`;
+  const total = `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${data.total}`;
 
   return (
     <Card shadow="lg">
       <CardHeader className="flex items-start justify-between">
         <div>
           <div className="text-primary font-bold text-base">{total}</div>
-          <AmountOffset
-            className="text-xs"
-            currency={t("defaultCurrency")}
-            offset={data.totalOffset}
-          />
+          <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={data.totalOffset} />
         </div>
-        <div className="ml-3 bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">
-          {data.date}
-        </div>
+        <div className="ml-3 bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{data.date}</div>
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-2 text-xs">
@@ -112,17 +104,11 @@ export default function FinanceChart() {
         return {
           date: item.date,
           total: convertCurrency(item.totalCny, "CNY", t("defaultCurrency")),
-          totalOffset: lastItem
-            ? convertCurrency(
-                item.totalCny - lastItem.totalCny,
-                "CNY",
-                t("defaultCurrency")
-              )
-            : 0,
+          totalOffset: lastItem ? convertCurrency(item.totalCny - lastItem.totalCny, "CNY", t("defaultCurrency")) : 0,
           finance: financeList,
         };
       }),
-    [changeData, t]
+    [changeData, t],
   );
 
   if (!chartdata.length) {

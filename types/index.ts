@@ -22,7 +22,7 @@ export interface Finance {
 export interface FinanceChange {
   id: number;
   group_id: number;
-  created_at: string;
+  date: string;
   finance_json: string;
 }
 

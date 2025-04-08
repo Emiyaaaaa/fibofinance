@@ -2,18 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
 
-const syncFinanceData = async (group_id: number) => {
+const syncFinanceData = async (request: Request, group_id: number) => {
+  const date = request.headers.get("x-fetch-local-date");
+
+  if (!date) {
+    return;
+  }
+
   const finance_json = await sql(
-    "SELECT id, name, amount, currency FROM finance_data WHERE group_id = $1 ORDER BY created_at DESC",
+    "SELECT id, name, amount, currency FROM finance_data WHERE group_id = $1 ORDER BY updated_at DESC",
     [group_id],
   );
 
   const finance_json_string = JSON.stringify(finance_json);
 
-  await sql("INSERT INTO finance_change_data (finance_json, group_id) VALUES ($1, $2)", [
-    finance_json_string,
+  const isDateExists = await sql("SELECT COUNT(*) FROM finance_change_data WHERE group_id = $1 AND date = $2", [
     group_id,
-  ]);
+    date,
+  ]).then((res) => Number(res[0].count) > 0);
+
+  if (isDateExists) {
+    await sql("UPDATE finance_change_data SET finance_json = $1, updated_at = $2 WHERE group_id = $3 AND date = $4", [
+      finance_json_string,
+      new Date().toISOString(),
+      group_id,
+      date,
+    ]);
+  } else {
+    await sql("INSERT INTO finance_change_data (finance_json, group_id, date) VALUES ($1, $2, $3)", [
+      finance_json_string,
+      group_id,
+      date,
+    ]);
+  }
 };
 
 export async function GET(request: NextRequest) {
@@ -43,7 +64,7 @@ export async function POST(request: Request) {
     [name, type, amount, description, currency, group_id, owner],
   );
 
-  syncFinanceData(group_id);
+  syncFinanceData(request, group_id);
 
   return NextResponse.json(result);
 }
@@ -55,7 +76,7 @@ export async function DELETE(request: Request) {
 
   const group_id = result[0].group_id;
 
-  syncFinanceData(group_id);
+  syncFinanceData(request, group_id);
 
   return NextResponse.json(result);
 }
@@ -68,7 +89,7 @@ export async function PATCH(request: Request) {
     [name, type, amount, description, currency, group_id, owner, new Date().toISOString(), id],
   );
 
-  syncFinanceData(group_id);
+  syncFinanceData(request, group_id);
 
   return NextResponse.json(result);
 }

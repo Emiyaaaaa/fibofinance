@@ -2,7 +2,7 @@
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, getKeyValue } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { SortDirection } from "@react-types/shared";
 
@@ -91,10 +91,6 @@ export default function FinanceTable() {
       };
     });
   }, [data, aiData]);
-
-  useEffect(() => {
-    console.log("datachange", data);
-  }, [data]);
 
   return (
     <>
