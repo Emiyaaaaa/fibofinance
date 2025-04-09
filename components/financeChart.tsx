@@ -38,6 +38,8 @@ function CustomTooltip(props: TooltipProps) {
 
   const lastItem = activePayload?.item ?? _lastItem;
 
+  const hasActiveItem = !!activePayload;
+
   const lastFinanceData = lastItem?.financeData;
   const currentFinanceData = item.financeData;
 
@@ -78,13 +80,20 @@ function CustomTooltip(props: TooltipProps) {
   const totalOffset = lastItem ? convertCurrency(item.totalCny - lastItem.totalCny, "CNY", t("defaultCurrency")) : 0;
 
   return (
-    <Card shadow="lg">
+    <Card className="border-primary border-1 border-solid border-opacity-80" shadow="lg">
+      {hasActiveItem && (
+        <div className="bg-primary text-black">
+          <div className="flex items-center justify-center p-[6px]">
+            <div className="text-xs font-bold">{t("diffWith") + " " + lastItem?.date}</div>
+          </div>
+        </div>
+      )}
       <CardHeader className="flex items-start justify-between">
         <div>
           <div className="text-primary font-bold text-base">{`${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${total}`}</div>
           <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={totalOffset} />
         </div>
-        <div className="ml-3 bg-white bg-opacity-7 text-xs py-1 px-[6px] rounded">{date}</div>
+        <div className="ml-3 bg-white bg-opacity-20 text-xs py-1 px-[6px] rounded">{date}</div>
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-2 text-xs">

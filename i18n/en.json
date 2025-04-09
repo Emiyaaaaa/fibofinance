@@ -60,6 +60,7 @@
   },
   "chart": {
     "defaultCurrency": "USD",
-    "total": "Total Finance"
+    "total": "Total Finance",
+    "diffWith": "Diff with"
   }
 }

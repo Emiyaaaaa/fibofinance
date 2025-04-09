@@ -59,6 +59,7 @@
   },
   "chart": {
     "defaultCurrency": "CNY",
-    "total": "总资产"
+    "total": "总资产",
+    "diffWith": "对比"
   }
 }

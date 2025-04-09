@@ -570,6 +570,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>((props, ref) 
       (hasOnlyOneValueForKey(data, dataKey) && activeDot && activeDot.dataKey === dataKey)
     ) {
       setActiveLegend(undefined);
+      setActivePayload(undefined);
       onValueChange?.(null);
     } else {
       setActiveLegend(dataKey);
@@ -597,6 +598,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>((props, ref) 
               ? () => {
                   setActiveDot(undefined);
                   setActiveLegend(undefined);
+                  setActivePayload(undefined);
                   onValueChange?.(null);
                 }
               : undefined
