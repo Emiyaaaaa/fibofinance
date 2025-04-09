@@ -30,9 +30,7 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
   setData: (data: Finance[]) => set({ data }),
   updateData: async (groupId: number) => {
     set({ updating: true });
-    const res = await fetch(
-      `/api/finance?group_id=${groupId}&order_by=${get().orderBy}&order=${get().order}`
-    );
+    const res = await fetch(`/api/finance?group_id=${groupId}&order_by=${get().orderBy}&order=${get().order}`);
     const data = await res.json();
 
     set({ data });

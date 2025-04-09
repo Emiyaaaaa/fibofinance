@@ -8,12 +8,14 @@ import useFinanceData from "./useFinanceData";
 
 import { FinanceChange, Finance } from "@/types";
 
+export type FinanceChangeData = FinanceChange & {
+  financeData: Finance[];
+  date: string;
+  totalCny: number;
+};
+
 type StoreType = {
-  data: (FinanceChange & {
-    financeData: Finance[];
-    date: string;
-    totalCny: number;
-  })[];
+  data: FinanceChangeData[];
   inited: boolean;
   updating: boolean;
   timeoutId?: NodeJS.Timeout | null;
@@ -35,11 +37,15 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
 
     const dataWithFinanceData: StoreType["data"] = [];
 
-    // 日期去重
+    // 去重
     data.forEach((item) => {
-      const date = item.date;
+      // 日期去重
+      if (item.date === dataWithFinanceData[dataWithFinanceData.length - 1]?.date) {
+        return;
+      }
 
-      if (date === dataWithFinanceData[dataWithFinanceData.length - 1]?.date) {
+      // 数据去重
+      if (item.finance_json === dataWithFinanceData[dataWithFinanceData.length - 1]?.finance_json) {
         return;
       }
 
@@ -47,7 +53,6 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
 
       dataWithFinanceData.push({
         ...item,
-        date,
         totalCny: getTotalFinance(financeData, "CNY"),
         financeData,
       });

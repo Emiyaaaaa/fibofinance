@@ -172,6 +172,7 @@ export default function FinanceModel() {
             {props?.hasDelete && props.data?.id !== undefined && (
               <Button
                 color="danger"
+                variant="light"
                 onPress={() => {
                   onDelete();
                   onClose();
@@ -180,6 +181,9 @@ export default function FinanceModel() {
                 {addFinanceT("delete")}
               </Button>
             )}
+            <Button color="danger" onPress={() => onClose()}>
+              {addFinanceT("close")}
+            </Button>
             <Button color="primary" type="submit">
               {submitType === "create" ? addFinanceT("confirmButton") : addFinanceT("updateButton")}
             </Button>

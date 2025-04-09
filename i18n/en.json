@@ -50,7 +50,8 @@
     "updateButton": "Update",
     "title": "Add Finance",
     "defaultCurrency": "USD",
-    "delete": "Delete"
+    "delete": "Delete",
+    "close": "Close"
   },
   "confirmModel": {
     "confirm": "Confirm",
