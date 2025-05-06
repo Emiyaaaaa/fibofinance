@@ -7,9 +7,9 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import FinanceModel from "@/components/financeModel";
+import FinanceModal from "@/components/financeModal";
 import FinanceTable from "@/components/financeTable";
-import useFinanceModel from "@/utils/store/useFinanceModel";
+import useFinanceModal from "@/utils/store/useFinanceModal";
 import { Logo } from "@/components/icons";
 import LocaleSwitcher from "@/components/localeSwitcher";
 import FinanceAI from "@/components/financeAI";
@@ -20,7 +20,7 @@ import { useGroup } from "@/utils/store/useGroup";
 import { useFinanceData } from "@/utils/store/useFinanceData";
 
 const Page = () => {
-  const { onOpen } = useFinanceModel();
+  const { onOpen } = useFinanceModal();
   const t = useTranslations("home");
   const query = useSearchParams();
 
@@ -65,7 +65,7 @@ const Page = () => {
         <Button className="mb-4" color="primary" onPress={() => onOpen()}>
           {t("addFinance")}
         </Button>
-        <FinanceModel />
+        <FinanceModal />
         <div className="flex flex-col gap-6">
           <FinanceTable />
           <FinanceChart />

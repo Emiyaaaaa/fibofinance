@@ -1,21 +1,11 @@
 import { Button } from "@heroui/button";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@heroui/modal";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
 import { Chip } from "@heroui/chip";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 
-export const useConfirm = (props: {
-  message: string;
-  color?: "danger" | "warning";
-}) => {
-  const t = useTranslations("confirmModel");
+export const useConfirm = (props: { message: string; color?: "danger" | "warning" }) => {
+  const t = useTranslations("confirmModal");
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -29,7 +19,7 @@ export const useConfirm = (props: {
     });
   };
 
-  const ComfirmModel = () => {
+  const ComfirmModal = () => {
     return (
       <Modal hideCloseButton isOpen={isOpen} onClose={onClose}>
         <ModalContent>
@@ -63,5 +53,5 @@ export const useConfirm = (props: {
     );
   };
 
-  return { ComfirmModel, openConfirm };
+  return { ComfirmModal, openConfirm };
 };

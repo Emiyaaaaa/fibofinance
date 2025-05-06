@@ -10,14 +10,14 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import useFinanceModel from "@/utils/store/useFinanceModel";
+import useFinanceModal from "@/utils/store/useFinanceModal";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap, financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 import { fetchWithTime } from "@/utils/fetchWithTime";
 
-export default function FinanceModel() {
-  const { isOpen, onClose, modelProps: props } = useFinanceModel();
+export default function FinanceModal() {
+  const { isOpen, onClose, modalProps: props } = useFinanceModal();
   const { groupId } = useGroup();
   const addFinanceT = useTranslations("addFinance");
   const financeT = useTranslations("finance");

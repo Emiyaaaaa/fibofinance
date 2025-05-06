@@ -16,7 +16,7 @@ function GroupSwitcher() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isEdit, setIsEdit] = useState(false);
   const t = useTranslations("addGroup");
-  const { ComfirmModel, openConfirm } = useConfirm({
+  const { ComfirmModal, openConfirm } = useConfirm({
     message: t("deleteGroup"),
     color: "danger",
   });
@@ -96,7 +96,7 @@ function GroupSwitcher() {
 
   return (
     <>
-      <ComfirmModel />
+      <ComfirmModal />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           <ModalHeader>{isEdit ? t("editTitle") : t("createTitle")}</ModalHeader>

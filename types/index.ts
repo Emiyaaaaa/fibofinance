@@ -38,7 +38,7 @@ export interface AssetAdvice {
   amount: number;
 }
 
-export interface FinanceModelProps {
+export interface FinanceModalProps {
   data?: Finance;
   hasDelete?: boolean;
   submitType?: "create" | "update";

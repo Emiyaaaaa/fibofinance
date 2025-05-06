@@ -53,7 +53,7 @@
     "delete": "Delete",
     "close": "Close"
   },
-  "confirmModel": {
+  "confirmModal": {
     "confirm": "Confirm",
     "cancel": "Cancel",
     "warning": "Warning"

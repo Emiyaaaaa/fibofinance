@@ -10,7 +10,7 @@ import Time from "./time";
 import AmountOffset from "./amountOffset";
 
 import { financeTypeOrder, currencyMap, toFixed2 } from "@/utils";
-import useFinanceModel from "@/utils/store/useFinanceModel";
+import useFinanceModal from "@/utils/store/useFinanceModal";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
@@ -28,7 +28,7 @@ export default function FinanceTable() {
     direction: "descending",
   });
 
-  const { onOpen } = useFinanceModel();
+  const { onOpen } = useFinanceModal();
   const clientWidth = useClientWidth();
 
   const showUpdateTime = clientWidth > 768;

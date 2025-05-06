@@ -52,7 +52,7 @@
     "updateButton": "更新",
     "close": "关闭"
   },
-  "confirmModel": {
+  "confirmModal": {
     "confirm": "确认",
     "cancel": "取消",
     "warning": "警告"
