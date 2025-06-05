@@ -57,11 +57,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const { name, type, amount, description, currency, owner, group_id } = await request.json();
+  const { name, type, amount, description, currency, owner, group_id, icon } = await request.json();
 
   const result = await sql(
-    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-    [name, type, amount, description, currency, group_id, owner],
+    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, icon) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+    [name, type, amount, description, currency, group_id, owner, icon],
   );
 
   syncFinanceData(request, group_id);
@@ -82,11 +82,11 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { id, name, type, amount, description, currency, owner, group_id } = await request.json();
+  const { id, name, type, amount, description, currency, owner, group_id, icon } = await request.json();
 
   const result = await sql(
-    "UPDATE finance_data SET name = $1, type = $2, amount = $3, description = $4, currency = $5, group_id = $6, owner = $7, updated_at = $8 WHERE id = $9",
-    [name, type, amount, description, currency, group_id, owner, new Date().toISOString(), id],
+    "UPDATE finance_data SET name = $1, type = $2, amount = $3, description = $4, currency = $5, group_id = $6, owner = $7, updated_at = $8, icon = $9 WHERE id = $10",
+    [name, type, amount, description, currency, group_id, owner, new Date().toISOString(), icon, id],
   );
 
   syncFinanceData(request, group_id);
