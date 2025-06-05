@@ -168,13 +168,13 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       <Modal 
         isOpen={isOpen} 
         onClose={handleClose}
-        size="lg"
+        size="xl"
       >
         <ModalContent>
           <ModalHeader>
             {isCreating ? t("createNewIcon") : t("selectIcon")}
           </ModalHeader>
-          <ModalBody className="overflow-x-hidden">
+          <ModalBody>
             {isCreating ? (
               <div className="space-y-4">
                 <Input
@@ -204,7 +204,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                   <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("preview")}</p>
                     <div 
-                      className="w-12 h-12 overflow-hidden"
+                      className="w-12 h-12"
                       dangerouslySetInnerHTML={{ __html: newIconSvg }}
                     />
                   </div>
@@ -214,18 +214,18 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                 )}
               </div>
             ) : (
-              <>
-                <div className="grid grid-cols-6 gap-2 overflow-hidden">
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                   {icons.map((icon) => (
                     <Tooltip key={icon.key} content={icon.name || icon.key}>
                       <Button
-                        size="lg"
+                        size="md"
                         variant={tempSelectedIcon === icon.key ? "solid" : "light"}
                         onPress={() => setTempSelectedIcon(icon.key)}
-                        className="p-3 overflow-hidden"
+                        className="h-14 w-full p-2 flex items-center justify-center"
                       >
                         <div 
-                          className="w-6 h-6 overflow-hidden"
+                          className="w-6 h-6 flex-shrink-0"
                           dangerouslySetInnerHTML={{ __html: icon.svg }}
                         />
                       </Button>
@@ -235,7 +235,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                 <Button
                   variant="light"
                   onPress={() => setIsCreating(true)}
-                  className="mt-4"
+                  className="w-full"
                   startContent={
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -244,7 +244,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                 >
                   {t("createNewIcon")}
                 </Button>
-              </>
+              </div>
             )}
           </ModalBody>
           <ModalFooter>
