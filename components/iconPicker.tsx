@@ -238,8 +238,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
             variant="solid"
             color="danger"
             className="absolute -top-1 -right-1 min-w-0 w-4 h-4 p-0"
-            onPress={(e) => {
-              e.stopPropagation();
+            onPress={() => {
               setSelectedIcon(undefined);
               setTempSelectedIcon(undefined);
               onChange("");
@@ -331,8 +330,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                           variant="solid"
                           color="danger"
                           className="absolute -top-1 -right-1 min-w-0 w-5 h-5 p-0 z-10"
-                          onPress={async (e) => {
-                            e.stopPropagation();
+                          onPress={async () => {
                             // Check usage before showing confirmation
                             const isUsed = await checkIconUsage(icon.key);
                             setDeleteConfirm({ iconKey: icon.key, isUsed });
