@@ -8,6 +8,7 @@ import { SortDirection } from "@react-types/shared";
 
 import Time from "./time";
 import AmountOffset from "./amountOffset";
+import IconRenderer from "./iconRenderer";
 
 import { financeTypeOrder, currencyMap, toFixed2 } from "@/utils";
 import useFinanceModal from "@/utils/store/useFinanceModal";
@@ -53,7 +54,12 @@ export default function FinanceTable() {
       return {
         raw: item,
         key: item.id,
-        name: <span className="font-bold">{item.name}</span>,
+        name: (
+          <div className="flex items-center gap-2">
+            <IconRenderer iconKey={item.icon} size={20} />
+            <span className="font-bold">{item.name}</span>
+          </div>
+        ),
         type: item.type ? (
           <span
             className={classNames(

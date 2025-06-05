@@ -10,6 +10,8 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import IconPicker from "./iconPicker";
+
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap, financeType } from "@/utils";
@@ -21,7 +23,8 @@ export default function FinanceModal() {
   const { groupId } = useGroup();
   const addFinanceT = useTranslations("addFinance");
   const financeT = useTranslations("finance");
-  const [type, setType] = useState(props?.data?.type ?? "current");
+  const [type, setType] = useState("current");
+  const [icon, setIcon] = useState<string | undefined>();
 
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
 
@@ -31,10 +34,18 @@ export default function FinanceModal() {
   const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
 
   useEffect(() => {
-    if (props?.data?.type) {
-      setType(props.data.type);
+    if (isOpen) {
+      // Reset states when modal opens
+      if (submitType === "create") {
+        setType("current");
+        setIcon(undefined);
+      } else {
+        // For update mode, use the existing data
+        setType(props?.data?.type ?? "current");
+        setIcon(props?.data?.icon || undefined);
+      }
     }
-  }, [props?.data?.type]);
+  }, [isOpen, submitType, props?.data?.type, props?.data?.icon]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,7 +54,7 @@ export default function FinanceModal() {
     if (submitType === "create") {
       fetchWithTime("/api/finance", {
         method: "POST",
-        body: JSON.stringify({ ...data, type, group_id: groupId }),
+        body: JSON.stringify({ ...data, type, group_id: groupId, icon: icon || null }),
       }).finally(() => {
         updateData();
       });
@@ -55,6 +66,7 @@ export default function FinanceModal() {
           id: props!.data!.id,
           type,
           group_id: groupId,
+          icon: icon || null,
         }),
       }).finally(() => {
         updateData();
@@ -83,14 +95,19 @@ export default function FinanceModal() {
         >
           <ModalBody>
             <div className="flex gap-4 w-full">
-              <Input
-                isRequired
-                autoComplete="off"
-                className="w-3/5"
-                defaultValue={props?.data?.name}
-                label={financeT("name")}
-                name="name"
-              />
+              <div className="flex gap-3 w-3/5 items-end">
+                <div className="flex flex-col gap-1">
+                  <IconPicker value={icon} onChange={(iconKey) => setIcon(iconKey || undefined)} />
+                </div>
+                <Input
+                  isRequired
+                  autoComplete="off"
+                  className="flex-1"
+                  defaultValue={props?.data?.name}
+                  label={financeT("name")}
+                  name="name"
+                />
+              </div>
               <Autocomplete
                 allowsCustomValue
                 className="w-2/5"

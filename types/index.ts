@@ -17,6 +17,7 @@ export interface Finance {
   group_id: number;
   updated_at: string;
   created_at: string;
+  icon?: string;
 }
 
 export interface FinanceChange {
@@ -36,6 +37,14 @@ export interface AssetAdvice {
   id: number;
   name: string;
   amount: number;
+}
+
+export interface Icon {
+  id: number;
+  key: string;
+  svg: string;
+  name?: string;
+  created_at: string;
 }
 
 export interface FinanceModalProps {
