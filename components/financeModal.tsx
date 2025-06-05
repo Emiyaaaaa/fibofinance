@@ -36,10 +36,11 @@ export default function FinanceModal() {
   useEffect(() => {
     if (props?.data?.type) {
       setType(props.data.type);
+    } else {
+      setType("current");
     }
-    if (props?.data?.icon) {
-      setIcon(props.data.icon);
-    }
+    
+    setIcon(props?.data?.icon || undefined);
   }, [props?.data?.type, props?.data?.icon]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,7 +50,7 @@ export default function FinanceModal() {
     if (submitType === "create") {
       fetchWithTime("/api/finance", {
         method: "POST",
-        body: JSON.stringify({ ...data, type, group_id: groupId, icon }),
+        body: JSON.stringify({ ...data, type, group_id: groupId, icon: icon || null }),
       }).finally(() => {
         updateData();
       });
@@ -61,7 +62,7 @@ export default function FinanceModal() {
           id: props!.data!.id,
           type,
           group_id: groupId,
-          icon,
+          icon: icon || null,
         }),
       }).finally(() => {
         updateData();
@@ -91,7 +92,7 @@ export default function FinanceModal() {
           <ModalBody>
             <div className="flex gap-4 w-full">
               <div className="flex gap-2 w-3/5">
-                <IconPicker value={icon} onChange={setIcon} />
+                <IconPicker value={icon} onChange={(iconKey) => setIcon(iconKey || undefined)} />
                 <Input
                   isRequired
                   autoComplete="off"
