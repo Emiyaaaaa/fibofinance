@@ -61,5 +61,25 @@
     "defaultCurrency": "CNY",
     "total": "总资产",
     "diffWith": "对比"
+  },
+  "iconPicker": {
+    "selectIcon": "选择图标",
+    "createNewIcon": "创建新图标",
+    "iconKey": "图标键值",
+    "iconKeyPlaceholder": "例如：my-icon",
+    "iconName": "图标名称（可选）",
+    "iconNamePlaceholder": "例如：我的图标",
+    "svgContent": "SVG内容",
+    "svgContentPlaceholder": "<svg viewBox=\"0 0 24 24\">...</svg>",
+    "preview": "预览：",
+    "uniqueIdentifier": "图标的唯一标识符",
+    "pasteSvgCode": "在此粘贴SVG代码",
+    "iconKeyRequired": "图标键值和SVG内容为必填项",
+    "failedToCreateIcon": "创建图标失败",
+    "iconKeyExists": "图标键值已存在",
+    "invalidSvgContent": "无效的SVG内容",
+    "select": "选择",
+    "cancel": "取消",
+    "createIcon": "创建图标"
   }
 }

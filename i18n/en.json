@@ -62,5 +62,25 @@
     "defaultCurrency": "USD",
     "total": "Total Finance",
     "diffWith": "Diff with"
+  },
+  "iconPicker": {
+    "selectIcon": "Select Icon",
+    "createNewIcon": "Create New Icon",
+    "iconKey": "Icon Key",
+    "iconKeyPlaceholder": "e.g., my-icon",
+    "iconName": "Icon Name (Optional)",
+    "iconNamePlaceholder": "e.g., My Icon",
+    "svgContent": "SVG Content",
+    "svgContentPlaceholder": "<svg viewBox=\"0 0 24 24\">...</svg>",
+    "preview": "Preview:",
+    "uniqueIdentifier": "Unique identifier for the icon",
+    "pasteSvgCode": "Paste the SVG code here",
+    "iconKeyRequired": "Icon key and SVG content are required",
+    "failedToCreateIcon": "Failed to create icon",
+    "iconKeyExists": "Icon key already exists",
+    "invalidSvgContent": "Invalid SVG content",
+    "select": "Select",
+    "cancel": "Cancel",
+    "createIcon": "Create Icon"
   }
 }

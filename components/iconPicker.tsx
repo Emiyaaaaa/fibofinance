@@ -26,7 +26,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [newIconName, setNewIconName] = useState("");
   const [error, setError] = useState("");
 
-  const t = useTranslations("finance");
+  const t = useTranslations("iconPicker");
 
   useEffect(() => {
     setSelectedIcon(value);
@@ -55,7 +55,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     setError("");
     
     if (!newIconKey || !newIconSvg) {
-      setError("Icon key and SVG content are required");
+      setError(t("iconKeyRequired"));
       return;
     }
 
@@ -71,7 +71,13 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error || "Failed to create icon");
+        if (data.error === "Icon key already exists") {
+          setError(t("iconKeyExists"));
+        } else if (data.error === "Invalid SVG content") {
+          setError(t("invalidSvgContent"));
+        } else {
+          setError(t("failedToCreateIcon"));
+        }
         return;
       }
 
@@ -85,7 +91,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       // Select the newly created icon
       setTempSelectedIcon(newIconKey);
     } catch (error) {
-      setError("Failed to create icon");
+      setError(t("failedToCreateIcon"));
     }
   };
 
@@ -166,37 +172,37 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       >
         <ModalContent>
           <ModalHeader>
-            {isCreating ? "Create New Icon" : "Select Icon"}
+            {isCreating ? t("createNewIcon") : t("selectIcon")}
           </ModalHeader>
           <ModalBody className="overflow-x-hidden">
             {isCreating ? (
               <div className="space-y-4">
                 <Input
-                  label="Icon Key"
-                  placeholder="e.g., my-icon"
+                  label={t("iconKey")}
+                  placeholder={t("iconKeyPlaceholder")}
                   value={newIconKey}
                   onChange={(e) => setNewIconKey(e.target.value)}
-                  description="Unique identifier for the icon"
+                  description={t("uniqueIdentifier")}
                   isInvalid={!!error && !newIconKey}
                 />
                 <Input
-                  label="Icon Name (Optional)"
-                  placeholder="e.g., My Icon"
+                  label={t("iconName")}
+                  placeholder={t("iconNamePlaceholder")}
                   value={newIconName}
                   onChange={(e) => setNewIconName(e.target.value)}
                 />
                 <Textarea
-                  label="SVG Content"
-                  placeholder='<svg viewBox="0 0 24 24">...</svg>'
+                  label={t("svgContent")}
+                  placeholder={t("svgContentPlaceholder")}
                   value={newIconSvg}
                   onChange={(e) => setNewIconSvg(e.target.value)}
                   minRows={4}
-                  description="Paste the SVG code here"
+                  description={t("pasteSvgCode")}
                   isInvalid={!!error && !newIconSvg}
                 />
                 {newIconSvg && (
                   <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("preview")}</p>
                     <div 
                       className="w-12 h-12 overflow-hidden"
                       dangerouslySetInnerHTML={{ __html: newIconSvg }}
@@ -236,7 +242,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                     </svg>
                   }
                 >
-                  Create New Icon
+                  {t("createNewIcon")}
                 </Button>
               </>
             )}
@@ -255,23 +261,23 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                     setNewIconName("");
                   }}
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button color="primary" onPress={handleCreateIcon}>
-                  Create Icon
+                  {t("createIcon")}
                 </Button>
               </>
             ) : (
               <>
                 <Button color="danger" onPress={handleClose}>
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button 
                   color="primary" 
                   onPress={handleConfirm}
                   isDisabled={!tempSelectedIcon}
                 >
-                  Select
+                  {t("select")}
                 </Button>
               </>
             )}
