@@ -23,8 +23,8 @@ export default function FinanceModal() {
   const { groupId } = useGroup();
   const addFinanceT = useTranslations("addFinance");
   const financeT = useTranslations("finance");
-  const [type, setType] = useState(props?.data?.type ?? "current");
-  const [icon, setIcon] = useState<string | undefined>(props?.data?.icon);
+  const [type, setType] = useState("current");
+  const [icon, setIcon] = useState<string | undefined>();
 
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
 
@@ -34,14 +34,18 @@ export default function FinanceModal() {
   const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
 
   useEffect(() => {
-    if (props?.data?.type) {
-      setType(props.data.type);
-    } else {
-      setType("current");
+    if (isOpen) {
+      // Reset states when modal opens
+      if (submitType === "create") {
+        setType("current");
+        setIcon(undefined);
+      } else {
+        // For update mode, use the existing data
+        setType(props?.data?.type ?? "current");
+        setIcon(props?.data?.icon || undefined);
+      }
     }
-    
-    setIcon(props?.data?.icon || undefined);
-  }, [props?.data?.type, props?.data?.icon]);
+  }, [isOpen, submitType, props?.data?.type, props?.data?.icon]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

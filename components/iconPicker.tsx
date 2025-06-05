@@ -63,6 +63,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [error, setError] = useState("");
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ iconKey: string; isUsed?: boolean } | null>(null);
+  const [iconsLoaded, setIconsLoaded] = useState(false);
 
   const t = useTranslations("iconPicker");
 
@@ -70,6 +71,13 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     setSelectedIcon(value);
     setTempSelectedIcon(value);
   }, [value]);
+
+  // Load icons on component mount if we have a value
+  useEffect(() => {
+    if (value && !iconsLoaded) {
+      fetchIcons();
+    }
+  }, [value, iconsLoaded]);
 
   useEffect(() => {
     if (isOpen) {
@@ -84,6 +92,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       const response = await fetchWithTime("/api/icons");
       const data = await response.json();
       setIcons(data);
+      setIconsLoaded(true);
     } catch (error) {
       console.error("Failed to fetch icons:", error);
     }
