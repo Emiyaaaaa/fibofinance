@@ -19,6 +19,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [icons, setIcons] = useState<Icon[]>([]);
   const [selectedIcon, setSelectedIcon] = useState<string | undefined>(value);
+  const [tempSelectedIcon, setTempSelectedIcon] = useState<string | undefined>(value);
   const [isCreating, setIsCreating] = useState(false);
   const [newIconKey, setNewIconKey] = useState("");
   const [newIconSvg, setNewIconSvg] = useState("");
@@ -29,13 +30,16 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
   useEffect(() => {
     setSelectedIcon(value);
+    setTempSelectedIcon(value);
   }, [value]);
 
   useEffect(() => {
     if (isOpen) {
       fetchIcons();
+      // Reset temp selection to current value when opening
+      setTempSelectedIcon(selectedIcon);
     }
-  }, [isOpen]);
+  }, [isOpen, selectedIcon]);
 
   const fetchIcons = async () => {
     try {
@@ -77,6 +81,9 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       setNewIconName("");
       setIsCreating(false);
       await fetchIcons();
+      
+      // Select the newly created icon
+      setTempSelectedIcon(newIconKey);
     } catch (error) {
       setError("Failed to create icon");
     }
@@ -92,6 +99,25 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
         dangerouslySetInnerHTML={{ __html: icon.svg }}
       />
     );
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setIsCreating(false);
+    setError("");
+    setNewIconKey("");
+    setNewIconSvg("");
+    setNewIconName("");
+    // Reset temp selection
+    setTempSelectedIcon(selectedIcon);
+  };
+
+  const handleConfirm = () => {
+    if (tempSelectedIcon) {
+      setSelectedIcon(tempSelectedIcon);
+      onChange(tempSelectedIcon);
+    }
+    setIsOpen(false);
   };
 
   return (
@@ -113,18 +139,14 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
       <Modal 
         isOpen={isOpen} 
-        onClose={() => {
-          setIsOpen(false);
-          setIsCreating(false);
-          setError("");
-        }}
+        onClose={handleClose}
         size="lg"
       >
         <ModalContent>
           <ModalHeader>
             {isCreating ? "Create New Icon" : "Select Icon"}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody className="overflow-x-hidden">
             {isCreating ? (
               <div className="space-y-4">
                 <Input
@@ -154,7 +176,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                   <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
                     <div 
-                      className="w-12 h-12"
+                      className="w-12 h-12 overflow-hidden"
                       dangerouslySetInnerHTML={{ __html: newIconSvg }}
                     />
                   </div>
@@ -165,17 +187,17 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-6 gap-2 overflow-hidden">
                   {icons.map((icon) => (
                     <Tooltip key={icon.key} content={icon.name || icon.key}>
                       <Button
                         size="lg"
-                        variant={selectedIcon === icon.key ? "solid" : "light"}
-                        onPress={() => setSelectedIcon(icon.key)}
-                        className="p-3"
+                        variant={tempSelectedIcon === icon.key ? "solid" : "light"}
+                        onPress={() => setTempSelectedIcon(icon.key)}
+                        className="p-3 overflow-hidden"
                       >
                         <div 
-                          className="w-6 h-6"
+                          className="w-6 h-6 overflow-hidden"
                           dangerouslySetInnerHTML={{ __html: icon.svg }}
                         />
                       </Button>
@@ -219,18 +241,13 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
               </>
             ) : (
               <>
-                <Button color="danger" onPress={() => setIsOpen(false)}>
+                <Button color="danger" onPress={handleClose}>
                   Cancel
                 </Button>
                 <Button 
                   color="primary" 
-                  onPress={() => {
-                    if (selectedIcon) {
-                      onChange(selectedIcon);
-                    }
-                    setIsOpen(false);
-                  }}
-                  isDisabled={!selectedIcon}
+                  onPress={handleConfirm}
+                  isDisabled={!tempSelectedIcon}
                 >
                   Select
                 </Button>
