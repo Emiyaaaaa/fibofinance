@@ -27,6 +27,7 @@
     "description": "描述",
     "type": "类型",
     "currency": "货币类型",
+    "icon": "图标",
     "USD": "美元",
     "CNY": "人民币",
     "EUR": "欧元",

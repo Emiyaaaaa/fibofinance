@@ -28,6 +28,7 @@
     "description": "Description",
     "type": "Type",
     "currency": "Currency",
+    "icon": "Icon",
     "USD": "USD",
     "CNY": "CNY",
     "EUR": "EUR",

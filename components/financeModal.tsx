@@ -95,8 +95,11 @@ export default function FinanceModal() {
         >
           <ModalBody>
             <div className="flex gap-4 w-full">
-              <div className="flex gap-2 w-3/5">
-                <IconPicker value={icon} onChange={(iconKey) => setIcon(iconKey || undefined)} />
+              <div className="flex gap-3 w-3/5 items-end">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-default-500 pl-1">{financeT("icon")}</span>
+                  <IconPicker value={icon} onChange={(iconKey) => setIcon(iconKey || undefined)} />
+                </div>
                 <Input
                   isRequired
                   autoComplete="off"
