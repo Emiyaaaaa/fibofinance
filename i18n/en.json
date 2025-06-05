@@ -81,6 +81,14 @@
     "invalidSvgContent": "Invalid SVG content",
     "select": "Select",
     "cancel": "Cancel",
-    "createIcon": "Create Icon"
+    "createIcon": "Create Icon",
+    "deleteIcon": "Delete Icon",
+    "deleteIconTitle": "Delete Icon",
+    "deleteIconWarning": "Are you sure you want to delete this icon?",
+    "deleteIconInUse": "Warning: This icon is currently being used by some assets. Deleting it may cause display issues.",
+    "deleteIconNotInUse": "This icon is not currently in use and can be safely deleted.",
+    "confirmDelete": "Delete",
+    "failedToDeleteIcon": "Failed to delete icon",
+    "iconDeleted": "Icon deleted successfully"
   }
 }

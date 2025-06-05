@@ -30,3 +30,39 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to create icon" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  const { key } = await request.json();
+  
+  if (!key) {
+    return NextResponse.json({ error: "Icon key is required" }, { status: 400 });
+  }
+  
+  try {
+    // Check if icon is being used
+    const usageCount = await sql(
+      "SELECT COUNT(*) as count FROM finance_data WHERE icon = $1",
+      [key]
+    );
+    
+    const isUsed = parseInt(usageCount[0].count) > 0;
+    
+    // Delete the icon
+    const result = await sql(
+      "DELETE FROM icons WHERE key = $1 RETURNING *",
+      [key]
+    );
+    
+    if (result.length === 0) {
+      return NextResponse.json({ error: "Icon not found" }, { status: 404 });
+    }
+    
+    return NextResponse.json({ 
+      success: true, 
+      deleted: result[0],
+      wasUsed: isUsed 
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete icon" }, { status: 500 });
+  }
+}

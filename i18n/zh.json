@@ -80,6 +80,14 @@
     "invalidSvgContent": "无效的SVG内容",
     "select": "选择",
     "cancel": "取消",
-    "createIcon": "创建图标"
+    "createIcon": "创建图标",
+    "deleteIcon": "删除图标",
+    "deleteIconTitle": "删除图标",
+    "deleteIconWarning": "确定要删除这个图标吗？",
+    "deleteIconInUse": "警告：此图标正在被某些资产使用。删除后可能导致显示问题。",
+    "deleteIconNotInUse": "此图标当前未被使用，可以安全删除。",
+    "confirmDelete": "删除",
+    "failedToDeleteIcon": "删除图标失败",
+    "iconDeleted": "图标删除成功"
   }
 }

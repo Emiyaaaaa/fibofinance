@@ -15,6 +15,42 @@ interface IconPickerProps {
   onChange: (iconKey: string) => void;
 }
 
+interface DeleteConfirmProps {
+  isOpen: boolean;
+  iconKey: string;
+  onClose: () => void;
+  onConfirm: () => void;
+  isUsed?: boolean;
+}
+
+function DeleteConfirmModal({ isOpen, iconKey, onClose, onConfirm, isUsed }: DeleteConfirmProps) {
+  const t = useTranslations("iconPicker");
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="sm">
+      <ModalContent>
+        <ModalHeader>{t("deleteIconTitle")}</ModalHeader>
+        <ModalBody>
+          <p>{t("deleteIconWarning")}</p>
+          {isUsed !== undefined && (
+            <p className={`mt-2 text-sm ${isUsed ? 'text-warning' : 'text-default-500'}`}>
+              {isUsed ? t("deleteIconInUse") : t("deleteIconNotInUse")}
+            </p>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="default" variant="light" onPress={onClose}>
+            {t("cancel")}
+          </Button>
+          <Button color="danger" onPress={onConfirm}>
+            {t("confirmDelete")}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
+
 export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [icons, setIcons] = useState<Icon[]>([]);
@@ -25,6 +61,8 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [newIconSvg, setNewIconSvg] = useState("");
   const [newIconName, setNewIconName] = useState("");
   const [error, setError] = useState("");
+  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ iconKey: string; isUsed?: boolean } | null>(null);
 
   const t = useTranslations("iconPicker");
 
@@ -93,6 +131,55 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     } catch (error) {
       setError(t("failedToCreateIcon"));
     }
+  };
+
+  const handleDeleteIcon = async (iconKey: string) => {
+    try {
+      const response = await fetchWithTime("/api/icons", {
+        method: "DELETE",
+        body: JSON.stringify({ key: iconKey }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to delete icon");
+        return;
+      }
+
+      const result = await response.json();
+      
+      // If the deleted icon was selected, clear selection
+      if (tempSelectedIcon === iconKey) {
+        setTempSelectedIcon(undefined);
+      }
+      if (selectedIcon === iconKey) {
+        setSelectedIcon(undefined);
+        onChange("");
+      }
+
+      // Refresh icon list
+      await fetchIcons();
+      
+      // Show usage warning if icon was in use
+      if (result.wasUsed) {
+        // The warning was already shown in the confirmation dialog
+      }
+    } catch (error) {
+      console.error("Failed to delete icon:", error);
+    }
+  };
+
+  const checkIconUsage = async (iconKey: string) => {
+    try {
+      const response = await fetchWithTime(`/api/icons/${iconKey}/usage`);
+      
+      if (response.ok) {
+        const result = await response.json();
+        return result.isUsed;
+      }
+    } catch (error) {
+      console.error("Failed to check icon usage:", error);
+    }
+    return undefined;
   };
 
   const renderIcon = (iconKey: string) => {
@@ -217,19 +304,46 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
               <div className="space-y-4">
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                   {icons.map((icon) => (
-                    <Tooltip key={icon.key} content={icon.name || icon.key}>
-                      <Button
-                        size="md"
-                        variant={tempSelectedIcon === icon.key ? "solid" : "light"}
-                        onPress={() => setTempSelectedIcon(icon.key)}
-                        className="h-14 w-full p-2 flex items-center justify-center"
-                      >
-                        <div 
-                          className="w-6 h-6 flex-shrink-0"
-                          dangerouslySetInnerHTML={{ __html: icon.svg }}
-                        />
-                      </Button>
-                    </Tooltip>
+                    <div 
+                      key={icon.key}
+                      className="relative"
+                      onMouseEnter={() => setHoveredIcon(icon.key)}
+                      onMouseLeave={() => setHoveredIcon(null)}
+                    >
+                      <Tooltip content={icon.name || icon.key}>
+                        <Button
+                          size="md"
+                          variant={tempSelectedIcon === icon.key ? "solid" : "light"}
+                          onPress={() => setTempSelectedIcon(icon.key)}
+                          className="h-14 w-full p-2 flex items-center justify-center"
+                        >
+                          <div 
+                            className="w-6 h-6 flex-shrink-0"
+                            dangerouslySetInnerHTML={{ __html: icon.svg }}
+                          />
+                        </Button>
+                      </Tooltip>
+                      {hoveredIcon === icon.key && (
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          radius="full"
+                          variant="solid"
+                          color="danger"
+                          className="absolute -top-1 -right-1 min-w-0 w-5 h-5 p-0 z-10"
+                          onPress={async (e) => {
+                            e.stopPropagation();
+                            // Check usage before showing confirmation
+                            const isUsed = await checkIconUsage(icon.key);
+                            setDeleteConfirm({ iconKey: icon.key, isUsed });
+                          }}
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </Button>
+                      )}
+                    </div>
                   ))}
                 </div>
                 <Button
@@ -284,6 +398,19 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <DeleteConfirmModal
+        isOpen={!!deleteConfirm}
+        iconKey={deleteConfirm?.iconKey || ""}
+        isUsed={deleteConfirm?.isUsed}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={() => {
+          if (deleteConfirm) {
+            handleDeleteIcon(deleteConfirm.iconKey);
+            setDeleteConfirm(null);
+          }
+        }}
+      />
     </>
   );
 }
