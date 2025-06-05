@@ -122,6 +122,12 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
           setError(t("iconKeyExists"));
         } else if (data.error === "Invalid SVG content") {
           setError(t("invalidSvgContent"));
+        } else if (data.error === "Invalid icon key") {
+          setError(t("invalidIconKey"));
+        } else if (data.error === "Icon key can only contain letters, numbers, and hyphens") {
+          setError(t("iconKeyFormat"));
+        } else if (data.error === "Failed to sanitize SVG content") {
+          setError(t("dangerousSvgContent"));
         } else {
           setError(t("failedToCreateIcon"));
         }

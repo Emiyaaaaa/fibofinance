@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
+import { sanitizeSvgServer, validateSvgServer } from "@/utils/sanitizeSvgServer";
 
 export async function GET() {
   const rows = await sql("SELECT * FROM icons ORDER BY created_at DESC");
@@ -11,15 +12,34 @@ export async function GET() {
 export async function POST(request: Request) {
   const { key, svg, name } = await request.json();
   
+  // Validate key
+  if (!key || typeof key !== 'string' || key.length > 50) {
+    return NextResponse.json({ error: "Invalid icon key" }, { status: 400 });
+  }
+  
+  // Validate key format (alphanumeric and hyphens only)
+  if (!/^[a-zA-Z0-9-]+$/.test(key)) {
+    return NextResponse.json({ error: "Icon key can only contain letters, numbers, and hyphens" }, { status: 400 });
+  }
+  
   // Validate SVG content
-  if (!svg || !svg.includes("<svg")) {
+  if (!svg || !validateSvgServer(svg)) {
     return NextResponse.json({ error: "Invalid SVG content" }, { status: 400 });
   }
+  
+  // Sanitize SVG content
+  const sanitizedSvg = sanitizeSvgServer(svg);
+  if (!sanitizedSvg) {
+    return NextResponse.json({ error: "Failed to sanitize SVG content" }, { status: 400 });
+  }
+  
+  // Validate name
+  const sanitizedName = name ? String(name).slice(0, 100) : key;
   
   try {
     const result = await sql(
       "INSERT INTO icons (key, svg, name) VALUES ($1, $2, $3) RETURNING *",
-      [key, svg, name]
+      [key, sanitizedSvg, sanitizedName]
     );
     
     return NextResponse.json(result[0]);

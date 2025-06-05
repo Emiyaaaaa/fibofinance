@@ -90,6 +90,10 @@
     "deleteIconNotInUse": "This icon is not currently in use and can be safely deleted.",
     "confirmDelete": "Delete",
     "failedToDeleteIcon": "Failed to delete icon",
-    "iconDeleted": "Icon deleted successfully"
+    "iconDeleted": "Icon deleted successfully",
+    "invalidIconKey": "Invalid icon key",
+    "iconKeyFormat": "Icon key can only contain letters, numbers, and hyphens",
+    "svgTooLarge": "SVG content is too large (max 100KB)",
+    "dangerousSvgContent": "SVG contains potentially dangerous content"
   }
 }
