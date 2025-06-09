@@ -129,9 +129,43 @@ export default function FinanceModal() {
             </div>
             <div className="flex gap-4 w-full">
               <NumberInput
+                hideStepper
                 isRequired
-                className="w-5/12"
+                className="w-3/5"
                 defaultValue={props?.data?.amount}
+                endContent={
+                  <Select
+                    className="w-[80px]"
+                    classNames={{
+                      popoverContent: "w-[110px]",
+                    }}
+                    defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
+                    name="currency"
+                    renderValue={() => {
+                      return (
+                        <div className="text-sm">
+                          {
+                            currencyMap[
+                              currency ??
+                                props?.data?.currency ??
+                                (addFinanceT("defaultCurrency") as keyof typeof currencyMap)
+                            ]
+                          }
+                        </div>
+                      );
+                    }}
+                    size="sm"
+                    onSelectionChange={(e) => {
+                      setCurrency(e.currentKey as keyof typeof currencyMap);
+                    }}
+                  >
+                    <SelectItem key={"CNY"}>{financeT("CNY")}</SelectItem>
+                    <SelectItem key={"USD"}>{financeT("USD")}</SelectItem>
+                    <SelectItem key={"EUR"}>{financeT("EUR")}</SelectItem>
+                    <SelectItem key={"GBP"}>{financeT("GBP")}</SelectItem>
+                    <SelectItem key={"JPY"}>{financeT("JPY")}</SelectItem>
+                  </Select>
+                }
                 label={financeT("amount")}
                 name="amount"
                 startContent={
@@ -146,25 +180,10 @@ export default function FinanceModal() {
                   </div>
                 }
               />
-              <Select
-                className="w-3/12"
-                defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
-                label={financeT("currency")}
-                name="currency"
-                onSelectionChange={(e) => {
-                  setCurrency(e.currentKey as keyof typeof currencyMap);
-                }}
-              >
-                <SelectItem key={"CNY"}>{financeT("CNY")}</SelectItem>
-                <SelectItem key={"USD"}>{financeT("USD")}</SelectItem>
-                <SelectItem key={"EUR"}>{financeT("EUR")}</SelectItem>
-                <SelectItem key={"GBP"}>{financeT("GBP")}</SelectItem>
-                <SelectItem key={"JPY"}>{financeT("JPY")}</SelectItem>
-              </Select>
               {ownerList.length > 0 ? (
                 <Autocomplete
                   allowsCustomValue
-                  className="w-4/12"
+                  className="w-2/5"
                   defaultInputValue={props?.data?.owner}
                   defaultSelectedKey={props?.data?.owner}
                   label={financeT("owner")}
