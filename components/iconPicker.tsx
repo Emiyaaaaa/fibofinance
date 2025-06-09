@@ -58,11 +58,11 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [selectedIcon, setSelectedIcon] = useState<string | undefined>(value);
   const [tempSelectedIcon, setTempSelectedIcon] = useState<string | undefined>(value);
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [newIconKey, setNewIconKey] = useState(uuid());
   const [newIconSvg, setNewIconSvg] = useState("");
   const [newIconName, setNewIconName] = useState("");
   const [error, setError] = useState("");
-  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ iconKey: string; isUsed?: boolean } | null>(null);
   const [iconsLoaded, setIconsLoaded] = useState(false);
 
@@ -144,6 +144,61 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
       setNewIconSvg("");
       setNewIconName("");
       setIsCreating(false);
+      setIsEditing(false);
+      await fetchIcons();
+
+      // Select the newly created icon
+      setTempSelectedIcon(newIconKey);
+    } catch (error) {
+      setError(t("failedToCreateIcon"));
+    }
+  };
+
+  const handleUpdateIcon = async () => {
+    setError("");
+
+    if (!newIconSvg) {
+      setError(t("iconRequired"));
+
+      return;
+    }
+
+    try {
+      const response = await fetchWithTime("/api/icons", {
+        method: "PUT",
+        body: JSON.stringify({
+          key: newIconKey,
+          svg: newIconSvg,
+          name: newIconName || newIconKey,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+
+        if (data.error === "Icon key already exists") {
+          setError(t("iconKeyExists"));
+        } else if (data.error === "Invalid SVG content") {
+          setError(t("invalidSvgContent"));
+        } else if (data.error === "Invalid icon key") {
+          setError(t("invalidIconKey"));
+        } else if (data.error === "Icon key can only contain letters, numbers, and hyphens") {
+          setError(t("iconKeyFormat"));
+        } else if (data.error === "Failed to sanitize SVG content") {
+          setError(t("dangerousSvgContent"));
+        } else {
+          setError(t("failedToUpdateIcon"));
+        }
+
+        return;
+      }
+
+      // Reset form and refresh icons
+      setNewIconKey("");
+      setNewIconSvg("");
+      setNewIconName("");
+      setIsCreating(false);
+      setIsEditing(false);
       await fetchIcons();
 
       // Select the newly created icon
@@ -221,6 +276,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const handleClose = () => {
     setIsOpen(false);
     setIsCreating(false);
+    setIsEditing(false);
     setError("");
     setNewIconKey("");
     setNewIconSvg("");
@@ -284,9 +340,9 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
       <Modal isOpen={isOpen} size="xl" onClose={handleClose}>
         <ModalContent>
-          <ModalHeader>{isCreating ? t("createNewIcon") : t("selectIcon")}</ModalHeader>
+          <ModalHeader>{isCreating ? t("createNewIcon") : isEditing ? t("editIcon") : t("selectIcon")}</ModalHeader>
           <ModalBody>
-            {isCreating ? (
+            {isCreating || isEditing ? (
               <div className="space-y-4">
                 <Input
                   description={t("uniqueIdentifier")}
@@ -323,13 +379,8 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
               <div className="space-y-4">
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                   {icons.map((icon) => (
-                    <div
-                      key={icon.key}
-                      className="relative"
-                      onMouseEnter={() => setHoveredIcon(icon.key)}
-                      onMouseLeave={() => setHoveredIcon(null)}
-                    >
-                      <Tooltip content={icon.name || icon.key}>
+                    <div key={icon.key} className="relative">
+                      <Tooltip content={icon.name}>
                         <Button
                           className="h-14 w-full p-2 flex items-center justify-center"
                           size="md"
@@ -339,31 +390,6 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                           <div dangerouslySetInnerHTML={{ __html: icon.svg }} className="w-6 h-6 flex-shrink-0" />
                         </Button>
                       </Tooltip>
-                      {hoveredIcon === icon.key && (
-                        <Button
-                          isIconOnly
-                          className="absolute -top-1 -right-1 min-w-0 w-5 h-5 p-0 z-10"
-                          color="danger"
-                          radius="full"
-                          size="sm"
-                          variant="solid"
-                          onPress={async () => {
-                            // Check usage before showing confirmation
-                            const isUsed = await checkIconUsage(icon.key);
-
-                            setDeleteConfirm({ iconKey: icon.key, isUsed });
-                          }}
-                        >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                            />
-                          </svg>
-                        </Button>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -375,7 +401,10 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                     </svg>
                   }
                   variant="light"
-                  onPress={() => setIsCreating(true)}
+                  onPress={() => {
+                    setIsCreating(true);
+                    setNewIconKey(uuid());
+                  }}
                 >
                   {t("createNewIcon")}
                 </Button>
@@ -383,13 +412,29 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
             )}
           </ModalBody>
           <ModalFooter>
-            {isCreating ? (
+            {isCreating || isEditing ? (
               <>
+                {isEditing && (
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={async () => {
+                      const isUsed = await checkIconUsage(newIconKey);
+
+                      setDeleteConfirm({ iconKey: newIconKey, isUsed });
+
+                      setIsEditing(false);
+                    }}
+                  >
+                    {t("deleteIcon")}
+                  </Button>
+                )}
                 <Button
-                  color="danger"
-                  variant="light"
+                  color="primary"
+                  variant="bordered"
                   onPress={() => {
                     setIsCreating(false);
+                    setIsEditing(false);
                     setError("");
                     setNewIconKey("");
                     setNewIconSvg("");
@@ -398,13 +443,27 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                 >
                   {t("cancel")}
                 </Button>
-                <Button color="primary" onPress={handleCreateIcon}>
-                  {t("createIcon")}
+                <Button color="primary" onPress={isCreating ? handleCreateIcon : handleUpdateIcon}>
+                  {isCreating ? t("createIcon") : t("updateIcon")}
                 </Button>
               </>
             ) : (
               <>
-                <Button color="danger" onPress={handleClose}>
+                {tempSelectedIcon && (
+                  <Button
+                    color="primary"
+                    variant="light"
+                    onPress={() => {
+                      setIsEditing(true);
+                      setNewIconKey(tempSelectedIcon);
+                      setNewIconSvg(icons.find((i) => i.key === tempSelectedIcon)?.svg || "");
+                      setNewIconName(icons.find((i) => i.key === tempSelectedIcon)?.name || "");
+                    }}
+                  >
+                    {t("editIcon")}
+                  </Button>
+                )}
+                <Button color="primary" variant="bordered" onPress={handleClose}>
                   {t("cancel")}
                 </Button>
                 <Button color="primary" isDisabled={!tempSelectedIcon} onPress={handleConfirm}>

@@ -78,11 +78,13 @@
     "pasteSvgCode": "Paste the SVG code here",
     "iconRequired": "Icon SVG content are required",
     "failedToCreateIcon": "Failed to create icon",
+    "failedToUpdateIcon": "Failed to update icon",
     "iconKeyExists": "Icon key already exists",
     "invalidSvgContent": "Invalid SVG content",
     "select": "Select",
     "cancel": "Cancel",
     "createIcon": "Create Icon",
+    "updateIcon": "Update Icon",
     "deleteIcon": "Delete Icon",
     "deleteIconTitle": "Delete Icon",
     "deleteIconWarning": "Are you sure you want to delete this icon?",
@@ -94,6 +96,7 @@
     "invalidIconKey": "Invalid icon key",
     "iconKeyFormat": "Icon key can only contain letters, numbers, and hyphens",
     "svgTooLarge": "SVG content is too large (max 100KB)",
-    "dangerousSvgContent": "SVG contains potentially dangerous content"
+    "dangerousSvgContent": "SVG contains potentially dangerous content",
+    "editIcon": "Edit Icon"
   }
 }
