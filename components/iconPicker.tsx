@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 
 import { Icon } from "@/types";
 import { fetchWithTime } from "@/utils/fetchWithTime";
+import { uuid } from "@/utils/uuid";
 
 interface IconPickerProps {
   value?: string;
@@ -57,7 +58,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [selectedIcon, setSelectedIcon] = useState<string | undefined>(value);
   const [tempSelectedIcon, setTempSelectedIcon] = useState<string | undefined>(value);
   const [isCreating, setIsCreating] = useState(false);
-  const [newIconKey, setNewIconKey] = useState("");
+  const [newIconKey, setNewIconKey] = useState(uuid());
   const [newIconSvg, setNewIconSvg] = useState("");
   const [newIconName, setNewIconName] = useState("");
   const [error, setError] = useState("");
@@ -102,8 +103,8 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
   const handleCreateIcon = async () => {
     setError("");
 
-    if (!newIconKey || !newIconSvg) {
-      setError(t("iconKeyRequired"));
+    if (!newIconSvg) {
+      setError(t("iconRequired"));
 
       return;
     }
