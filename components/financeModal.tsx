@@ -217,7 +217,7 @@ export default function FinanceModal() {
                 {addFinanceT("delete")}
               </Button>
             )}
-            <Button color="danger" onPress={() => onClose()}>
+            <Button color="primary" variant="bordered" onPress={() => onClose()}>
               {addFinanceT("close")}
             </Button>
             <Button color="primary" type="submit">
