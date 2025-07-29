@@ -41,11 +41,6 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
         return;
       }
 
-      // 数据去重
-      if (item.finance_json === dataWithFinanceData[dataWithFinanceData.length - 1]?.finance_json) {
-        return;
-      }
-
       const financeData = JSON.parse(item.finance_json);
 
       dataWithFinanceData.push({ ...item, financeData });

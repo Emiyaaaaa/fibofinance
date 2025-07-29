@@ -9,7 +9,7 @@ import { Switch } from "@heroui/switch";
 import AmountOffset from "./amountOffset";
 
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
-import { convertCurrency, subAmount } from "@/utils/exchangeRate";
+import { subAmount } from "@/utils/exchangeRate";
 import useFinanceChangeData, { FinanceChangeData } from "@/utils/store/useFinanceChangeData";
 import { currencyMap } from "@/utils";
 import { getBetweenDateLength } from "@/utils/dateRange";
@@ -18,7 +18,7 @@ import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 
 type FinanceChangeChartData = FinanceChangeData & {
-  totalCny: number;
+  total: number;
 };
 
 interface FinanceChartData {
@@ -84,7 +84,7 @@ function CustomTooltip(props: TooltipProps) {
     }
   });
 
-  const totalOffset = lastItem ? convertCurrency(item.totalCny - lastItem.totalCny, "CNY", t("defaultCurrency")) : 0;
+  const totalOffset = lastItem ? item.total - lastItem.total : 0;
 
   return (
     <Card className="border-primary border-1 border-solid border-opacity-80" shadow="lg">
@@ -135,8 +135,27 @@ export default function FinanceChart() {
       ? []
       : financeData.filter((item) => item.not_count).map((item) => item.id);
 
+    // 数据去重
+    const uniqueChangeData: FinanceChangeChartData[] = [];
+
     changeData.forEach((item, index) => {
-      const lastItem = changeData[index - 1];
+      const financeData = item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id));
+      const lastFinanceData = changeData[index - 1]?.financeData.filter(
+        (item) => !ignoreInTotalFinanceId.includes(item.id),
+      );
+
+      const total = getTotalFinance(financeData, t("defaultCurrency"));
+      const lastTotal = lastFinanceData ? getTotalFinance(lastFinanceData, t("defaultCurrency")) : 0;
+
+      if (total === lastTotal) {
+        return;
+      }
+
+      uniqueChangeData.push({ ...item, total });
+    });
+
+    uniqueChangeData.forEach((item, index) => {
+      const lastItem = uniqueChangeData[index - 1];
 
       const lastDate = lastItem?.date;
 
@@ -155,28 +174,19 @@ export default function FinanceChart() {
         }
       }
 
-      const createItem = (item: FinanceChangeData): FinanceChangeChartData => {
-        const financeData = item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id));
-        // const unCountFinance = item.financeData.filter((item) => ignoreInTotalFinanceId.includes(item.id));
-
-        const totalCny = getTotalFinance(financeData, "CNY");
-        // const unCountTotalCny = getTotalFinance(unCountFinance, "CNY");
-
-        return {
-          ...item,
-          financeData,
-          totalCny,
-        };
-      };
-
-      const currentItem = createItem(item);
-      const previousItem = lastItem ? createItem(lastItem) : undefined;
-
       data.push({
         date: item.date,
-        total: convertCurrency(currentItem.totalCny, "CNY", t("defaultCurrency")),
-        item: currentItem,
-        lastItem: previousItem,
+        total: item.total,
+        item: {
+          ...item,
+          financeData: item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id)),
+        },
+        lastItem: lastItem
+          ? {
+              ...lastItem,
+              financeData: lastItem.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id)),
+            }
+          : undefined,
       });
     });
 
@@ -184,7 +194,9 @@ export default function FinanceChart() {
   }, [changeData, financeData, showUnCount, t]);
 
   const minValue = useMemo(() => {
-    const totalList = chartdata.filter((item) => item.total !== undefined).map((item) => item.total!);
+    const totalList = chartdata
+      .filter((chartItem) => chartItem.item?.total !== undefined)
+      .map((chartItem) => chartItem.item!.total!);
 
     const maxValue = Math.max(...totalList);
     const minValue = Math.min(...totalList);
