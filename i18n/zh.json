@@ -47,6 +47,7 @@
   },
   "addFinance": {
     "confirmButton": "添加",
+    "notCount": "不计入统计",
     "title": "添加资产",
     "defaultCurrency": "CNY",
     "delete": "删除",
@@ -61,7 +62,8 @@
   "chart": {
     "defaultCurrency": "CNY",
     "total": "总资产",
-    "diffWith": "对比"
+    "diffWith": "对比",
+    "showUnCount": "展示不计入统计的项目"
   },
   "iconPicker": {
     "selectIcon": "选择图标",

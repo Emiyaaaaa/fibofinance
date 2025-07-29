@@ -48,6 +48,7 @@
   },
   "addFinance": {
     "confirmButton": "Add",
+    "notCount": "Ignore in Total",
     "updateButton": "Update",
     "title": "Add Finance",
     "defaultCurrency": "USD",
@@ -62,7 +63,8 @@
   "chart": {
     "defaultCurrency": "USD",
     "total": "Total Finance",
-    "diffWith": "Diff with"
+    "diffWith": "Diff with",
+    "showUnCount": "Show unCounted"
   },
   "iconPicker": {
     "selectIcon": "Select Icon",

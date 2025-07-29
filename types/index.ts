@@ -12,6 +12,7 @@ export interface Finance {
   name: string;
   description?: string;
   type?: string;
+  not_count?: boolean;
   amount: number;
   currency: keyof typeof currencyMap;
   group_id: number;

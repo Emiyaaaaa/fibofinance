@@ -57,11 +57,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const { name, type, amount, description, currency, owner, group_id, icon } = await request.json();
+  const { name, type, amount, description, currency, owner, group_id, icon, not_count } = await request.json();
 
   const result = await sql(
-    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, icon) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
-    [name, type, amount, description, currency, group_id, owner, icon],
+    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, not_count, icon) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+    [name, type, amount, description, currency, group_id, owner, not_count, icon],
   );
 
   syncFinanceData(request, group_id);
@@ -82,12 +82,35 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { id, name, type, amount, description, currency, owner, group_id, icon } = await request.json();
+  const { id, name, type, amount, description, currency, owner, group_id, not_count, updated_at, icon } =
+    await request.json();
+  // 如果没有update_at，不更新update_at
+  let updateFields = [
+    "name = $1",
+    "type = $2",
+    "amount = $3",
+    "description = $4",
+    "currency = $5",
+    "group_id = $6",
+    "owner = $7",
+    "not_count = $8",
+    "icon = $9",
+  ];
+  let values = [name, type, amount, description, currency, group_id, owner, not_count, icon];
+  let paramIdx = values.length + 1;
 
-  const result = await sql(
-    "UPDATE finance_data SET name = $1, type = $2, amount = $3, description = $4, currency = $5, group_id = $6, owner = $7, updated_at = $8, icon = $9 WHERE id = $10",
-    [name, type, amount, description, currency, group_id, owner, new Date().toISOString(), icon, id],
-  );
+  if (updated_at) {
+    updateFields.push(`updated_at = $${paramIdx}`);
+    values.push(updated_at);
+    paramIdx++;
+  }
+
+  updateFields.push(`id = $${paramIdx}`);
+  values.push(id);
+
+  const updateSql = `UPDATE finance_data SET ${updateFields.join(", ")} WHERE id = $${paramIdx} RETURNING group_id`;
+
+  const result = await sql(updateSql, values);
 
   syncFinanceData(request, group_id);
 

@@ -87,6 +87,13 @@ const syncFinanceData = async () => {
   if (!iconExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN icon VARCHAR(255)`);
   }
+
+  // check if not_count column exists
+  const ignore_in_totalExists = await isFieldExists("finance_data", "not_count");
+
+  if (!ignore_in_totalExists) {
+    await sql(`ALTER TABLE finance_data ADD COLUMN not_count BOOLEAN`);
+  }
 };
 
 const syncFinanceChangeData = async () => {

@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 
-import { getTotalFinance } from "../totalFinance";
-
 import { useGroup } from "./useGroup";
 import useFinanceData from "./useFinanceData";
 
@@ -11,7 +9,6 @@ import { FinanceChange, Finance } from "@/types";
 export type FinanceChangeData = FinanceChange & {
   financeData: Finance[];
   date: string;
-  totalCny: number;
 };
 
 type StoreType = {
@@ -51,11 +48,7 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
 
       const financeData = JSON.parse(item.finance_json);
 
-      dataWithFinanceData.push({
-        ...item,
-        totalCny: getTotalFinance(financeData, "CNY"),
-        financeData,
-      });
+      dataWithFinanceData.push({ ...item, financeData });
     });
 
     dataWithFinanceData.reverse();

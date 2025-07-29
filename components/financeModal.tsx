@@ -6,6 +6,7 @@ import { Form } from "@heroui/form";
 import { Input, Textarea } from "@heroui/input";
 import { NumberInput } from "@heroui/number-input";
 import { Select, SelectItem } from "@heroui/select";
+import { Switch } from "@heroui/switch";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import useFinanceData from "@/utils/store/useFinanceData";
 import { currencyMap, financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 import { fetchWithTime } from "@/utils/fetchWithTime";
+import { Finance } from "@/types";
 
 export default function FinanceModal() {
   const { isOpen, onClose, modalProps: props } = useFinanceModal();
@@ -25,8 +27,8 @@ export default function FinanceModal() {
   const financeT = useTranslations("finance");
   const [type, setType] = useState("current");
   const [icon, setIcon] = useState<string | undefined>();
-
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
+  const [notCount, setIgnoreInTotal] = useState(false);
 
   const { data, updateData } = useFinanceData();
   const submitType = props?.submitType ?? "create";
@@ -43,31 +45,34 @@ export default function FinanceModal() {
         // For update mode, use the existing data
         setType(props?.data?.type ?? "current");
         setIcon(props?.data?.icon || undefined);
+        setIgnoreInTotal(props?.data?.not_count ?? false);
       }
     }
-  }, [isOpen, submitType, props?.data?.type, props?.data?.icon]);
+  }, [isOpen, submitType, props?.data?.type, props?.data?.icon, props?.data?.not_count]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const data = Object.fromEntries(new FormData(e.currentTarget)) as Partial<Finance>;
+
+    const oldData = props?.data;
+    const newData = { ...data, type, group_id: groupId, icon: icon || null, not_count: notCount };
+    const needUpdateTime = Number(oldData?.amount) !== Number(newData.amount) || oldData?.currency !== newData.currency;
+
+    if (needUpdateTime) {
+      newData.updated_at = new Date().toISOString();
+    }
 
     if (submitType === "create") {
       fetchWithTime("/api/finance", {
         method: "POST",
-        body: JSON.stringify({ ...data, type, group_id: groupId, icon: icon || null }),
+        body: JSON.stringify(newData),
       }).finally(() => {
         updateData();
       });
     } else if (submitType === "update" && props?.data?.id !== undefined) {
       fetchWithTime("/api/finance", {
         method: "PATCH",
-        body: JSON.stringify({
-          ...data,
-          id: props!.data!.id,
-          type,
-          group_id: groupId,
-          icon: icon || null,
-        }),
+        body: JSON.stringify({ ...newData, id: props!.data!.id }),
       }).finally(() => {
         updateData();
       });
@@ -205,6 +210,21 @@ export default function FinanceModal() {
             />
           </ModalBody>
           <ModalFooter className="w-full">
+            <div className="flex mr-auto">
+              <Switch
+                aria-label={addFinanceT("notCount")}
+                color="primary"
+                defaultSelected={notCount}
+                isSelected={notCount}
+                name="not_count"
+                size="sm"
+                onValueChange={(value) => {
+                  setIgnoreInTotal(value);
+                }}
+              >
+                <div className="text-sm opacity-70">{addFinanceT("notCount")}</div>
+              </Switch>
+            </div>
             {props?.hasDelete && props.data?.id !== undefined && (
               <Button
                 color="danger"

@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Divider } from "@heroui/divider";
+import { Switch } from "@heroui/switch";
 
 import AmountOffset from "./amountOffset";
 
@@ -13,12 +14,18 @@ import useFinanceChangeData, { FinanceChangeData } from "@/utils/store/useFinanc
 import { currencyMap } from "@/utils";
 import { getBetweenDateLength } from "@/utils/dateRange";
 import { Finance } from "@/types";
+import useFinanceData from "@/utils/store/useFinanceData";
+import { getTotalFinance } from "@/utils/totalFinance";
+
+type FinanceChangeChartData = FinanceChangeData & {
+  totalCny: number;
+};
 
 interface FinanceChartData {
   date: string;
   total?: number;
-  item?: FinanceChangeData;
-  lastItem?: FinanceChangeData;
+  item?: FinanceChangeChartData;
+  lastItem?: FinanceChangeChartData;
 }
 
 function CustomTooltip(props: TooltipProps) {
@@ -93,7 +100,7 @@ function CustomTooltip(props: TooltipProps) {
           <div className="text-primary font-bold text-base">{`${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${total}`}</div>
           <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={totalOffset} />
         </div>
-        <div className="ml-3 bg-white bg-opacity-20 text-xs py-1 px-[6px] rounded">{date}</div>
+        <div className="ml-3 bg-white bg-opacity-10 text-xs py-1 px-[6px] rounded">{date}</div>
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-2 text-xs">
@@ -115,10 +122,20 @@ function CustomTooltip(props: TooltipProps) {
 }
 
 export default function FinanceChart() {
-  const { data: changeData } = useFinanceChangeData();
   const t = useTranslations("chart");
+
+  const { data: changeData } = useFinanceChangeData();
+  const { data: financeData } = useFinanceData();
+  const [showUnCount, setShowUnCount] = useState(false);
+
   const chartdata = useMemo(() => {
     const data: FinanceChartData[] = [];
+
+    const ignoreInTotalFinanceId = showUnCount
+      ? []
+      : financeData.filter((item) => item.not_count).map((item) => item.id);
+
+    console.log(1, { ignoreInTotalFinanceId, showUnCount });
 
     changeData.forEach((item, index) => {
       const lastItem = changeData[index - 1];
@@ -128,6 +145,7 @@ export default function FinanceChart() {
       if (lastDate) {
         const lastDateLength = getBetweenDateLength(new Date(lastDate), new Date(item.date));
 
+        // 插入空数据保证数据间隔合理
         for (let i = 0; i < lastDateLength; i++) {
           const date = new Date(lastDate);
 
@@ -139,17 +157,33 @@ export default function FinanceChart() {
         }
       }
 
+      const createItem = (item: FinanceChangeData): FinanceChangeChartData => {
+        const financeData = item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id));
+        // const unCountFinance = item.financeData.filter((item) => ignoreInTotalFinanceId.includes(item.id));
+
+        const totalCny = getTotalFinance(financeData, "CNY");
+        // const unCountTotalCny = getTotalFinance(unCountFinance, "CNY");
+
+        return {
+          ...item,
+          financeData,
+          totalCny,
+        };
+      };
+
+      const currentItem = createItem(item);
+      const previousItem = lastItem ? createItem(lastItem) : undefined;
+
       data.push({
         date: item.date,
-        total: convertCurrency(item.totalCny, "CNY", t("defaultCurrency")),
-        // totalOffset: lastItem ? convertCurrency(item.totalCny - lastItem.totalCny, "CNY", t("defaultCurrency")) : 0,
-        item,
-        lastItem,
+        total: convertCurrency(currentItem.totalCny, "CNY", t("defaultCurrency")),
+        item: currentItem,
+        lastItem: previousItem,
       });
     });
 
     return data;
-  }, [changeData, t]);
+  }, [changeData, financeData, showUnCount, t]);
 
   const minValue = useMemo(() => {
     const totalList = chartdata.filter((item) => item.total !== undefined).map((item) => item.total!);
@@ -170,6 +204,11 @@ export default function FinanceChart() {
 
   return (
     <div className="relative w-full px-4">
+      <div className="flex items-center gap-2 my-4">
+        <Switch color="primary" isSelected={showUnCount} size="sm" onValueChange={setShowUnCount}>
+          <div className="text-xs opacity-70">{t("showUnCount")}</div>
+        </Switch>
+      </div>
       <LineChart
         clickable
         connectNulls
