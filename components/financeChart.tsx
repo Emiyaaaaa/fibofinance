@@ -135,8 +135,6 @@ export default function FinanceChart() {
       ? []
       : financeData.filter((item) => item.not_count).map((item) => item.id);
 
-    console.log(1, { ignoreInTotalFinanceId, showUnCount });
-
     changeData.forEach((item, index) => {
       const lastItem = changeData[index - 1];
 
