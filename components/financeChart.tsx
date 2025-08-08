@@ -97,7 +97,9 @@ function CustomTooltip(props: TooltipProps) {
       )}
       <CardHeader className="flex items-start justify-between">
         <div>
-          <div className="text-primary font-bold text-base">{`${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${total?.toFixed(2)}`}</div>
+          <div className="text-primary font-bold text-base">
+            {`${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${total?.toFixed(2)}`}
+          </div>
           <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={totalOffset} />
         </div>
         <div className="ml-3 bg-white bg-opacity-10 text-xs py-1 px-[6px] rounded">{date}</div>

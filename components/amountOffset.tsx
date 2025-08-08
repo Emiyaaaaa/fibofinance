@@ -17,7 +17,7 @@ export default function AmountOffset(props: { offset?: number; className?: strin
           "text-green-500": offset < 0,
         })}
       >
-        {`${offset > 0 ? "+" : "-"}${currencyMap[currency as keyof typeof currencyMap]}${Math.abs(offset)}`}
+        {`${offset > 0 ? "+" : "-"}${currencyMap[currency as keyof typeof currencyMap]}${Math.abs(offset).toFixed(2)}`}
       </span>
     </div>
   );
