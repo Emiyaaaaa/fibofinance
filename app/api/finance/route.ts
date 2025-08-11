@@ -112,7 +112,9 @@ export async function PATCH(request: Request) {
 
   const result = await sql(updateSql, values);
 
-  syncFinanceData(request, group_id);
+  if (updated_at) {
+    syncFinanceData(request, group_id);
+  }
 
   return NextResponse.json(result);
 }

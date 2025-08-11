@@ -30,7 +30,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
   setGroupList: (list) => set({ groupList: list }),
   updateData: async () => {
     try {
-      const res = await fetch("/api/finance/group");
+      const res = await fetch("/api/group");
       const data = await res.json();
 
       set({ groupList: data });
