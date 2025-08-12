@@ -19,6 +19,7 @@ import { currencyMap, financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 import { fetchWithTime } from "@/utils/fetchWithTime";
 import { Finance } from "@/types";
+import FinanceGroupSwitcher from "./financeGroupSwitcher";
 
 export default function FinanceModal() {
   const { isOpen, onClose, modalProps: props } = useFinanceModal();
@@ -27,6 +28,7 @@ export default function FinanceModal() {
   const financeT = useTranslations("finance");
   const [type, setType] = useState("current");
   const [icon, setIcon] = useState<string | undefined>();
+  const [financeGroupId, setFinanceGroupId] = useState<number | undefined>();
   const [currency, setCurrency] = useState<keyof typeof currencyMap>();
   const [notCount, setIgnoreInTotal] = useState(false);
 
@@ -46,6 +48,7 @@ export default function FinanceModal() {
         setType(props?.data?.type ?? "current");
         setIcon(props?.data?.icon || undefined);
         setIgnoreInTotal(props?.data?.not_count ?? false);
+        setFinanceGroupId(props?.data?.finance_group_id ?? undefined);
       }
     }
   }, [isOpen, submitType, props?.data?.type, props?.data?.icon, props?.data?.not_count]);
@@ -55,7 +58,14 @@ export default function FinanceModal() {
     const data = Object.fromEntries(new FormData(e.currentTarget)) as Partial<Finance>;
 
     const oldData = props?.data;
-    const newData = { ...data, type, group_id: groupId, icon: icon || null, not_count: notCount };
+    const newData = {
+      ...data,
+      type,
+      group_id: groupId,
+      icon: icon || null,
+      not_count: notCount,
+      finance_group_id: financeGroupId,
+    };
     const needUpdateTime = Number(oldData?.amount) !== Number(newData.amount) || oldData?.currency !== newData.currency;
 
     if (needUpdateTime) {
@@ -136,7 +146,7 @@ export default function FinanceModal() {
               <NumberInput
                 hideStepper
                 isRequired
-                className="w-3/5"
+                className="w-full"
                 defaultValue={props?.data?.amount}
                 endContent={
                   <Select
@@ -185,6 +195,11 @@ export default function FinanceModal() {
                   </div>
                 }
               />
+            </div>
+            <div className="flex gap-4 w-full">
+              <div className="w-3/5">
+                <FinanceGroupSwitcher value={financeGroupId} onChange={setFinanceGroupId} />
+              </div>
               {ownerList.length > 0 ? (
                 <Autocomplete
                   allowsCustomValue
@@ -199,7 +214,7 @@ export default function FinanceModal() {
                   ))}
                 </Autocomplete>
               ) : (
-                <Input className="w-4/12" defaultValue={props?.data?.owner} label={financeT("owner")} name="owner" />
+                <Input className="w-2/5" defaultValue={props?.data?.owner} label={financeT("owner")} name="owner" />
               )}
             </div>
             <Textarea

@@ -2,5 +2,8 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": ["Fibofinance"],
   "i18n-ally.localesPaths": ["i18n", "public/locales", "utils/i18n"],
-  "i18n-ally.keystyle": "nested"
+  "i18n-ally.keystyle": "nested",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {}
 }

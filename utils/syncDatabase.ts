@@ -1,7 +1,13 @@
 import { sql } from "./sql";
 
 export const syncDatabase = async () => {
-  return Promise.all([syncFinanceData(), syncFinanceChangeData(), syncFinanceGroupData(), syncIconsData()]);
+  return Promise.all([
+    syncFinanceData(),
+    syncFinanceChangeData(),
+    syncFinanceGroupData(),
+    syncFinanceGroup2Data(),
+    syncIconsData(),
+  ]);
 };
 
 const isTableExists = async (tableName: string) => {
@@ -32,7 +38,6 @@ const isFieldExists = async (tableName: string, fieldName: string) => {
 const syncFinanceData = async () => {
   // check if the table exists
   const finance_data_tableEexists = await isTableExists("finance_data");
-
   if (!finance_data_tableEexists) {
     await sql(
       `
@@ -54,20 +59,17 @@ const syncFinanceData = async () => {
 
   // check if description column exists
   const descriptionExists = await isFieldExists("finance_data", "description");
-
   if (!descriptionExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN description TEXT`);
   }
 
   // check if owner column exists
   const ownerExists = await isFieldExists("finance_data", "owner");
-
   if (!ownerExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN owner VARCHAR(255)`);
   }
 
   const groupIdExists = await isFieldExists("finance_data", "group_id");
-
   if (!groupIdExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN group_id INTEGER`);
     await sql(
@@ -83,23 +85,25 @@ const syncFinanceData = async () => {
 
   // check if icon column exists
   const iconExists = await isFieldExists("finance_data", "icon");
-
   if (!iconExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN icon VARCHAR(255)`);
   }
 
   // check if not_count column exists
   const ignore_in_totalExists = await isFieldExists("finance_data", "not_count");
-
   if (!ignore_in_totalExists) {
     await sql(`ALTER TABLE finance_data ADD COLUMN not_count BOOLEAN`);
+  }
+
+  const finance_group_idExists = await isFieldExists("finance_data", "finance_group_id");
+  if (!finance_group_idExists) {
+    await sql(`ALTER TABLE finance_data ADD COLUMN finance_group_id INTEGER`);
   }
 };
 
 const syncFinanceChangeData = async () => {
   // check if the table exists
   const finance_change_data_tableEexists = await isTableExists("finance_change_data");
-
   if (!finance_change_data_tableEexists) {
     await sql(
       `
@@ -141,6 +145,22 @@ const syncFinanceGroupData = async () => {
 
   if (!is_defaultExist) {
     await sql(`ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`);
+  }
+};
+
+const syncFinanceGroup2Data = async () => {
+  // check if the table exists
+  const finance_group_tableEexists = await isTableExists("finance_group");
+
+  if (!finance_group_tableEexists) {
+    await sql(
+      `
+        CREATE TABLE IF NOT EXISTS finance_group (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL
+        )
+      `,
+    );
   }
 };
 

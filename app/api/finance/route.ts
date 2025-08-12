@@ -57,11 +57,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const { name, type, amount, description, currency, owner, group_id, icon, not_count } = await request.json();
+  const { name, type, amount, description, currency, owner, group_id, icon, not_count, finance_group_id } =
+    await request.json();
 
   const result = await sql(
-    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, not_count, icon) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
-    [name, type, amount, description, currency, group_id, owner, not_count, icon],
+    "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
+    [name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id],
   );
 
   syncFinanceData(request, group_id);
@@ -82,8 +83,9 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { id, name, type, amount, description, currency, owner, group_id, not_count, updated_at, icon } =
+  const { id, name, type, amount, description, currency, owner, group_id, not_count, updated_at, icon, finance_group_id } =
     await request.json();
+    
   // 如果没有update_at，不更新update_at
   let updateFields = [
     "name = $1",
@@ -95,8 +97,9 @@ export async function PATCH(request: Request) {
     "owner = $7",
     "not_count = $8",
     "icon = $9",
+    "finance_group_id = $10",
   ];
-  let values = [name, type, amount, description, currency, group_id, owner, not_count, icon];
+  let values = [name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id];
   let paramIdx = values.length + 1;
 
   if (updated_at) {

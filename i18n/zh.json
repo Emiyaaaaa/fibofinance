@@ -45,6 +45,17 @@
     "updateTime": "上次更新",
     "empty-content": "点击上方按钮添加资产吧~"
   },
+  "financeGroup": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "addGroup": "新建分组",
+    "editGroup": "编辑分组",
+    "name": "分组名称",
+    "group": "分组",
+    "empty": "暂无分组",
+    "noGroup": "无分组",
+    "deleteGroup": "删除分组"
+  },
   "addFinance": {
     "confirmButton": "添加",
     "notCount": "不计入统计",
@@ -63,7 +74,8 @@
     "defaultCurrency": "CNY",
     "total": "总资产",
     "diffWith": "对比",
-    "showUnCount": "展示不计入统计的项目"
+    "showUnCount": "展示不计入统计的项目",
+    "groupByGroup": "按分组统计"
   },
   "iconPicker": {
     "selectIcon": "选择图标",

@@ -46,6 +46,17 @@
     "updateTime": "Update Time",
     "empty-content": "Click the button above to add assets~"
   },
+  "financeGroup": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "addGroup": "New Group",
+    "editGroup": "Edit Group",
+    "name": "Group Name",
+    "group": "Group",
+    "empty": "No Group",
+    "noGroup": "empty Group",
+    "deleteGroup": "Delete Group"
+  },
   "addFinance": {
     "confirmButton": "Add",
     "notCount": "Ignore in Total",
@@ -64,7 +75,8 @@
     "defaultCurrency": "USD",
     "total": "Total Finance",
     "diffWith": "Diff with",
-    "showUnCount": "Show unCounted"
+    "showUnCount": "Show unCounted",
+    "groupByGroup": "Group by group"
   },
   "iconPicker": {
     "selectIcon": "Select Icon",

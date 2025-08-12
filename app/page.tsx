@@ -18,6 +18,7 @@ import GroupSwitcher from "@/components/groupSwitcher";
 import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 import { useGroup } from "@/utils/store/useGroup";
 import { useFinanceData } from "@/utils/store/useFinanceData";
+import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 
 const Page = () => {
   const { onOpen } = useFinanceModal();
@@ -26,6 +27,7 @@ const Page = () => {
 
   const { initData: initGroupData, groupId, setGroupId } = useGroup();
   const { initData: initFinanceChangeData } = useFinanceChangeData();
+  const { initData: initFinanceGroupData } = useFinanceGroupData();
   const { initData: initFinanceData } = useFinanceData();
 
   // 初始化 groupId
@@ -39,6 +41,7 @@ const Page = () => {
 
   useEffect(() => {
     initGroupData();
+    initFinanceGroupData();
   }, []);
 
   useEffect(() => {

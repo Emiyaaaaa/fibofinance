@@ -16,6 +16,7 @@ export interface Finance {
   amount: number;
   currency: keyof typeof currencyMap;
   group_id: number;
+  finance_group_id?: number;
   updated_at: string;
   created_at: string;
   icon?: string;

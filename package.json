@@ -39,6 +39,7 @@
     "@react-aria/ssr": "3.9.7",
     "@react-aria/visually-hidden": "3.8.19",
     "@remixicon/react": "^4.6.0",
+    "ahooks": "^3.9.0",
     "ai": "^4.1.54",
     "classnames": "^2.5.1",
     "clsx": "2.1.1",

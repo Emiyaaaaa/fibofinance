@@ -16,6 +16,7 @@ import { getBetweenDateLength } from "@/utils/dateRange";
 import { Finance } from "@/types";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
+import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 
 type FinanceChangeChartData = FinanceChangeData & {
   total: number;
@@ -84,6 +85,8 @@ function CustomTooltip(props: TooltipProps) {
     }
   });
 
+  financeList.sort((a, b) => Math.abs(b.offset ?? 0) - Math.abs(a.offset ?? 0));
+
   const totalOffset = lastItem ? item.total - lastItem.total : 0;
 
   return (
@@ -129,22 +132,71 @@ export default function FinanceChart() {
   const { data: changeData } = useFinanceChangeData();
   const { data: financeData } = useFinanceData();
   const [showUnCount, setShowUnCount] = useState(false);
+  const [groupByGroup, setGroupByGroup] = useState(true);
+
+  const { data: groupData, loading } = useFinanceGroupData();
 
   const chartdata = useMemo(() => {
+    if (loading) {
+      return [];
+    }
+
     const data: FinanceChartData[] = [];
 
     const ignoreInTotalFinanceId = showUnCount
       ? []
       : financeData.filter((item) => item.not_count).map((item) => item.id);
 
+    // 数据整理：按组分组/unCount
+    const checkedChangeData = changeData.map((item) => {
+      let changeFinanceData = item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id));
+
+      if (groupByGroup) {
+        const tempObj: Record<string | number, Finance | Finance[]> = {};
+
+        changeFinanceData.forEach((item) => {
+          const finance_group_id = financeData.find((f) => f.id === item.id)?.finance_group_id;
+
+          item["finance_group_id"] = finance_group_id;
+
+          if (finance_group_id) {
+            tempObj[`g_${finance_group_id}`] = ((tempObj[`g_${finance_group_id}`] as Finance[]) || []).concat(item);
+          } else {
+            tempObj[item.id] = item;
+          }
+        });
+
+        console.log({ tempObj });
+
+        const tempFinanceData: Finance[] = [];
+        Object.values(tempObj).forEach((item) => {
+          if (Array.isArray(item)) {
+            tempFinanceData.push({
+              ...item[0],
+              amount: item.reduce((acc, curr) => Number(acc) + Number(curr.amount), 0),
+              currency: item[0].currency,
+              name: groupData.find((group: { id: number }) => group.id === item[0].finance_group_id)?.name!,
+              id: item[0].finance_group_id! * 1000,
+            });
+          } else {
+            tempFinanceData.push(item);
+          }
+        });
+
+        changeFinanceData = tempFinanceData;
+      }
+
+      return {
+        ...item,
+        financeData: changeFinanceData,
+      };
+    });
+
     // 数据去重
     const uniqueChangeData: FinanceChangeChartData[] = [];
-
-    changeData.forEach((item, index) => {
-      const financeData = item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id));
-      const lastFinanceData = changeData[index - 1]?.financeData.filter(
-        (item) => !ignoreInTotalFinanceId.includes(item.id),
-      );
+    checkedChangeData.forEach((item, index) => {
+      const financeData = item.financeData;
+      const lastFinanceData = checkedChangeData[index - 1]?.financeData;
 
       const total = getTotalFinance(financeData, t("defaultCurrency"));
       const lastTotal = lastFinanceData ? getTotalFinance(lastFinanceData, t("defaultCurrency")) : 0;
@@ -181,19 +233,19 @@ export default function FinanceChart() {
         total: item.total,
         item: {
           ...item,
-          financeData: item.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id)),
+          financeData: item.financeData,
         },
         lastItem: lastItem
           ? {
               ...lastItem,
-              financeData: lastItem.financeData.filter((item) => !ignoreInTotalFinanceId.includes(item.id)),
+              financeData: lastItem.financeData,
             }
           : undefined,
       });
     });
 
     return data;
-  }, [changeData, financeData, showUnCount, t]);
+  }, [changeData, financeData, groupData, showUnCount, t, loading, groupByGroup]);
 
   const minValue = useMemo(() => {
     const totalList = chartdata
@@ -214,11 +266,16 @@ export default function FinanceChart() {
     return null;
   }
 
+  console.log({ chartdata });
+
   return (
     <div className="relative w-full px-4">
-      <div className="flex items-center gap-2 my-4">
+      <div className="flex items-center gap-4 my-4">
         <Switch color="primary" isSelected={showUnCount} size="sm" onValueChange={setShowUnCount}>
-          <div className="text-xs opacity-70">{t("showUnCount")}</div>
+          <div className="text-sm opacity-80">{t("showUnCount")}</div>
+        </Switch>
+        <Switch color="primary" isSelected={groupByGroup} size="sm" onValueChange={setGroupByGroup}>
+          <div className="text-sm opacity-80">{t("groupByGroup")}</div>
         </Switch>
       </div>
       <LineChart
