@@ -166,8 +166,6 @@ export default function FinanceChart() {
           }
         });
 
-        console.log({ tempObj });
-
         const tempFinanceData: Finance[] = [];
         Object.values(tempObj).forEach((item) => {
           if (Array.isArray(item)) {

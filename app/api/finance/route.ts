@@ -11,7 +11,7 @@ const syncFinanceData = async (request: Request, group_id: number) => {
 
   const finance_json = await sql(
     "SELECT id, name, amount, currency FROM finance_data WHERE group_id = $1 ORDER BY updated_at DESC",
-    [group_id],
+    [group_id]
   );
 
   const finance_json_string = JSON.stringify(finance_json);
@@ -62,10 +62,10 @@ export async function POST(request: Request) {
 
   const result = await sql(
     "INSERT INTO finance_data (name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
-    [name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id],
+    [name, type, amount, description, currency, group_id, owner, not_count, icon, finance_group_id]
   );
 
-  syncFinanceData(request, group_id);
+  await syncFinanceData(request, group_id);
 
   return NextResponse.json(result);
 }
@@ -77,15 +77,27 @@ export async function DELETE(request: Request) {
 
   const group_id = result[0].group_id;
 
-  syncFinanceData(request, group_id);
+  await syncFinanceData(request, group_id);
 
   return NextResponse.json(result);
 }
 
 export async function PATCH(request: Request) {
-  const { id, name, type, amount, description, currency, owner, group_id, not_count, updated_at, icon, finance_group_id } =
-    await request.json();
-    
+  const {
+    id,
+    name,
+    type,
+    amount,
+    description,
+    currency,
+    owner,
+    group_id,
+    not_count,
+    updated_at,
+    icon,
+    finance_group_id,
+  } = await request.json();
+
   // 如果没有update_at，不更新update_at
   let updateFields = [
     "name = $1",
@@ -116,7 +128,7 @@ export async function PATCH(request: Request) {
   const result = await sql(updateSql, values);
 
   if (updated_at) {
-    syncFinanceData(request, group_id);
+    await syncFinanceData(request, group_id);
   }
 
   return NextResponse.json(result);
