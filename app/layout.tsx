@@ -38,7 +38,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html suppressHydrationWarning lang={locale}>
-      <head />
+      <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            @font-face {
+              font-family: 'Rajdhani';
+              font-style: normal;
+              font-weight: 600;
+              font-display: swap;
+              src: url(https://fonts.gstatic.com/s/rajdhani/v16/LDI2apCSOBg7S-QT7pbYF_OreefkkbIx.woff2) format('woff2');
+              unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            }
+          `,
+          }}
+        />
+      </head>
       <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <Providers locale={locale} messages={messages}>
           {children}

@@ -19,6 +19,7 @@ import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 import { useGroup } from "@/utils/store/useGroup";
 import { useFinanceData } from "@/utils/store/useFinanceData";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
+import AllFinanceCount from "@/components/AllFinanceCount";
 
 const Page = () => {
   const { onOpen } = useFinanceModal();
@@ -55,6 +56,7 @@ const Page = () => {
     <>
       <header className="w-full pt-6 px-6 flex items-center">
         <Logo />
+        <AllFinanceCount />
         <div className="flex-1" />
         <div className="flex gap-4 items-center">
           <GroupSwitcher />

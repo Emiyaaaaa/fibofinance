@@ -264,8 +264,6 @@ export default function FinanceChart() {
     return null;
   }
 
-  console.log({ chartdata });
-
   return (
     <div className="relative w-full px-4">
       <div className="flex items-center gap-4 my-4">

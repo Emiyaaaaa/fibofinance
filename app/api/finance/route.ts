@@ -51,9 +51,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Invalid order" }, { status: 400 });
   }
 
-  const rows = await sql(`SELECT * FROM finance_data WHERE group_id = ${group_id} ORDER BY ${orderBy} ${order}`);
-
-  return NextResponse.json(rows);
+  if (group_id !== undefined && group_id !== null) {
+    const rows = await sql(`SELECT * FROM finance_data WHERE group_id = ${group_id} ORDER BY ${orderBy} ${order}`);
+    return NextResponse.json(rows);
+  } else {
+    const rows = await sql(`SELECT * FROM finance_data ORDER BY ${orderBy} ${order}`);
+    return NextResponse.json(rows);
+  }
 }
 
 export async function POST(request: Request) {
