@@ -179,6 +179,7 @@ export default function FinanceModal() {
                     <SelectItem key={"EUR"}>{financeT("EUR")}</SelectItem>
                     <SelectItem key={"GBP"}>{financeT("GBP")}</SelectItem>
                     <SelectItem key={"JPY"}>{financeT("JPY")}</SelectItem>
+                    <SelectItem key={"XAU"}>{financeT("XAU")}</SelectItem>
                   </Select>
                 }
                 label={financeT("amount")}

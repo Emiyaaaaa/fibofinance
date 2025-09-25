@@ -7,4 +7,5 @@ export const currencyMap = {
   EUR: "€",
   GBP: "£",
   JPY: "¥",
+  XAU: "Au",
 };

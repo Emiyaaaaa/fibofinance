@@ -9,6 +9,7 @@ export const DEFAULT_EXCHANGE_RATE: {
     EUR: 0.1326,
     GBP: 0.1104,
     JPY: 20.7843,
+    XAU: 0.00117, // 克黄金
   },
 };
 
@@ -32,10 +33,7 @@ export const convertCurrency = (amount: number, from: string, to: string) => {
     return toFixed2(amount);
   }
 
-  return toFixed2(
-    (amount / DEFAULT_EXCHANGE_RATE.rates[from]) *
-      DEFAULT_EXCHANGE_RATE.rates[to]
-  );
+  return toFixed2((amount / DEFAULT_EXCHANGE_RATE.rates[from]) * DEFAULT_EXCHANGE_RATE.rates[to]);
 };
 
 export const USD2CNY = (amount: number) => {
