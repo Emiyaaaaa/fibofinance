@@ -9,7 +9,7 @@ import { Switch } from "@heroui/switch";
 import AmountOffset from "./amountOffset";
 
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
-import { subAmount } from "@/utils/exchangeRate";
+import { subAmount, toFixed2 } from "@/utils/exchangeRate";
 import useFinanceChangeData, { FinanceChangeData } from "@/utils/store/useFinanceChangeData";
 import { currencyMap } from "@/utils";
 import { getBetweenDateLength } from "@/utils/dateRange";
@@ -171,8 +171,8 @@ export default function FinanceChart() {
           if (Array.isArray(item)) {
             tempFinanceData.push({
               ...item[0],
-              amount: item.reduce((acc, curr) => Number(acc) + Number(curr.amount), 0),
-              currency: item[0].currency,
+              amount: toFixed2(getTotalFinance(item, "CNY")),
+              currency: "CNY",
               name: groupData.find((group: { id: number }) => group.id === item[0].finance_group_id)?.name!,
               id: item[0].finance_group_id! * 1000,
             });
