@@ -43,12 +43,16 @@ export default function FinanceModal() {
       if (submitType === "create") {
         setType("current");
         setIcon(undefined);
+        setIgnoreInTotal(false);
+        setFinanceGroupId(undefined);
+        setCurrency(undefined);
       } else {
         // For update mode, use the existing data
         setType(props?.data?.type ?? "current");
         setIcon(props?.data?.icon || undefined);
         setIgnoreInTotal(props?.data?.not_count ?? false);
         setFinanceGroupId(props?.data?.finance_group_id ?? undefined);
+        setCurrency(props?.data?.currency ?? undefined);
       }
     }
   }, [isOpen, submitType, props?.data?.type, props?.data?.icon, props?.data?.not_count]);
