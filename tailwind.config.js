@@ -13,9 +13,6 @@ const config = {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
-      opacity: {
-        7: "0.07",
-      },
     },
   },
   darkMode: "class",

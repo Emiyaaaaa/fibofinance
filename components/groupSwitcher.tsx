@@ -148,9 +148,7 @@ function GroupSwitcher() {
               >
                 {t(name)}
                 {is_default && (
-                  <span className="bg-white bg-opacity-7 rounded text-[10px] px-[5px] py-[2px] ml-[8px]">
-                    {t("default")}
-                  </span>
+                  <span className="bg-white/7 rounded text-[10px] px-[5px] py-[2px] ml-[8px]">{t("default")}</span>
                 )}
               </DropdownItem>
             ))}
