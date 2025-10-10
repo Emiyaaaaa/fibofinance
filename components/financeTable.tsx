@@ -62,7 +62,7 @@ export default function FinanceTable() {
         type: item.type ? (
           <span
             className={classNames(
-              "text-[10px] py-1 px-[6px] rounded",
+              "text-[10px] py-1 px-[6px] rounded whitespace-nowrap",
               /* eslint-disable */
               item.type === "cash"
                 ? "bg-green-200  text-green-950"
@@ -88,7 +88,7 @@ export default function FinanceTable() {
         amount: (
           <div
             className={classNames(
-              "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max",
+              "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max whitespace-nowrap",
               { "text-sm": hasOffset }
             )}
           >

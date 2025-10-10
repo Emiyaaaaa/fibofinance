@@ -4,15 +4,16 @@ import { RiTranslate2 } from "@remixicon/react";
 
 import { Locale, localeList } from "@/utils/i18n/config";
 import { getUserLocale, setUserLocale } from "@/utils/i18n/locale";
+import { useLocale } from "@/utils/hook/useLocale";
 
 function LocaleSwitcher() {
-  const [currentLocale, setCurrentLocale] = useState<Locale>();
+  const { locale, setLocale } = useLocale();
 
   useEffect(() => {
     const fetchLocale = async () => {
       const locale = await getUserLocale();
 
-      setCurrentLocale(locale);
+      setLocale(locale);
     };
 
     fetchLocale();
@@ -31,10 +32,10 @@ function LocaleSwitcher() {
         {localeList.map(({ key, label }) => (
           <DropdownItem
             key={key}
-            className={key === currentLocale ? "text-primary" : ""}
+            className={key === locale ? "text-primary" : ""}
             onPress={() => {
               setUserLocale(key);
-              setCurrentLocale(key);
+              setLocale(key);
             }}
           >
             {label}

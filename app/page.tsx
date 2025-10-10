@@ -66,7 +66,7 @@ const Page = () => {
           </Link>
         </div>
       </header>
-      <main className="container mx-auto max-w-3xl pt-16 grow px-3 md:px-6">
+      <main className="container mx-auto max-w-3xl pt-4 grow px-3 md:px-6 md:pt-16">
         <Button className="mb-4" color="primary" onPress={() => onOpen()}>
           {t("addFinance")}
         </Button>

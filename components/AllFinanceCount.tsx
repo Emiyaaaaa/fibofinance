@@ -12,7 +12,7 @@ export default function AllFinanceCount() {
   const totalAmount = toFixed2(getTotalFinance(financeData, "CNY"));
 
   return (
-    <span className="text-primary" style={{ fontFamily: "Rajdhani", fontSize: "2rem", fontWeight: 600 }}>
+    <span className="text-primary text-xl md:text-4xl font-bold hidden md:block" style={{ fontFamily: "Rajdhani" }}>
       {currencyMap["CNY"]}
       <CountUp from={0} to={totalAmount} direction="up" duration={0.5} />
     </span>

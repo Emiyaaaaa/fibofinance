@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { Card, CardHeader, CardBody, Divider, Switch } from "@heroui/react";
+import { Card, CardHeader, CardBody, Divider, Switch, DateRangePicker } from "@heroui/react";
 
 import AmountOffset from "./amountOffset";
 
@@ -15,6 +15,9 @@ import { Finance } from "@/types";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { I18nProvider } from "@react-aria/i18n";
+import { useLocale } from "@/utils/hook/useLocale";
 
 type FinanceChangeChartData = FinanceChangeData & {
   total: number;
@@ -127,7 +130,8 @@ function CustomTooltip(props: TooltipProps) {
 export default function FinanceChart() {
   const t = useTranslations("chart");
 
-  const { data: changeData } = useFinanceChangeData();
+  const { locale } = useLocale();
+  const { data: changeData, setDateRange, dateRange } = useFinanceChangeData();
   const { data: financeData } = useFinanceData();
   const [showUnCount, setShowUnCount] = useState(false);
   const [groupByGroup, setGroupByGroup] = useState(true);
@@ -258,19 +262,43 @@ export default function FinanceChart() {
     return Math.max(minValue - (maxValue - minValue), 0);
   }, [chartdata]);
 
+  const minDate = new CalendarDate(2025, 4, 1);
+  const maxDate = today(getLocalTimeZone());
+
   if (!chartdata.length) {
     return null;
   }
 
   return (
     <div className="relative w-full px-4">
-      <div className="flex items-center gap-4 my-4">
+      <div className="flex flex-wrap items-center gap-4 my-4">
         <Switch color="primary" isSelected={showUnCount} size="sm" onValueChange={setShowUnCount}>
           <div className="text-sm opacity-80">{t("showUnCount")}</div>
         </Switch>
         <Switch color="primary" isSelected={groupByGroup} size="sm" onValueChange={setGroupByGroup}>
           <div className="text-sm opacity-80">{t("groupByGroup")}</div>
         </Switch>
+        <div className="flex-1 hidden md:block" />
+        <I18nProvider locale={locale}>
+          <DateRangePicker
+            className="w-full md:w-65"
+            showMonthAndYearPickers
+            pageBehavior="single"
+            label={null}
+            minValue={minDate}
+            maxValue={maxDate}
+            onError={(error) => setDateRange(dateRange.start, dateRange.end)}
+            defaultValue={dateRange}
+            value={dateRange}
+            onChange={(range) => {
+              if (range) {
+                setDateRange(range.start, range.end);
+              } else {
+                setDateRange(minDate, maxDate);
+              }
+            }}
+          ></DateRangePicker>
+        </I18nProvider>
       </div>
       <LineChart
         clickable
