@@ -9,7 +9,6 @@ import AmountOffset from "./amountOffset";
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
 import { subAmount, toFixed2 } from "@/utils/exchangeRate";
 import useFinanceChangeData, { FinanceChangeData } from "@/utils/store/useFinanceChangeData";
-import { currencyMap } from "@/utils";
 import { getBetweenDateLength } from "@/utils/dateRange";
 import { Finance } from "@/types";
 import useFinanceData from "@/utils/store/useFinanceData";
@@ -18,6 +17,7 @@ import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import { useLocale } from "@/utils/hook/useLocale";
+import { FinanceString } from "@/components/financeString";
 
 type FinanceChangeChartData = FinanceChangeData & {
   total: number;
@@ -101,9 +101,12 @@ function CustomTooltip(props: TooltipProps) {
       )}
       <CardHeader className="flex items-start justify-between">
         <div>
-          <div className="text-primary font-bold text-base">
-            {`${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${total?.toFixed(2)}`}
-          </div>
+          <FinanceString
+            tag="div"
+            amount={total ?? 0}
+            currency={t("defaultCurrency")}
+            className="text-primary font-bold text-base"
+          />
           <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={totalOffset} />
         </div>
         <div className="ml-3 bg-white/10 text-xs py-1 px-[6px] rounded">{date}</div>
@@ -117,7 +120,7 @@ function CustomTooltip(props: TooltipProps) {
               {item.name}
             </div>
             <div className="pl-2 flex flex-col items-end">
-              <div className="text-primary">{`${currencyMap[item.currency]}${item.amount}`}</div>
+              <FinanceString tag="div" amount={item.amount} currency={item.currency} className="text-primary" />
               <AmountOffset currency={item.currency} offset={item.offset} />
             </div>
           </div>
@@ -171,10 +174,12 @@ export default function FinanceChart() {
         const tempFinanceData: Finance[] = [];
         Object.values(tempObj).forEach((item) => {
           if (Array.isArray(item)) {
+            const currency = [...new Set(item.map((item) => item.currency))].length === 1 ? item[0].currency : "CNY";
+
             tempFinanceData.push({
               ...item[0],
-              amount: toFixed2(getTotalFinance(item, "CNY")),
-              currency: "CNY",
+              amount: toFixed2(getTotalFinance(item, currency)),
+              currency,
               name: groupData.find((group: { id: number }) => group.id === item[0].finance_group_id)?.name!,
               id: item[0].finance_group_id! * 1000,
             });

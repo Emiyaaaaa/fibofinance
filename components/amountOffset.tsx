@@ -1,6 +1,5 @@
 import classNames from "classnames";
-
-import { currencyMap } from "@/utils";
+import { FinanceString } from "@/components/financeString";
 
 export default function AmountOffset(props: { offset?: number; className?: string; currency?: string }) {
   const { offset, className, currency } = props;
@@ -11,14 +10,14 @@ export default function AmountOffset(props: { offset?: number; className?: strin
 
   return (
     <div className={className}>
-      <span
+      <FinanceString
+        amount={Math.abs(offset)}
+        currency={currency}
         className={classNames({
           "text-red-500": offset > 0,
           "text-green-500": offset < 0,
         })}
-      >
-        {`${offset > 0 ? "+" : "-"}${currencyMap[currency as keyof typeof currencyMap]}${Math.abs(offset).toFixed(2)}`}
-      </span>
+      />
     </div>
   );
 }

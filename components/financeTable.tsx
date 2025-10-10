@@ -9,11 +9,12 @@ import Time from "./time";
 import AmountOffset from "./amountOffset";
 import IconRenderer from "./iconRenderer";
 
-import { financeTypeOrder, currencyMap, toFixed2 } from "@/utils";
+import { financeTypeOrder, toFixed2 } from "@/utils";
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
+import { FinanceString } from "@/components/financeString";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -92,10 +93,15 @@ export default function FinanceTable() {
               { "text-sm": hasOffset }
             )}
           >
-            <div className="text-primary">
-              {currencyMap[item.currency as keyof typeof currencyMap]}
-              {Number(item.amount)}
-            </div>
+            <FinanceString
+              amount={Number(item.amount)}
+              currency={item.currency}
+              className="text-primary"
+              styles={{
+                currency: { paddingRight: "1px" },
+                unit: { paddingLeft: "1px" },
+              }}
+            />
             <AmountOffset currency={item.currency} offset={offset} />
           </div>
         ),
