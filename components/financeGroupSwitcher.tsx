@@ -1,8 +1,16 @@
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { Select, SelectItem } from "@heroui/select";
-import { SharedSelection } from "@heroui/system";
+import {
+  SharedSelection,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { RiAddLine, RiDeleteBinLine, RiEditLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";

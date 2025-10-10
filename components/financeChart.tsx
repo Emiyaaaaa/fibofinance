@@ -2,9 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Divider } from "@heroui/divider";
-import { Switch } from "@heroui/switch";
+import { Card, CardHeader, CardBody, Divider, Switch } from "@heroui/react";
 
 import AmountOffset from "./amountOffset";
 
@@ -90,7 +88,7 @@ function CustomTooltip(props: TooltipProps) {
   const totalOffset = lastItem ? item.total - lastItem.total : 0;
 
   return (
-    <Card className="border-primary border-1 border-solid border-opacity-80" shadow="lg">
+    <Card className="border-primary/80 border border-solid" shadow="lg">
       {hasActiveItem && (
         <div className="bg-primary text-black">
           <div className="flex items-center justify-center p-[6px]">
@@ -105,7 +103,7 @@ function CustomTooltip(props: TooltipProps) {
           </div>
           <AmountOffset className="text-xs" currency={t("defaultCurrency")} offset={totalOffset} />
         </div>
-        <div className="ml-3 bg-white bg-opacity-10 text-xs py-1 px-[6px] rounded">{date}</div>
+        <div className="ml-3 bg-white/10 text-xs py-1 px-[6px] rounded">{date}</div>
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-2 text-xs">
