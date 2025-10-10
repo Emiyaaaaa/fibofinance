@@ -1,6 +1,4 @@
-import { Button } from "@heroui/button";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { Chip } from "@heroui/chip";
+import { Modal, Button, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure, Chip } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 

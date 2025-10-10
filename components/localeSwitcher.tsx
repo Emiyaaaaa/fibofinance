@@ -1,9 +1,4 @@
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { RiTranslate2 } from "@remixicon/react";
 

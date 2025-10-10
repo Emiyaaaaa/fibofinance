@@ -1,7 +1,7 @@
-import { heroui } from "@heroui/theme";
+import { heroui } from "@heroui/react";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -34,3 +34,5 @@ module.exports = {
     }),
   ],
 };
+
+module.exports = config;

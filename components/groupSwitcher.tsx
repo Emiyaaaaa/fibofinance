@@ -1,12 +1,22 @@
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection } from "@heroui/dropdown";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  DropdownSection,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  useDisclosure,
+  Form,
+  Button,
+  Checkbox,
+} from "@heroui/react";
 import { RiAddLine, RiDeleteBinLine, RiEditLine, RiGroupLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
-import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { useMemo, useState } from "react";
-import { Input } from "@heroui/input";
-import { Form } from "@heroui/form";
-import { Button } from "@heroui/button";
-import { Checkbox } from "@heroui/checkbox";
 
 import { useGroup } from "@/utils/store/useGroup";
 import { useConfirm } from "@/utils/hook/useComfirm";
@@ -170,7 +180,7 @@ function GroupSwitcher() {
               key={"setDefault"}
               endContent={
                 <Checkbox
-                  className="translate-x-[0.5rem]"
+                  className="translate-x-2"
                   isSelected={groupList.find((group) => group.id === groupId)?.is_default}
                   size="sm"
                   onSelect={handleSetIsDefault}

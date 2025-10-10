@@ -1,6 +1,5 @@
 "use client";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, getKeyValue } from "@heroui/table";
-import { Spinner } from "@heroui/spinner";
+import { Spinner, Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, getKeyValue } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import classNames from "classnames";
@@ -65,14 +64,21 @@ export default function FinanceTable() {
             className={classNames(
               "text-[10px] py-1 px-[6px] rounded",
               /* eslint-disable */
-                item.type === "cash"       ? "bg-green-200  text-green-950"
-              : item.type === "current"    ? "bg-blue-200   text-blue-950"
-              : item.type === "low"        ? "bg-yellow-200 text-yellow-950"
-              : item.type === "medium"     ? "bg-orange-200 text-orange-950"
-              : item.type === "high"       ? "bg-red-300    text-red-950"
-              : item.type === "fixed"       ? "bg-purple-200 text-purple-950"
-              : item.type === "realEstate" ? "bg-purple-200 text-purple-950"
-                                           : "bg-gray-200   text-gray-950",
+              item.type === "cash"
+                ? "bg-green-200  text-green-950"
+                : item.type === "current"
+                  ? "bg-blue-200   text-blue-950"
+                  : item.type === "low"
+                    ? "bg-yellow-200 text-yellow-950"
+                    : item.type === "medium"
+                      ? "bg-orange-200 text-orange-950"
+                      : item.type === "high"
+                        ? "bg-red-300    text-red-950"
+                        : item.type === "fixed"
+                          ? "bg-purple-200 text-purple-950"
+                          : item.type === "realEstate"
+                            ? "bg-purple-200 text-purple-950"
+                            : "bg-gray-200   text-gray-950"
               /* eslint-enable */
             )}
           >
@@ -83,7 +89,7 @@ export default function FinanceTable() {
           <div
             className={classNames(
               "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max",
-              { "text-sm": hasOffset },
+              { "text-sm": hasOffset }
             )}
           >
             <div className="text-primary">
@@ -148,7 +154,7 @@ export default function FinanceTable() {
               }
 
               return 0;
-            }),
+            })
           );
         }}
       >

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@heroui/button";
+import { Button } from "@heroui/react";
 import { RiGithubLine } from "@remixicon/react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -66,7 +66,7 @@ const Page = () => {
           </Link>
         </div>
       </header>
-      <main className="container mx-auto max-w-3xl pt-16 flex-grow px-3 md:px-6">
+      <main className="container mx-auto max-w-3xl pt-16 grow px-3 md:px-6">
         <Button className="mb-4" color="primary" onPress={() => onOpen()}>
           {t("addFinance")}
         </Button>

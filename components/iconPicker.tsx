@@ -1,10 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
-import { Button } from "@heroui/button";
-import { Input, Textarea } from "@heroui/input";
-import { Tooltip } from "@heroui/tooltip";
+import {
+  Tooltip,
+  Input,
+  Textarea,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 
 import { Icon } from "@/types";
@@ -387,7 +394,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                           variant={tempSelectedIcon === icon.key ? "solid" : "light"}
                           onPress={() => setTempSelectedIcon(icon.key)}
                         >
-                          <div dangerouslySetInnerHTML={{ __html: icon.svg }} className="w-6 h-6 flex-shrink-0" />
+                          <div dangerouslySetInnerHTML={{ __html: icon.svg }} className="w-6 h-6 shrink-0" />
                         </Button>
                       </Tooltip>
                     </div>

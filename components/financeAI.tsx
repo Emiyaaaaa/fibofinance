@@ -1,7 +1,6 @@
-import { Button } from "@heroui/button";
+import { Button, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Spinner } from "@heroui/spinner";
 
 import { AIIcon } from "./icons";
 

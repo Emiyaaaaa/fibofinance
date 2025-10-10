@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { addToast } from "@heroui/toast";
+import { addToast } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
 import { FinanceGroup } from "@/types";

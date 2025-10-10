@@ -1,13 +1,22 @@
 "use client";
 
-import { Button } from "@heroui/button";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
-import { Form } from "@heroui/form";
-import { Input, Textarea } from "@heroui/input";
-import { NumberInput } from "@heroui/number-input";
-import { Select, SelectItem } from "@heroui/select";
-import { Switch } from "@heroui/switch";
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Input,
+  Select,
+  Switch,
+  SelectItem,
+  Textarea,
+  NumberInput,
+  Form,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
