@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 
 import { fontSans } from "@/config/fonts";
 import { syncDatabase } from "@/utils/syncDatabase";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <Providers locale={locale} messages={messages}>
           {children}
+          <Analytics />
         </Providers>
       </body>
     </html>
