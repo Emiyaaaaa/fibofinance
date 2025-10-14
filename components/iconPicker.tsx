@@ -15,7 +15,6 @@ import {
 import { useTranslations } from "next-intl";
 
 import { Icon } from "@/types";
-import { fetchWithTime } from "@/utils/fetchWithTime";
 import { uuid } from "@/utils/uuid";
 
 interface IconPickerProps {
@@ -97,7 +96,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
   const fetchIcons = async () => {
     try {
-      const response = await fetchWithTime("/api/icons");
+      const response = await fetch("/api/icons");
       const data = await response.json();
 
       setIcons(data);
@@ -117,7 +116,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     }
 
     try {
-      const response = await fetchWithTime("/api/icons", {
+      const response = await fetch("/api/icons", {
         method: "POST",
         body: JSON.stringify({
           key: newIconKey,
@@ -171,7 +170,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     }
 
     try {
-      const response = await fetchWithTime("/api/icons", {
+      const response = await fetch("/api/icons", {
         method: "PUT",
         body: JSON.stringify({
           key: newIconKey,
@@ -217,7 +216,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
   const handleDeleteIcon = async (iconKey: string) => {
     try {
-      const response = await fetchWithTime("/api/icons", {
+      const response = await fetch("/api/icons", {
         method: "DELETE",
         body: JSON.stringify({ key: iconKey }),
       });
@@ -253,7 +252,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
 
   const checkIconUsage = async (iconKey: string) => {
     try {
-      const response = await fetchWithTime(`/api/icons/${iconKey}/usage`);
+      const response = await fetch(`/api/icons/${iconKey}/usage`);
 
       if (response.ok) {
         const result = await response.json();

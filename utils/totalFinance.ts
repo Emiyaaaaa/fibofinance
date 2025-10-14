@@ -1,20 +1,26 @@
+import { Finance } from "@/types";
 import { DEFAULT_EXCHANGE_RATE } from "./exchangeRate";
 
-export const getTotalFinance = (
-  data: { amount: number; currency: string }[],
-  targetCurrency: string
-) => {
+export const getTotalFinance = (data: Finance[], targetCurrency: string, rates?: Record<string, number>) => {
+  if ([...new Set(data.map((item) => item.currency))].length === 1 && data[0].currency === targetCurrency) {
+    return data.reduce((acc, item) => acc + Number(item.amount), 0);
+  }
+
+  const rateTable = rates ?? DEFAULT_EXCHANGE_RATE.rates;
+
   const totalAmountCNY = data.reduce((acc, item) => {
-    const rate = DEFAULT_EXCHANGE_RATE.rates[item.currency];
+    let amountCNY = Number(item.amount_cny);
+    if (Number.isNaN(amountCNY)) {
+      const rate = rateTable[item.currency];
+      amountCNY = Number(item.amount) / rate;
+    }
 
-    const amountCNY = item.amount / rate;
-
-    return acc + amountCNY;
+    return acc + Number(amountCNY);
   }, 0);
 
   const total =
     // @ts-ignore
-    totalAmountCNY * DEFAULT_EXCHANGE_RATE.rates[targetCurrency];
+    totalAmountCNY * rateTable[targetCurrency];
 
   return total;
 };

@@ -6,6 +6,7 @@ export const syncDatabase = async () => {
     syncFinanceChangeData(),
     syncFinanceGroupData(),
     syncFinanceGroup2Data(),
+    syncExchangeRateData(),
     syncIconsData(),
   ]);
 };
@@ -16,7 +17,7 @@ const isTableExists = async (tableName: string) => {
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_name = '${tableName}';
-    `,
+    `
   ).then((res) => Boolean(res[0]));
 
   return result;
@@ -29,7 +30,7 @@ const isFieldExists = async (tableName: string, fieldName: string) => {
       FROM information_schema.columns 
       WHERE table_name = '${tableName}' 
       AND column_name = '${fieldName}';
-    `,
+    `
   ).then((res) => Boolean(res[0]));
 
   return result;
@@ -53,7 +54,7 @@ const syncFinanceData = async () => {
             currency VARCHAR(255) NOT NULL,
             group_id INTEGER NOT NULL DEFAULT 1
           )
-        `,
+        `
     );
   }
 
@@ -76,7 +77,7 @@ const syncFinanceData = async () => {
       `
         UPDATE finance_data 
         SET group_id = 1;
-      `,
+      `
     );
   }
 
@@ -114,7 +115,7 @@ const syncFinanceChangeData = async () => {
           finance_json TEXT NOT NULL,
           date VARCHAR(255) NOT NULL
         )
-    `,
+    `
     );
   }
 };
@@ -132,12 +133,12 @@ const syncFinanceGroupData = async () => {
           name VARCHAR(255) NOT NULL,
           is_default BOOLEAN NOT NULL DEFAULT FALSE
         )
-      `,
+      `
     );
     await sql(
       `
         INSERT INTO finance_group_data (name, is_default) VALUES ('Default Group', TRUE);
-      `,
+      `
     );
   }
 
@@ -159,7 +160,24 @@ const syncFinanceGroup2Data = async () => {
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL
         )
-      `,
+      `
+    );
+  }
+};
+
+const syncExchangeRateData = async () => {
+  const exchange_rate_tableExists = await isTableExists("exchange_rate_data");
+
+  if (!exchange_rate_tableExists) {
+    await sql(
+      `
+        CREATE TABLE IF NOT EXISTS exchange_rate_data (
+          id SERIAL PRIMARY KEY,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          rates_json TEXT NOT NULL,
+          date VARCHAR(255) NOT NULL
+        )
+      `
     );
   }
 };
@@ -178,7 +196,7 @@ const syncIconsData = async () => {
           name VARCHAR(255),
           created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
-      `,
+      `
     );
 
     // Add some default icons
@@ -198,7 +216,7 @@ const syncIconsData = async () => {
         ('building', 'Real Estate', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>'),
         ('briefcase', 'Business', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>')
         ON CONFLICT (key) DO NOTHING
-      `,
+      `
     );
   }
 };

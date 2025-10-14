@@ -20,6 +20,7 @@ import { useGroup } from "@/utils/store/useGroup";
 import { useFinanceData } from "@/utils/store/useFinanceData";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 import AllFinanceCount from "@/components/AllFinanceCount";
+import ExchangeRateSettings from "@/components/exchangeRateSettings";
 
 const Page = () => {
   const { onOpen } = useFinanceModal();
@@ -59,6 +60,7 @@ const Page = () => {
         <AllFinanceCount />
         <div className="flex-1" />
         <div className="flex gap-4 items-center">
+          <ExchangeRateSettings />
           <GroupSwitcher />
           <LocaleSwitcher />
           <Link href="https://github.com/emiyaaaaa/fibofinance">

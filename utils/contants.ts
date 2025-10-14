@@ -11,6 +11,7 @@ export const moneyCurrencyMap = {
 
 export const metalCurrencyMap = {
   XAU: "Au",
+  XAG: "Ag",
 };
 
 export const currencyMap = { ...moneyCurrencyMap, ...metalCurrencyMap };

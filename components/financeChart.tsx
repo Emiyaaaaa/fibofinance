@@ -7,7 +7,7 @@ import { Card, CardHeader, CardBody, Divider, Switch, DateRangePicker } from "@h
 import AmountOffset from "./amountOffset";
 
 import { LineChart, TooltipProps } from "@/components/tremor/lineChart";
-import { subAmount, toFixed2 } from "@/utils/exchangeRate";
+import { convertCurrency, subAmount, toFixed2 } from "@/utils/exchangeRate";
 import useFinanceChangeData, { FinanceChangeData } from "@/utils/store/useFinanceChangeData";
 import { getBetweenDateLength } from "@/utils/dateRange";
 import { Finance } from "@/types";
@@ -52,7 +52,7 @@ function CustomTooltip(props: TooltipProps) {
   const lastFinanceData = lastItem?.financeData;
   const currentFinanceData = item.financeData;
 
-  const financeList: (Finance & { offset?: number })[] = [];
+  const financeList: (Finance & { offset?: number; offset_cny?: number })[] = [];
 
   currentFinanceData.forEach((item) => {
     if (!lastFinanceData) {
@@ -64,9 +64,15 @@ function CustomTooltip(props: TooltipProps) {
     const lastFinance = lastFinanceData?.find((f) => f.id === item.id);
 
     if (lastFinance) {
+      const offset = subAmount(item, lastFinance, item.currency);
+
       financeList.push({
         ...item,
-        offset: subAmount(item, lastFinance, item.currency),
+        offset,
+        offset_cny:
+          lastFinance.amount_cny && item.amount_cny
+            ? item.amount_cny - lastFinance.amount_cny
+            : convertCurrency(offset, item.currency, "CNY"),
       });
     } else {
       financeList.push({
@@ -121,7 +127,7 @@ function CustomTooltip(props: TooltipProps) {
             </div>
             <div className="pl-2 flex flex-col items-end">
               <FinanceString tag="div" amount={item.amount} currency={item.currency} className="text-primary" />
-              <AmountOffset currency={item.currency} offset={item.offset} />
+              <AmountOffset currency={item.currency} offset={item.offset} offset_cny={item.offset_cny} />
             </div>
           </div>
         ))}
@@ -176,9 +182,13 @@ export default function FinanceChart() {
           if (Array.isArray(item)) {
             const currency = [...new Set(item.map((item) => item.currency))].length === 1 ? item[0].currency : "CNY";
 
+            const amount = toFixed2(getTotalFinance(item, currency));
+            const amount_cny = toFixed2(getTotalFinance(item, "CNY"));
+
             tempFinanceData.push({
               ...item[0],
-              amount: toFixed2(getTotalFinance(item, currency)),
+              amount,
+              amount_cny,
               currency,
               name: groupData.find((group: { id: number }) => group.id === item[0].finance_group_id)?.name!,
               id: item[0].finance_group_id! * 1000,

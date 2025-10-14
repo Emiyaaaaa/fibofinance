@@ -33,7 +33,8 @@
     "EUR": "欧元",
     "GBP": "英镑",
     "JPY": "日元",
-    "XAU": "克黄金",
+    "XAU": "黄金",
+    "XAG": "白银",
     "amount": "金额",
     "cash": "现金",
     "current": "活期存款",
@@ -45,6 +46,18 @@
     "other": "其他",
     "updateTime": "上次更新",
     "empty-content": "点击上方按钮添加资产吧~"
+  },
+  "exchangeRateSettings": {
+    "title": "汇率设置",
+    "confirm": "确认",
+    "cancel": "取消",
+    "USD": "美元",
+    "CNY": "人民币",
+    "EUR": "欧元",
+    "GBP": "英镑",
+    "JPY": "日元",
+    "XAU": "黄金",
+    "XAG": "白银"
   },
   "financeGroup": {
     "confirm": "确认",
