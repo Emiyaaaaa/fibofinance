@@ -23,6 +23,7 @@ export default function AmountOffset(props: {
         "text-green-500": (offset || offset_cny)! < 0,
       })}
     >
+      {(offset || offset_cny)! > 0 ? "+" : "-"}
       <FinanceString amount={Math.abs(offset || 0)} currency={currency} />
       {offset_cny && currency !== t("defaultCurrency") && (
         <>
