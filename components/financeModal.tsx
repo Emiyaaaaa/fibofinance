@@ -187,12 +187,9 @@ export default function FinanceModal() {
                       setCurrency(e.currentKey as keyof typeof currencyMap);
                     }}
                   >
-                    <SelectItem key={"CNY"}>{financeT("CNY")}</SelectItem>
-                    <SelectItem key={"USD"}>{financeT("USD")}</SelectItem>
-                    <SelectItem key={"EUR"}>{financeT("EUR")}</SelectItem>
-                    <SelectItem key={"GBP"}>{financeT("GBP")}</SelectItem>
-                    <SelectItem key={"JPY"}>{financeT("JPY")}</SelectItem>
-                    <SelectItem key={"XAU"}>{financeT("XAU")}</SelectItem>
+                    {Object.keys(currencyMap).map((item) => (
+                      <SelectItem key={item}>{financeT(item)}</SelectItem>
+                    ))}
                   </Select>
                 }
                 label={financeT("amount")}
