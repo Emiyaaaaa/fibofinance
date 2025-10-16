@@ -1,4 +1,4 @@
-export const financeType = ["cash", "current", "low", "medium", "high", "fixed", "realEstate", "other"];
+export const financeType = ["cash", "current", "metal", "low", "medium", "high", "fixed", "realEstate", "other"];
 export const financeTypeOrder = [...financeType, ""];
 
 export const moneyCurrencyMap = {

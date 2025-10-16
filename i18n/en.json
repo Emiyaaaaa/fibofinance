@@ -39,6 +39,7 @@
     "amount": "Amount",
     "cash": "Cash",
     "current": "Current",
+    "metal": "Metal",
     "realEstate": "Real Estate",
     "fixed": "Fixed",
     "high": "High Risk",

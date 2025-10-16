@@ -13,6 +13,12 @@ const config = {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
+      colors: {
+        gold: {
+          200: "#FEF08A", // light gold
+          950: "#1A1300", // near-black gold
+        },
+      },
     },
   },
   darkMode: "class",
