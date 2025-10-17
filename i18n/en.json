@@ -24,6 +24,7 @@
   },
   "finance": {
     "name": "Name",
+    "defaultCurrency": "USD",
     "owner": "Owner",
     "description": "Description",
     "type": "Type",

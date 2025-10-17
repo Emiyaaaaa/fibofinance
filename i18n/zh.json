@@ -23,6 +23,7 @@
   },
   "finance": {
     "name": "名称",
+    "defaultCurrency": "CNY",
     "owner": "所属人",
     "description": "描述",
     "type": "类型",

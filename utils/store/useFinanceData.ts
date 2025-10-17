@@ -44,7 +44,8 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
 
       const withCny: Finance[] = data.map((item) => {
         const rate = latestRates[item.currency] ?? latestRates[String(item.currency)] ?? 1;
-        const amount_cny = item.currency === "CNY" ? item.amount : Math.round((item.amount / rate) * 100) / 100;
+        const amount_cny =
+          item.currency === "CNY" ? Number(item.amount) : Math.round((Number(item.amount) / rate) * 100) / 100;
         return { ...item, amount_cny };
       });
 

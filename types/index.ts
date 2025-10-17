@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-import { currencyMap } from "@/utils";
+import { currencyMap, financeType } from "@/utils";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -11,7 +11,7 @@ export interface Finance {
   owner?: string;
   name: string;
   description?: string;
-  type?: string;
+  type?: (typeof financeType)[number];
   not_count?: boolean;
   amount: number;
   currency: keyof typeof currencyMap;

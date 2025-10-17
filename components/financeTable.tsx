@@ -9,7 +9,7 @@ import Time from "./time";
 import AmountOffset from "./amountOffset";
 import IconRenderer from "./iconRenderer";
 
-import { financeTypeOrder, toFixed2 } from "@/utils";
+import { chartColors, financeTypeColors, financeTypeOrder, toFixed2 } from "@/utils";
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
@@ -63,26 +63,8 @@ export default function FinanceTable() {
         type: item.type ? (
           <span
             className={classNames(
-              "text-[10px] py-1 px-[6px] rounded whitespace-nowrap",
-              /* eslint-disable */
-              item.type === "cash"
-                ? "bg-green-200  text-green-950"
-                : item.type === "current"
-                  ? "bg-blue-200   text-blue-950"
-                  : item.type === "metal"
-                    ? "bg-gold-200  text-gold-950"
-                    : item.type === "low"
-                      ? "bg-yellow-200 text-yellow-950"
-                      : item.type === "medium"
-                        ? "bg-orange-200 text-orange-950"
-                        : item.type === "high"
-                          ? "bg-red-300    text-red-950"
-                          : item.type === "fixed"
-                            ? "bg-purple-200 text-purple-950"
-                            : item.type === "realEstate"
-                              ? "bg-purple-200 text-purple-950"
-                              : "bg-gray-200   text-gray-950"
-              /* eslint-enable */
+              "text-[10px] py-1 px-[6px] rounded whitespace-nowrap text-black/90",
+              chartColors[financeTypeColors[item.type]].bg
             )}
           >
             {t(item.type)}

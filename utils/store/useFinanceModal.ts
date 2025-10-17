@@ -11,7 +11,6 @@ const useFinanceModal = create<{
   isOpen: false,
   modalProps: null,
   onOpen: (modalProps) => {
-    console.log("onOpen", modalProps);
     set({ isOpen: true, modalProps });
   },
   onClose: () => set({ isOpen: false, modalProps: null }),

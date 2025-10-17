@@ -14,6 +14,7 @@ import { Logo } from "@/components/icons";
 import LocaleSwitcher from "@/components/localeSwitcher";
 import FinanceAI from "@/components/financeAI";
 import FinanceChart from "@/components/financeChart";
+import FinanceDonutChart from "@/components/financeDonutChart";
 import GroupSwitcher from "@/components/groupSwitcher";
 import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 import { useGroup } from "@/utils/store/useGroup";
@@ -76,6 +77,7 @@ const Page = () => {
         <div className="flex flex-col gap-6">
           <FinanceTable />
           <FinanceChart />
+          <FinanceDonutChart />
           <FinanceAI />
         </div>
         <div className="text-center mt-16 text-sm opacity-80">
