@@ -9,7 +9,7 @@ import { getTotalFinance } from "@/utils/totalFinance";
 import { DonutChart } from "./tremor/donutChart";
 import { currencyMap, financeTypeColors } from "@/utils";
 
-export default function FinanceChart() {
+export default function FinanceDonutChart() {
   const { data: financeData } = useFinanceData();
   const t = useTranslations("finance");
 

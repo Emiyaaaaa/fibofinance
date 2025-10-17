@@ -78,6 +78,7 @@ const Page = () => {
           <FinanceTable />
           <FinanceChart />
           <FinanceDonutChart />
+          <div className="h-4" />
           <FinanceAI />
         </div>
         <div className="text-center mt-16 text-sm opacity-80">
