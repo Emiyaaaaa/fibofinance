@@ -149,7 +149,7 @@ interface DonutChartProps extends React.HTMLAttributes<HTMLDivElement> {
   categoryColors?: Record<string, AvailableChartColorsKeys>;
   variant?: DonutChartVariant;
   valueFormatter?: (value: number, data: Record<string, any>) => string;
-  label?: React.ReactNode;
+  label?: string | ((value: number) => string);
   showPercentage?: boolean;
   showLabel?: boolean;
   showTooltip?: boolean;
@@ -182,7 +182,12 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     const CustomTooltip = customTooltip;
     const [activeIndex, setActiveIndex] = React.useState<number | undefined>(undefined);
     const isDonut = variant === "donut";
-    const parsedLabelInput = label ? label : parseLabelInput(valueFormatter, data, value);
+    const parsedLabelInput =
+      typeof label === "function"
+        ? label(calculateDefaultLabel(data, value))
+        : typeof label === "string"
+          ? label
+          : parseLabelInput(valueFormatter, data, value);
 
     const categories = Array.from(new Set(data.map((item) => item[category])));
     const categoryColors = other.categoryColors
