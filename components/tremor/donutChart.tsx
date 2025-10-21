@@ -30,8 +30,11 @@ const parseData = (
 const calculateDefaultLabel = (data: any[], valueKey: string): number =>
   sumNumericArray(data.map((dataPoint) => dataPoint[valueKey]));
 
-const parseLabelInput = (valueFormatter: (value: number) => string, data: any[], valueKey: string): string =>
-  valueFormatter(calculateDefaultLabel(data, valueKey));
+const parseLabelInput = (
+  valueFormatter: (value: number, ...args: any[]) => string,
+  data: any[],
+  valueKey: string
+): string => valueFormatter(calculateDefaultLabel(data, valueKey));
 
 //#region Tooltip
 
@@ -41,12 +44,13 @@ type PayloadItem = {
   category: string;
   value: number;
   color: AvailableChartColorsKeys;
+  raw: Record<string, any>;
 };
 
 interface ChartTooltipProps {
   active: boolean | undefined;
   payload: PayloadItem[];
-  valueFormatter: (value: number) => string;
+  valueFormatter: (value: number, data: Record<string, any>) => string;
   showPercentage?: boolean;
   total?: number;
 }
@@ -66,9 +70,10 @@ const ChartTooltip = ({ active, payload, valueFormatter, showPercentage, total }
       >
         <div className={cx("space-y-1 px-4 py-2")}>
           {payload.map(({ value, category, color }, index) => {
+            const data = payload[index].raw as Record<string, any>;
             const percentage = showPercentage && total ? `${((value / total) * 100).toFixed(2)}%` : "";
             const valueText =
-              showPercentage && total ? `${valueFormatter(value)} (${percentage})` : valueFormatter(value);
+              showPercentage && total ? `${valueFormatter(value, data)} (${percentage})` : valueFormatter(value, data);
             return (
               <div key={`id-${index}`} className="flex items-center justify-between space-x-8">
                 <div className="flex items-center space-x-2">
@@ -143,7 +148,7 @@ interface DonutChartProps extends React.HTMLAttributes<HTMLDivElement> {
   colors?: AvailableChartColorsKeys[];
   categoryColors?: Record<string, AvailableChartColorsKeys>;
   variant?: DonutChartVariant;
-  valueFormatter?: (value: number) => string;
+  valueFormatter?: (value: number, data: Record<string, any>) => string;
   label?: React.ReactNode;
   showPercentage?: boolean;
   showLabel?: boolean;
@@ -263,6 +268,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                         category: item.payload[category],
                         value: item.value,
                         color: categoryColors.get(item.payload[category]) as AvailableChartColorsKeys,
+                        raw: item.payload,
                       }))
                     : [];
 

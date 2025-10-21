@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import { toFixed2 } from "@/utils/exchangeRate";
+import { convertCurrency, toFixed2 } from "@/utils/exchangeRate";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import { DonutChart } from "./tremor/donutChart";
@@ -40,8 +40,8 @@ export default function FinanceDonutChart() {
     });
 
     return [
-      { type: t("XAU"), amount: typeSum.XAU },
-      { type: t("XAG"), amount: typeSum.XAG },
+      { type: t("XAU"), amount: typeSum.XAU, g: convertCurrency(typeSum.XAU, t("defaultCurrency"), "XAU") },
+      { type: t("XAG"), amount: typeSum.XAG, g: convertCurrency(typeSum.XAG, t("defaultCurrency"), "XAG") },
     ];
   }, [financeData]);
 
@@ -69,8 +69,8 @@ export default function FinanceDonutChart() {
           [t("XAU")]: "gold-200",
           [t("XAG")]: "stone-100",
         }}
-        valueFormatter={(number: number) =>
-          `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${toFixed2(number)}`
+        valueFormatter={(number: number, data: Record<string, any>) =>
+          `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${toFixed2(number)} (${toFixed2(data.g)}g)`
         }
       />
     </div>
