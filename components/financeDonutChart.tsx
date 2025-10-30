@@ -32,9 +32,9 @@ export default function FinanceDonutChart() {
       XAG: 0,
     };
     financeData.forEach((item) => {
-      if (item.currency === "XAU" || item.name.includes("黄金")) {
+      if (item.currency === "XAU" || item.name.includes(t("XAU"))) {
         typeSum.XAU += getTotalFinance([item], t("defaultCurrency"));
-      } else if (item.currency === "XAG" || item.name.includes("白银")) {
+      } else if (item.currency === "XAG" || item.name.includes(t("XAG"))) {
         typeSum.XAG += getTotalFinance([item], t("defaultCurrency"));
       }
     });

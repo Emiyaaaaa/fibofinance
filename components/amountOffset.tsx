@@ -26,14 +26,20 @@ export default function AmountOffset(props: {
       {(offset || offset_cny)! > 0 ? "+" : "-"}
       <FinanceString amount={Math.abs(offset || 0)} currency={currency} />
       {offset_cny && currency !== t("defaultCurrency") && (
-        <>
+        <span
+          className={classNames({
+            "text-red-500": offset_cny > 0,
+            "text-green-500": offset_cny < 0,
+          })}
+        >
           {" ("}
+          {(offset_cny ?? 0) * (offset ?? 0) < 0 && (offset_cny > 0 ? "+" : "-")}
           <FinanceString
             amount={Math.abs(convertCurrency(offset_cny, "CNY", t("defaultCurrency")))}
             currency={t("defaultCurrency")}
           />
           {")"}
-        </>
+        </span>
       )}
     </div>
   );
