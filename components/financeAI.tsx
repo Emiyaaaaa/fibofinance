@@ -54,7 +54,7 @@ export default function FinanceAI() {
       {
         role: "user",
         content: `
-        请基于下信息，结合2025年的全球经济形势，提供一个合理的资产配置方案，并确保调整后的资产总额仍然等于 ${getTotalFinance(data, t("defaultCurrency"))} ${t("defaultCurrency")}，
+        请基于下信息，结合当前全球经济形势，提供一个合理的资产配置方案，并确保调整后的资产总额仍然等于 ${getTotalFinance(data, t("defaultCurrency"))} ${t("defaultCurrency")}，
         在调整后检查总资产是否等于 ${getTotalFinance(data, t("defaultCurrency"))} ${t("defaultCurrency")}，并将计算过程和检查结果输出到 "check" 中
 
         - 以下是我的资产情况：
@@ -65,7 +65,6 @@ export default function FinanceAI() {
 
         - 需要注意以下几点：
           - 建议金额需要和原有资产金额相等
-          - 2025年全球经济形势：不乐观，需要较多低风险资产或投资
           - 资产配置建议需要考虑资产的流动性、风险性、收益性等因素
           - 需要考虑一些资产的最小值限制，例如股票，定期存款等
           - 建议资产结果精确到小数点后两位
