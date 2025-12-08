@@ -79,7 +79,7 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
 
     // compute amount_cny for each entry using historical rates
     try {
-      const rateRes = await fetch(`/api/finance/exchangeRate`);
+      const rateRes = await fetch("/api/finance/exchangeRate");
       const rateRows: any[] = await rateRes.json();
       const normalized = rateRows
         .map((row) => {

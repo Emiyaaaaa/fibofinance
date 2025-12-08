@@ -42,7 +42,7 @@ const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((se
   },
 
   refreshFullData: async () => {
-    const res = await fetch(`/api/finance/exchangeRate`);
+    const res = await fetch("/api/finance/exchangeRate");
     const rows: ExchangeRateRow[] = await res.json();
     // normalize: ensure each row has a timestamp for ordering and a parsed rates object
     const normalized = rows
