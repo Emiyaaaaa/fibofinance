@@ -14,6 +14,14 @@ export const metadata: Metadata = {
     default: "Fibofinance",
     template: `%s - Fibofinance`,
   },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
   description: "AI-Powered Asset Allocation with the Golden Ratio",
   icons: {
     icon: "/favicon.ico",
