@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { SortDirection } from "@react-types/shared";
 
-import Time from "./time";
 import AmountOffset from "./amountOffset";
 import IconRenderer from "./iconRenderer";
 
@@ -15,6 +14,7 @@ import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
 import { FinanceString } from "@/components/financeString";
+import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -89,7 +89,7 @@ export default function FinanceTable() {
             <AmountOffset currency={item.currency} offset={offset} />
           </div>
         ),
-        updated_at: <Time date={new Date(item.updated_at)} format="YYYY-MM-DD HH:mm" />,
+        updated_at: formatRelativeTime(new Date(item.updated_at)),
       };
     });
   }, [data, aiData]);
