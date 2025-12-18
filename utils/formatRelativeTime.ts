@@ -54,5 +54,5 @@ export function formatRelativeTime(date: Date): string {
   }
 
   // 更远的时间 - 显示具体日期时间
-  return transformDate(date, "YYYY-MM-DD HH:mm");
+  return transformDate(date, "YYYY-MM-DD");
 }

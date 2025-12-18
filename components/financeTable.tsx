@@ -1,5 +1,16 @@
 "use client";
-import { Spinner, Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, getKeyValue } from "@heroui/react";
+
+import {
+  Spinner,
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+  getKeyValue,
+  Tooltip,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import classNames from "classnames";
@@ -15,6 +26,7 @@ import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
 import { FinanceString } from "@/components/financeString";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
+import { transformDate } from "@/utils/transformDate";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
@@ -89,7 +101,11 @@ export default function FinanceTable() {
             <AmountOffset currency={item.currency} offset={offset} />
           </div>
         ),
-        updated_at: formatRelativeTime(new Date(item.updated_at)),
+        updated_at: (
+          <Tooltip content={transformDate(new Date(item.updated_at), "YYYY-MM-DD HH:mm")}>
+            <span>{formatRelativeTime(new Date(item.updated_at))}</span>
+          </Tooltip>
+        ),
       };
     });
   }, [data, aiData]);
