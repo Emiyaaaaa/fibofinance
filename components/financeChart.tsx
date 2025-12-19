@@ -300,6 +300,7 @@ export default function FinanceChart() {
             showMonthAndYearPickers
             pageBehavior="single"
             label={null}
+            aria-label="Date range selector"
             minValue={minDate}
             maxValue={maxDate}
             onError={(error) => setDateRange(dateRange.start, dateRange.end)}

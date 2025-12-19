@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { SortDirection } from "@react-types/shared";
 
@@ -32,6 +32,8 @@ export default function FinanceTable() {
   const t = useTranslations("finance");
 
   const { data, setData, aiData, updating } = useFinanceData();
+
+  const [status, setStatus] = useState<"updating" | "animate-start" | "animate-end">("updating");
 
   const [sortDescriptor, setSortDescriptor] = useState<{
     column: keyof Finance;
@@ -110,6 +112,17 @@ export default function FinanceTable() {
     });
   }, [data, aiData]);
 
+  useEffect(() => {
+    if (updating) {
+      setStatus("updating");
+    } else {
+      setStatus("animate-start");
+      requestAnimationFrame(() => {
+        setStatus("animate-end");
+      });
+    }
+  }, [updating]);
+
   return (
     <>
       <Table
@@ -170,6 +183,7 @@ export default function FinanceTable() {
         <TableBody
           emptyContent={t("empty-content")}
           isLoading={updating}
+          className={classNames("transition-opacity duration-100", { "opacity-40": updating })}
           loadingContent={
             <div className="relative h-full w-full">
               <div className="absolute flex items-center justify-center h-[calc(100%-50px)] w-full bottom-0">
@@ -181,7 +195,9 @@ export default function FinanceTable() {
           {rows.map((row) => (
             <TableRow
               key={row.key}
-              className={`${updating ? "opacity-40" : "transition-opacity duration-100"}`}
+              className={classNames("opacity-0", {
+                "opacity-100 transition-opacity sibling-index-delay duration-500": status === "animate-end",
+              })}
               onClick={() => onOpen({ data: row.raw, hasDelete: true, submitType: "update" })}
             >
               {(columnKey) => <TableCell>{getKeyValue(row, columnKey)}</TableCell>}

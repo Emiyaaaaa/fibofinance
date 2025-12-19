@@ -165,6 +165,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       value,
       category,
       colors = AvailableChartColors,
+      categoryColors,
       variant = "donut",
       valueFormatter = (value: number) => value.toString(),
       label,
@@ -190,8 +191,8 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
           : parseLabelInput(valueFormatter, data, value);
 
     const categories = Array.from(new Set(data.map((item) => item[category])));
-    const categoryColors = other.categoryColors
-      ? new Map(Object.entries(other.categoryColors))
+    const parsedCategoryColors = categoryColors
+      ? new Map(Object.entries(categoryColors))
       : constructCategoryColors(categories, colors);
 
     const prevActiveRef = React.useRef<boolean | undefined>(undefined);
@@ -246,7 +247,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                 "stroke-white dark:stroke-gray-950 [&_.recharts-pie-sector]:outline-hidden",
                 onValueChange ? "cursor-pointer" : "cursor-default"
               )}
-              data={parseData(data, categoryColors, category)}
+              data={parseData(data, parsedCategoryColors, category)}
               cx="50%"
               cy="50%"
               startAngle={90}
@@ -272,7 +273,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                     ? payload.map((item: any) => ({
                         category: item.payload[category],
                         value: item.value,
-                        color: categoryColors.get(item.payload[category]) as AvailableChartColorsKeys,
+                        color: parsedCategoryColors.get(item.payload[category]) as AvailableChartColorsKeys,
                         raw: item.payload,
                       }))
                     : [];
