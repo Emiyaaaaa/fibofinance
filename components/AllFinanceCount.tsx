@@ -19,7 +19,7 @@ export default function AllFinanceCount() {
   return (
     <span className="text-primary text-xl md:text-4xl font-bold hidden md:block" style={{ fontFamily: "Rajdhani" }}>
       {currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}
-      <CountUp from={0} to={totalAmount} direction="up" duration={0.5} />
+      <CountUp from={0} to={totalAmount} direction="up" duration={0.2} />
     </span>
   );
 }
