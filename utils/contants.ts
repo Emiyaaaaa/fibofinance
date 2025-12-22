@@ -129,6 +129,12 @@ export const chartColors = {
     fill: "fill-gray-200",
     text: "text-gray-200",
   },
+  white: {
+    bg: "bg-white",
+    stroke: "stroke-white",
+    fill: "fill-white",
+    text: "text-white",
+  },
 } as const satisfies {
   [color: string]: {
     [key in ColorUtility]: string;
@@ -139,8 +145,8 @@ export const financeTypeColors = {
   cash: "green-200",
   current: "blue-200",
   metal: "gold-200",
-  gold: "amber",
-  silver: "gray",
+  gold: "gold-200",
+  silver: "white",
   low: "amber-100",
   medium: "orange-200",
   high: "red-300",
