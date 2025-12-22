@@ -165,7 +165,8 @@ export default function FinanceModal() {
                 defaultValue={props?.data?.amount}
                 endContent={
                   <Select
-                    className="w-[80px]"
+                    variant="faded"
+                    className="w-[100px] grow-0 shrink-0"
                     classNames={{
                       popoverContent: "w-[110px]",
                     }}
@@ -173,7 +174,7 @@ export default function FinanceModal() {
                     name="currency"
                     renderValue={() => {
                       const selectedCurrency = currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency");
-                      return <div className="text-sm">{currencyMap[selectedCurrency]?.symbol ?? selectedCurrency}</div>;
+                      return <div className="text-sm">{financeT(selectedCurrency)}</div>;
                     }}
                     size="sm"
                     onSelectionChange={(e) => {
