@@ -15,10 +15,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await sql(
-      "INSERT INTO currency_data (code, symbol, unit) VALUES ($1, $2, $3) RETURNING *",
-      [code.toUpperCase(), symbol, unit || null]
-    );
+    const result = await sql("INSERT INTO currency_data (code, symbol, unit) VALUES ($1, $2, $3) RETURNING *", [
+      code.toUpperCase(),
+      symbol,
+      unit || null,
+    ]);
 
     return NextResponse.json(result[0]);
   } catch (error: any) {
@@ -26,6 +27,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Currency code already exists" }, { status: 409 });
     }
     return NextResponse.json({ error: "Failed to create currency" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: Request) {
+  const { id, code, symbol, unit } = await request.json();
+
+  if (!id || !code || !symbol) {
+    return NextResponse.json({ error: "id, code and symbol are required" }, { status: 400 });
+  }
+
+  try {
+    const result = await sql("UPDATE currency_data SET code = $1, symbol = $2, unit = $3 WHERE id = $4 RETURNING *", [
+      code.toUpperCase(),
+      symbol,
+      unit || null,
+      id,
+    ]);
+
+    if (result.length === 0) {
+      return NextResponse.json({ error: "Currency not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(result[0]);
+  } catch (error: any) {
+    if (error?.message?.includes("duplicate key")) {
+      return NextResponse.json({ error: "Currency code already exists" }, { status: 409 });
+    }
+    return NextResponse.json({ error: "Failed to update currency" }, { status: 500 });
   }
 }
 
@@ -44,4 +73,3 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json(result[0]);
 }
-

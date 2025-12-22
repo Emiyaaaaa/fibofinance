@@ -73,10 +73,14 @@
     "XAU": "Gold (g)",
     "XAG": "Silver (g)",
     "addCurrency": "Add Currency",
+    "editCurrency": "Edit Currency",
     "currencyCode": "Currency Code",
     "currencySymbol": "Currency Symbol",
     "currencyUnit": "Currency Unit",
-    "currencyUnitDescription": "Optional unit (e.g., g for grams)"
+    "currencyUnitDescription": "Optional unit (e.g., g for grams)",
+    "deleteCurrency": "Delete Currency",
+    "deleteCurrencyConfirm": "Are you sure you want to delete this currency?",
+    "deleteCurrencyWarning": "Warning: Deleting this currency may affect existing financial records using it."
   },
   "addFinance": {
     "confirmButton": "Add",

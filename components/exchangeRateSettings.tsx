@@ -11,6 +11,10 @@ import {
   ModalHeader,
   NumberInput,
   useDisclosure,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -18,17 +22,38 @@ import { DEFAULT_EXCHANGE_RATE } from "@/utils";
 import { fetchWithTime } from "@/utils/fetchWithTime";
 import { useTranslations } from "next-intl";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
+import { Currency } from "@/types";
+import { useConfirm } from "@/utils/hook/useComfirm";
 
 const toFixed4 = (amount: number) => {
   return Math.round(amount * 10000) / 10000;
 };
 
-function AddCurrencyModal(props: { isOpen: boolean; onClose: () => void; onSuccess: () => void }) {
-  const { isOpen, onClose, onSuccess } = props;
+function EditCurrencyModal(props: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  currency?: Currency | null;
+}) {
+  const { isOpen, onClose, onSuccess, currency } = props;
   const t = useTranslations("exchangeRateSettings");
-  const { addCurrency } = useCurrencyData();
+  const { addCurrency, updateCurrency } = useCurrencyData();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ code: "", symbol: "", unit: "" });
+
+  const isEditMode = !!currency;
+
+  useEffect(() => {
+    if (isOpen && currency) {
+      setFormData({
+        code: currency.code,
+        symbol: currency.symbol,
+        unit: currency.unit || "",
+      });
+    } else if (isOpen && !currency) {
+      setFormData({ code: "", symbol: "", unit: "" });
+    }
+  }, [isOpen, currency]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,12 +64,16 @@ function AddCurrencyModal(props: { isOpen: boolean; onClose: () => void; onSucce
 
     setLoading(true);
     try {
-      await addCurrency(formData.code, formData.symbol, formData.unit || undefined);
+      if (isEditMode && currency) {
+        await updateCurrency(currency.id, formData.code, formData.symbol, formData.unit || undefined);
+      } else {
+        await addCurrency(formData.code, formData.symbol, formData.unit || undefined);
+      }
       setFormData({ code: "", symbol: "", unit: "" });
       onSuccess();
       onClose();
     } catch (error) {
-      console.error("Failed to add currency:", error);
+      console.error(`Failed to ${isEditMode ? "update" : "add"} currency:`, error);
     } finally {
       setLoading(false);
     }
@@ -53,7 +82,7 @@ function AddCurrencyModal(props: { isOpen: boolean; onClose: () => void; onSucce
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
-        <ModalHeader>{t("addCurrency")}</ModalHeader>
+        <ModalHeader>{isEditMode ? t("editCurrency") : t("addCurrency")}</ModalHeader>
         <Form onSubmit={onSubmit}>
           <ModalBody>
             <Input
@@ -63,6 +92,7 @@ function AddCurrencyModal(props: { isOpen: boolean; onClose: () => void; onSucce
               value={formData.code}
               onValueChange={(val) => setFormData((prev) => ({ ...prev, code: val.toUpperCase() }))}
               maxLength={10}
+              isDisabled={isEditMode}
             />
             <Input
               isRequired
@@ -100,12 +130,17 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
   const t = useTranslations("exchangeRateSettings");
 
   const { isOpen, onClose } = props;
-  const { data: currencies, currencyMap, updateData: updateCurrencies } = useCurrencyData();
+  const { data: currencies, currencyMap, updateData: updateCurrencies, deleteCurrency } = useCurrencyData();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [rates, setRates] = useState<Record<string, number>>({});
+  const [editingCurrency, setEditingCurrency] = useState<Currency | null>(null);
 
-  const { isOpen: isAddCurrencyOpen, onOpen: onAddCurrencyOpen, onClose: onAddCurrencyClose } = useDisclosure();
+  const { isOpen: isEditCurrencyOpen, onOpen: onEditCurrencyOpen, onClose: onEditCurrencyClose } = useDisclosure();
+  const { ComfirmModal, openConfirm } = useConfirm({
+    message: t("deleteCurrencyWarning"),
+    color: "danger",
+  });
 
   const currencyCodes = useMemo(() => currencies.map((c) => c.code), [currencies]);
   const todayStr = useMemo(() => new Date().toLocaleDateString(), []);
@@ -145,6 +180,29 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
       .finally(() => setLoading(false));
   }, [isOpen, currencyCodes, todayStr]);
 
+  const handleEditCurrency = (currency: Currency) => {
+    setEditingCurrency(currency);
+    onEditCurrencyOpen();
+  };
+
+  const handleAddCurrency = () => {
+    setEditingCurrency(null);
+    onEditCurrencyOpen();
+  };
+
+  const handleDeleteCurrency = async (currency: Currency) => {
+    const confirmed = await openConfirm();
+
+    if (confirmed) {
+      try {
+        await deleteCurrency(currency.id);
+        updateCurrencies();
+      } catch (error) {
+        console.error("Failed to delete currency:", error);
+      }
+    }
+  };
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -173,34 +231,76 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
 
   return (
     <>
-      <AddCurrencyModal isOpen={isAddCurrencyOpen} onClose={onAddCurrencyClose} onSuccess={updateCurrencies} />
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <ComfirmModal />
+      <EditCurrencyModal
+        isOpen={isEditCurrencyOpen}
+        onClose={onEditCurrencyClose}
+        onSuccess={updateCurrencies}
+        currency={editingCurrency}
+      />
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalContent>
           <ModalHeader>{t("title")}</ModalHeader>
           <Form onSubmit={onSubmit}>
             <ModalBody>
               <div className="grid grid-cols-2 gap-4">
-                {currencyCodes.map((code) => (
-                  <NumberInput
-                    key={String(code)}
-                    hideStepper
-                    isRequired
-                    label={financeT(String(code))}
-                    name={String(code)}
-                    value={rates[String(code)] ?? 0}
-                    onValueChange={(val) => {
-                      const num = Number(val);
-                      setRates((prev) => ({
-                        ...prev,
-                        [String(code)]: Number.isFinite(num) && num >= 0 ? num : (prev[String(code)] ?? 0),
-                      }));
-                    }}
-                    startContent={<div className="text-sm">{currencyMap[code]?.symbol}</div>}
-                    isDisabled={loading}
-                  />
+                {currencies.map((currency) => (
+                  <div key={currency.code} className="flex items-end gap-2">
+                    <NumberInput
+                      hideStepper
+                      isRequired
+                      label={financeT(String(currency.code))}
+                      name={String(currency.code)}
+                      value={rates[String(currency.code)] ?? 0}
+                      onValueChange={(val) => {
+                        const num = Number(val);
+                        setRates((prev) => ({
+                          ...prev,
+                          [String(currency.code)]:
+                            Number.isFinite(num) && num >= 0 ? num : (prev[String(currency.code)] ?? 0),
+                        }));
+                      }}
+                      startContent={<div className="text-sm">{currencyMap[currency.code]?.symbol}</div>}
+                      isDisabled={loading}
+                      className="flex-1"
+                    />
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button isIconOnly variant="flat" size="lg" className="min-w-unit-10">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                            />
+                          </svg>
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Currency actions">
+                        <DropdownItem key="edit" onPress={() => handleEditCurrency(currency)}>
+                          {t("editCurrency")}
+                        </DropdownItem>
+                        <DropdownItem
+                          key="delete"
+                          className="text-danger"
+                          color="danger"
+                          onPress={() => handleDeleteCurrency(currency)}
+                        >
+                          {t("deleteCurrency")}
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
                 ))}
               </div>
-              <Button onPress={onAddCurrencyOpen} variant="flat" color="primary" className="mt-2">
+              <Button onPress={handleAddCurrency} variant="flat" color="primary" className="mt-2">
                 + {t("addCurrency")}
               </Button>
             </ModalBody>

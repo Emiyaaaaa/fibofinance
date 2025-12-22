@@ -61,10 +61,14 @@
     "XAU": "黄金",
     "XAG": "白银",
     "addCurrency": "新增货币",
+    "editCurrency": "编辑货币",
     "currencyCode": "货币代码",
     "currencySymbol": "货币符号",
     "currencyUnit": "货币单位",
-    "currencyUnitDescription": "可选单位（如：g表示克）"
+    "currencyUnitDescription": "可选单位（如：g表示克）",
+    "deleteCurrency": "删除货币",
+    "deleteCurrencyConfirm": "确定要删除此货币吗？",
+    "deleteCurrencyWarning": "警告：删除此货币可能会影响正在使用它的财务记录。"
   },
   "financeGroup": {
     "confirm": "确认",

@@ -12,6 +12,7 @@ interface CurrencyDataStore {
   updateData: () => Promise<void>;
   initData: () => void;
   addCurrency: (code: string, symbol: string, unit?: string) => Promise<void>;
+  updateCurrency: (id: number, code: string, symbol: string, unit?: string) => Promise<void>;
   deleteCurrency: (id: number) => Promise<void>;
 }
 
@@ -71,6 +72,27 @@ const useCurrencyDataStore = create<CurrencyDataStore>((set, get) => ({
       throw error;
     }
   },
+  updateCurrency: async (id: number, code: string, symbol: string, unit?: string) => {
+    try {
+      const res = await fetch("/api/currency", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, code, symbol, unit }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to update currency");
+      }
+
+      await get().updateData();
+    } catch (error) {
+      console.error("Failed to update currency:", error);
+      throw error;
+    }
+  },
   deleteCurrency: async (id: number) => {
     try {
       const res = await fetch("/api/currency", {
@@ -104,4 +126,3 @@ export const useCurrencyData = () => {
 };
 
 export default useCurrencyData;
-
