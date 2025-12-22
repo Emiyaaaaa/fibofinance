@@ -24,6 +24,7 @@ import { useTranslations } from "next-intl";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
 import { Currency } from "@/types";
 import { useConfirm } from "@/utils/hook/useComfirm";
+import { RiMore2Fill, RiMore2Line } from "@remixicon/react";
 
 const toFixed4 = (amount: number) => {
   return Math.round(amount * 10000) / 10000;
@@ -80,17 +81,17 @@ function EditCurrencyModal(props: {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="xs">
       <ModalContent>
         <ModalHeader>{isEditMode ? t("editCurrency") : t("addCurrency")}</ModalHeader>
         <Form onSubmit={onSubmit}>
-          <ModalBody>
+          <ModalBody className="w-full">
             <Input
               isRequired
               label={t("currencyCode")}
               placeholder="USD"
               value={formData.code}
-              onValueChange={(val) => setFormData((prev) => ({ ...prev, code: val.toUpperCase() }))}
+              onValueChange={(val) => setFormData((prev) => ({ ...prev, code: val }))}
               maxLength={10}
               isDisabled={isEditMode}
             />
@@ -111,7 +112,8 @@ function EditCurrencyModal(props: {
               description={t("currencyUnitDescription")}
             />
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="w-full">
+            <div className="flex-1"></div>
             <Button variant="bordered" onPress={onClose} disabled={loading}>
               {t("cancel")}
             </Button>
@@ -238,7 +240,7 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
         onSuccess={updateCurrencies}
         currency={editingCurrency}
       />
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalContent>
           <ModalHeader>{t("title")}</ModalHeader>
           <Form onSubmit={onSubmit}>
@@ -249,6 +251,8 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
                     <NumberInput
                       hideStepper
                       isRequired
+                      isDisabled={loading}
+                      className="flex-1"
                       label={financeT(String(currency.code))}
                       name={String(currency.code)}
                       value={rates[String(currency.code)] ?? 0}
@@ -261,48 +265,35 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
                         }));
                       }}
                       startContent={<div className="text-sm">{currencyMap[currency.code]?.symbol}</div>}
-                      isDisabled={loading}
-                      className="flex-1"
+                      endContent={
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button isIconOnly variant="light" size="sm">
+                              <RiMore2Line size={16} />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Currency actions">
+                            <DropdownItem key="edit" onPress={() => handleEditCurrency(currency)}>
+                              {t("editCurrency")}
+                            </DropdownItem>
+                            <DropdownItem
+                              key="delete"
+                              className="text-danger"
+                              color="danger"
+                              onPress={() => handleDeleteCurrency(currency)}
+                            >
+                              {t("deleteCurrency")}
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      }
                     />
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button isIconOnly variant="flat" size="lg" className="min-w-unit-10">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                            />
-                          </svg>
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu aria-label="Currency actions">
-                        <DropdownItem key="edit" onPress={() => handleEditCurrency(currency)}>
-                          {t("editCurrency")}
-                        </DropdownItem>
-                        <DropdownItem
-                          key="delete"
-                          className="text-danger"
-                          color="danger"
-                          onPress={() => handleDeleteCurrency(currency)}
-                        >
-                          {t("deleteCurrency")}
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
                   </div>
                 ))}
+                <Button onPress={handleAddCurrency} variant="flat" className="h-[56px]">
+                  + {t("addCurrency")}
+                </Button>
               </div>
-              <Button onPress={handleAddCurrency} variant="flat" color="primary" className="mt-2">
-                + {t("addCurrency")}
-              </Button>
             </ModalBody>
             <ModalFooter className="w-full">
               <div className="flex-1"></div>

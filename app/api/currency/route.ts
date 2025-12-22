@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await sql("INSERT INTO currency_data (code, symbol, unit) VALUES ($1, $2, $3) RETURNING *", [
-      code.toUpperCase(),
+      code,
       symbol,
       unit || null,
     ]);
@@ -39,7 +39,7 @@ export async function PUT(request: Request) {
 
   try {
     const result = await sql("UPDATE currency_data SET code = $1, symbol = $2, unit = $3 WHERE id = $4 RETURNING *", [
-      code.toUpperCase(),
+      code,
       symbol,
       unit || null,
       id,
