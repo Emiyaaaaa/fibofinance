@@ -41,6 +41,8 @@
     "cash": "Cash",
     "current": "Current",
     "metal": "Metal",
+    "gold": "Gold",
+    "silver": "Silver",
     "realEstate": "Real Estate",
     "fixed": "Fixed",
     "high": "High Risk",

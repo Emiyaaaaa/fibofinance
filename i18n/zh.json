@@ -40,6 +40,8 @@
     "cash": "现金",
     "current": "活期存款",
     "metal": "贵金属",
+    "gold": "黄金",
+    "silver": "白银",
     "realEstate": "不动产",
     "fixed": "定期存款",
     "high": "高风险投资",

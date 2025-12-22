@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import { convertCurrency, toFixed2 } from "@/utils/exchangeRate";
+import { toFixed2 } from "@/utils/exchangeRate";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import { DonutChart } from "./tremor/donutChart";
@@ -27,26 +27,6 @@ export default function FinanceDonutChart() {
     return Object.entries(typeSum).map(([type, amount]) => ({ type: t(type), amount }));
   }, [financeData, t]);
 
-  // 黄金/白银比例
-  const chartData2 = useMemo(() => {
-    const typeSum: { XAU: number; XAG: number } = {
-      XAU: 0,
-      XAG: 0,
-    };
-    financeData.forEach((item) => {
-      if (item.currency === "XAU" || item.name.includes(t("XAU"))) {
-        typeSum.XAU += getTotalFinance([item], t("defaultCurrency"));
-      } else if (item.currency === "XAG" || item.name.includes(t("XAG"))) {
-        typeSum.XAG += getTotalFinance([item], t("defaultCurrency"));
-      }
-    });
-
-    return [
-      { type: t("XAU"), amount: typeSum.XAU, g: convertCurrency(typeSum.XAU, t("defaultCurrency"), "XAU") },
-      { type: t("XAG"), amount: typeSum.XAG, g: convertCurrency(typeSum.XAG, t("defaultCurrency"), "XAG") },
-    ];
-  }, [financeData]);
-
   if (!financeData.length) {
     return null;
   }
@@ -61,19 +41,6 @@ export default function FinanceDonutChart() {
         value="amount"
         categoryColors={Object.fromEntries(Object.entries(financeTypeColors).map(([key, value]) => [t(key), value]))}
         valueFormatter={(number: number) => `${defaultCurrencySymbol}${toFixed2(number)}`}
-      />
-      <DonutChart
-        data={chartData2}
-        category="type"
-        value="amount"
-        label={t("metal")}
-        categoryColors={{
-          [t("XAU")]: "gold-200",
-          [t("XAG")]: "stone-100",
-        }}
-        valueFormatter={(number: number, data: Record<string, any>) =>
-          `${defaultCurrencySymbol}${toFixed2(number)} (${toFixed2(data.g)}g)`
-        }
       />
     </div>
   );
