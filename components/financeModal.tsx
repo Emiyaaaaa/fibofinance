@@ -24,11 +24,12 @@ import IconPicker from "./iconPicker";
 
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useFinanceData from "@/utils/store/useFinanceData";
-import { currencyMap, financeType } from "@/utils";
+import { financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 import { fetchWithTime } from "@/utils/fetchWithTime";
 import { Finance } from "@/types";
 import FinanceGroupSwitcher from "./financeGroupSwitcher";
+import { useCurrencyData } from "@/utils/store/useCurrencyData";
 
 export default function FinanceModal() {
   const { isOpen, onClose, modalProps: props } = useFinanceModal();
@@ -38,10 +39,11 @@ export default function FinanceModal() {
   const [type, setType] = useState("current");
   const [icon, setIcon] = useState<string | undefined>();
   const [financeGroupId, setFinanceGroupId] = useState<number | undefined>();
-  const [currency, setCurrency] = useState<keyof typeof currencyMap>();
+  const [currency, setCurrency] = useState<string>();
   const [notCount, setIgnoreInTotal] = useState(false);
 
   const { data, updateData } = useFinanceData();
+  const { data: currencies, currencyMap } = useCurrencyData();
   const submitType = props?.submitType ?? "create";
 
   const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
@@ -170,25 +172,16 @@ export default function FinanceModal() {
                     defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
                     name="currency"
                     renderValue={() => {
-                      return (
-                        <div className="text-sm">
-                          {
-                            currencyMap[
-                              currency ??
-                                props?.data?.currency ??
-                                (addFinanceT("defaultCurrency") as keyof typeof currencyMap)
-                            ]
-                          }
-                        </div>
-                      );
+                      const selectedCurrency = currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency");
+                      return <div className="text-sm">{currencyMap[selectedCurrency]?.symbol ?? selectedCurrency}</div>;
                     }}
                     size="sm"
                     onSelectionChange={(e) => {
-                      setCurrency(e.currentKey as keyof typeof currencyMap);
+                      setCurrency(e.currentKey as string);
                     }}
                   >
-                    {Object.keys(currencyMap).map((item) => (
-                      <SelectItem key={item}>{financeT(item)}</SelectItem>
+                    {currencies.map((item) => (
+                      <SelectItem key={item.code}>{financeT(item.code)}</SelectItem>
                     ))}
                   </Select>
                 }
@@ -196,13 +189,7 @@ export default function FinanceModal() {
                 name="amount"
                 startContent={
                   <div className="text-sm">
-                    {
-                      currencyMap[
-                        currency ??
-                          props?.data?.currency ??
-                          (addFinanceT("defaultCurrency") as keyof typeof currencyMap)
-                      ]
-                    }
+                    {currencyMap[currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency")]?.symbol ?? ""}
                   </div>
                 }
               />

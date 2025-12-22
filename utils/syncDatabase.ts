@@ -8,6 +8,7 @@ export const syncDatabase = async () => {
     syncFinanceGroup2Data(),
     syncExchangeRateData(),
     syncIconsData(),
+    syncCurrencyData(),
   ]);
 };
 
@@ -216,6 +217,40 @@ const syncIconsData = async () => {
         ('building', 'Real Estate', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>'),
         ('briefcase', 'Business', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>')
         ON CONFLICT (key) DO NOTHING
+      `
+    );
+  }
+};
+
+const syncCurrencyData = async () => {
+  // check if the table exists
+  const currency_tableExists = await isTableExists("currency_data");
+
+  if (!currency_tableExists) {
+    await sql(
+      `
+        CREATE TABLE IF NOT EXISTS currency_data (
+          id SERIAL PRIMARY KEY,
+          code VARCHAR(255) UNIQUE NOT NULL,
+          symbol VARCHAR(255) NOT NULL,
+          unit VARCHAR(255),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      `
+    );
+
+    // Add default currencies
+    await sql(
+      `
+        INSERT INTO currency_data (code, symbol, unit) VALUES 
+        ('USD', '$', NULL),
+        ('CNY', '¥', NULL),
+        ('EUR', '€', NULL),
+        ('GBP', '£', NULL),
+        ('JPY', '¥', NULL),
+        ('XAU', 'Au', 'g'),
+        ('XAG', 'Ag', 'g')
+        ON CONFLICT (code) DO NOTHING
       `
     );
   }

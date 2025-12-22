@@ -59,7 +59,12 @@
     "GBP": "英镑",
     "JPY": "日元",
     "XAU": "黄金",
-    "XAG": "白银"
+    "XAG": "白银",
+    "addCurrency": "新增货币",
+    "currencyCode": "货币代码",
+    "currencySymbol": "货币符号",
+    "currencyUnit": "货币单位",
+    "currencyUnitDescription": "可选单位（如：g表示克）"
   },
   "financeGroup": {
     "confirm": "确认",

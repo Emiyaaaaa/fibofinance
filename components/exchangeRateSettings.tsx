@@ -3,6 +3,7 @@
 import {
   Button,
   Form,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -13,24 +14,100 @@ import {
 } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 
-import { DEFAULT_EXCHANGE_RATE, currencyMap } from "@/utils";
+import { DEFAULT_EXCHANGE_RATE } from "@/utils";
 import { fetchWithTime } from "@/utils/fetchWithTime";
 import { useTranslations } from "next-intl";
+import { useCurrencyData } from "@/utils/store/useCurrencyData";
 
 const toFixed4 = (amount: number) => {
   return Math.round(amount * 10000) / 10000;
 };
+
+function AddCurrencyModal(props: { isOpen: boolean; onClose: () => void; onSuccess: () => void }) {
+  const { isOpen, onClose, onSuccess } = props;
+  const t = useTranslations("exchangeRateSettings");
+  const { addCurrency } = useCurrencyData();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ code: "", symbol: "", unit: "" });
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!formData.code || !formData.symbol) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addCurrency(formData.code, formData.symbol, formData.unit || undefined);
+      setFormData({ code: "", symbol: "", unit: "" });
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to add currency:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalContent>
+        <ModalHeader>{t("addCurrency")}</ModalHeader>
+        <Form onSubmit={onSubmit}>
+          <ModalBody>
+            <Input
+              isRequired
+              label={t("currencyCode")}
+              placeholder="USD"
+              value={formData.code}
+              onValueChange={(val) => setFormData((prev) => ({ ...prev, code: val.toUpperCase() }))}
+              maxLength={10}
+            />
+            <Input
+              isRequired
+              label={t("currencySymbol")}
+              placeholder="$"
+              value={formData.symbol}
+              onValueChange={(val) => setFormData((prev) => ({ ...prev, symbol: val }))}
+              maxLength={10}
+            />
+            <Input
+              label={t("currencyUnit")}
+              placeholder="g"
+              value={formData.unit}
+              onValueChange={(val) => setFormData((prev) => ({ ...prev, unit: val }))}
+              maxLength={10}
+              description={t("currencyUnitDescription")}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="bordered" onPress={onClose} disabled={loading}>
+              {t("cancel")}
+            </Button>
+            <Button color="primary" type="submit" isLoading={loading}>
+              {t("confirm")}
+            </Button>
+          </ModalFooter>
+        </Form>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void }) {
   const financeT = useTranslations("finance");
   const t = useTranslations("exchangeRateSettings");
 
   const { isOpen, onClose } = props;
+  const { data: currencies, currencyMap, updateData: updateCurrencies } = useCurrencyData();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [rates, setRates] = useState<Record<string, number>>({});
 
-  const currencyCodes = useMemo(() => Object.keys(currencyMap) as Array<keyof typeof currencyMap>, []);
+  const { isOpen: isAddCurrencyOpen, onOpen: onAddCurrencyOpen, onClose: onAddCurrencyClose } = useDisclosure();
+
+  const currencyCodes = useMemo(() => currencies.map((c) => c.code), [currencies]);
   const todayStr = useMemo(() => new Date().toLocaleDateString(), []);
 
   useEffect(() => {
@@ -95,44 +172,51 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalContent>
-        <ModalHeader>{t("title")}</ModalHeader>
-        <Form onSubmit={onSubmit}>
-          <ModalBody>
-            <div className="grid grid-cols-2 gap-4">
-              {currencyCodes.map((code) => (
-                <NumberInput
-                  key={String(code)}
-                  hideStepper
-                  isRequired
-                  label={financeT(String(code))}
-                  name={String(code)}
-                  value={rates[String(code)] ?? 0}
-                  onValueChange={(val) => {
-                    const num = Number(val);
-                    setRates((prev) => ({
-                      ...prev,
-                      [String(code)]: Number.isFinite(num) && num >= 0 ? num : (prev[String(code)] ?? 0),
-                    }));
-                  }}
-                  startContent={<div className="text-sm">{currencyMap[code]}</div>}
-                  isDisabled={loading}
-                />
-              ))}
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" onPress={onClose} disabled={saving}>
-              {t("cancel")}
-            </Button>
-            <Button color="primary" type="submit" isLoading={saving}>
-              {t("confirm")}
-            </Button>
-          </ModalFooter>
-        </Form>
-      </ModalContent>
-    </Modal>
+    <>
+      <AddCurrencyModal isOpen={isAddCurrencyOpen} onClose={onAddCurrencyClose} onSuccess={updateCurrencies} />
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalContent>
+          <ModalHeader>{t("title")}</ModalHeader>
+          <Form onSubmit={onSubmit}>
+            <ModalBody>
+              <div className="grid grid-cols-2 gap-4">
+                {currencyCodes.map((code) => (
+                  <NumberInput
+                    key={String(code)}
+                    hideStepper
+                    isRequired
+                    label={financeT(String(code))}
+                    name={String(code)}
+                    value={rates[String(code)] ?? 0}
+                    onValueChange={(val) => {
+                      const num = Number(val);
+                      setRates((prev) => ({
+                        ...prev,
+                        [String(code)]: Number.isFinite(num) && num >= 0 ? num : (prev[String(code)] ?? 0),
+                      }));
+                    }}
+                    startContent={<div className="text-sm">{currencyMap[code]?.symbol}</div>}
+                    isDisabled={loading}
+                  />
+                ))}
+              </div>
+              <Button onPress={onAddCurrencyOpen} variant="flat" color="primary" className="mt-2">
+                + {t("addCurrency")}
+              </Button>
+            </ModalBody>
+            <ModalFooter className="w-full">
+              <div className="flex-1"></div>
+              <Button variant="bordered" onPress={onClose} disabled={saving}>
+                {t("cancel")}
+              </Button>
+              <Button color="primary" type="submit" isLoading={saving}>
+                {t("confirm")}
+              </Button>
+            </ModalFooter>
+          </Form>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 

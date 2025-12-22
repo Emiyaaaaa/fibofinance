@@ -1,5 +1,7 @@
-import { currencyMap, metalCurrencyMap } from "../utils/contants";
+"use client";
+
 import { toFixed2 } from "../utils/exchangeRate";
+import { useCurrencyData } from "../utils/store/useCurrencyData";
 
 export const FinanceString = (props: {
   amount: number;
@@ -13,6 +15,7 @@ export const FinanceString = (props: {
   };
 }) => {
   const { amount, className, currency = "CNY", styles, tag = "span" } = props;
+  const { currencyMap } = useCurrencyData();
 
   if (isNaN(amount)) {
     return "0";
@@ -23,18 +26,31 @@ export const FinanceString = (props: {
   const unitStyles = styles?.unit ?? {};
   const Tag = tag;
 
-  if (Object.keys(metalCurrencyMap).includes(currency)) {
+  const currencyInfo = currencyMap[currency];
+
+  if (!currencyInfo) {
+    // Fallback if currency not found
     return (
       <Tag className={className}>
         <span style={amountStyles}>{toFixed2(amount)}</span>
-        <span style={unitStyles}>g</span>
       </Tag>
     );
   }
 
+  // If currency has a unit, display amount + unit
+  if (currencyInfo.unit) {
+    return (
+      <Tag className={className}>
+        <span style={amountStyles}>{toFixed2(amount)}</span>
+        <span style={unitStyles}>{currencyInfo.unit}</span>
+      </Tag>
+    );
+  }
+
+  // Otherwise, display symbol + amount
   return (
     <Tag className={className}>
-      <span style={currencyStyles}>{currencyMap[currency as keyof typeof currencyMap]}</span>
+      <span style={currencyStyles}>{currencyInfo.symbol}</span>
       <span style={amountStyles}>{toFixed2(amount)}</span>
     </Tag>
   );

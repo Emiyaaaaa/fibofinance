@@ -7,10 +7,12 @@ import { convertCurrency, toFixed2 } from "@/utils/exchangeRate";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import { DonutChart } from "./tremor/donutChart";
-import { currencyMap, financeTypeColors } from "@/utils";
+import { financeTypeColors } from "@/utils";
+import { useCurrencyData } from "@/utils/store/useCurrencyData";
 
 export default function FinanceDonutChart() {
   const { data: financeData } = useFinanceData();
+  const { currencyMap } = useCurrencyData();
   const t = useTranslations("finance");
 
   // 按currency分类，累加金额
@@ -49,6 +51,8 @@ export default function FinanceDonutChart() {
     return null;
   }
 
+  const defaultCurrencySymbol = currencyMap[t("defaultCurrency")]?.symbol || t("defaultCurrency");
+
   return (
     <div className="flex gap-4 w-full px-4">
       <DonutChart
@@ -56,9 +60,7 @@ export default function FinanceDonutChart() {
         category="type"
         value="amount"
         categoryColors={Object.fromEntries(Object.entries(financeTypeColors).map(([key, value]) => [t(key), value]))}
-        valueFormatter={(number: number) =>
-          `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${toFixed2(number)}`
-        }
+        valueFormatter={(number: number) => `${defaultCurrencySymbol}${toFixed2(number)}`}
       />
       <DonutChart
         data={chartData2}
@@ -70,7 +72,7 @@ export default function FinanceDonutChart() {
           [t("XAG")]: "stone-100",
         }}
         valueFormatter={(number: number, data: Record<string, any>) =>
-          `${currencyMap[t("defaultCurrency") as keyof typeof currencyMap]}${toFixed2(number)} (${toFixed2(data.g)}g)`
+          `${defaultCurrencySymbol}${toFixed2(number)} (${toFixed2(data.g)}g)`
         }
       />
     </div>

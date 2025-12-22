@@ -71,7 +71,12 @@
     "GBP": "GBP",
     "JPY": "JPY",
     "XAU": "Gold (g)",
-    "XAG": "Silver (g)"
+    "XAG": "Silver (g)",
+    "addCurrency": "Add Currency",
+    "currencyCode": "Currency Code",
+    "currencySymbol": "Currency Symbol",
+    "currencyUnit": "Currency Unit",
+    "currencyUnitDescription": "Optional unit (e.g., g for grams)"
   },
   "addFinance": {
     "confirmButton": "Add",

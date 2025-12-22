@@ -146,18 +146,3 @@ export const financeTypeColors = {
 } as const satisfies Record<(typeof financeType)[number], string>;
 
 export const financeTypeOrder = [...financeType, ""];
-
-export const moneyCurrencyMap = {
-  USD: "$",
-  CNY: "¥",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
-};
-
-export const metalCurrencyMap = {
-  XAU: "Au",
-  XAG: "Ag",
-};
-
-export const currencyMap = { ...moneyCurrencyMap, ...metalCurrencyMap };
