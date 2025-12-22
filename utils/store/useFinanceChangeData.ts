@@ -46,6 +46,10 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
     get().filterDataByDateRange();
   },
   setDateRange: (start: CalendarDate, end: CalendarDate) => {
+    // 如果开始时间大于结束时间，则不进行后续操作
+    if (start.compare(end) > 0) {
+      return;
+    }
     set({
       dateRange: { start, end },
     });
