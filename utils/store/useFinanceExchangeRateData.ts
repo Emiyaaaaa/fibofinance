@@ -14,9 +14,9 @@ type ExchangeRateRow = {
 interface FinanceExchangeRateDataStore {
   inited: boolean;
   fullData: ExchangeRateRow[] | null;
-  latestData: Record<string, number> | null;
+  latestRates: Record<string, number> | null;
   setFullData: (fullData: ExchangeRateRow[]) => void;
-  setLatestData: (latestData: Record<string, number>) => void;
+  setLatestData: (latestRates: Record<string, number>) => void;
   refreshLatestData: () => Promise<void>;
   refreshFullData: () => Promise<void>;
   getRateForTimestamp: (ts: number) => Record<string, number>;
@@ -27,10 +27,10 @@ interface FinanceExchangeRateDataStore {
 const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((set, get) => ({
   inited: false,
   fullData: null,
-  latestData: null,
+  latestRates: null,
 
   setFullData: (fullData: ExchangeRateRow[]) => set({ fullData }),
-  setLatestData: (latestData: Record<string, number>) => set({ latestData }),
+  setLatestData: (latestRates: Record<string, number>) => set({ latestRates }),
 
   refreshLatestData: async () => {
     const res = await fetch(`/api/finance/exchangeRate/latest`);
@@ -38,7 +38,7 @@ const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((se
 
     const latest =
       typeof data?.rates_json === "string" ? (JSON.parse(data.rates_json)?.rates ?? {}) : (data?.rates ?? {});
-    set({ latestData: latest });
+    set({ latestRates: latest });
   },
 
   refreshFullData: async () => {
@@ -71,8 +71,8 @@ const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((se
   },
 
   getRateForTimestamp: (ts: number) => {
-    const { fullData, latestData } = get();
-    if (!fullData || fullData.length === 0) return latestData ?? DEFAULT_EXCHANGE_RATE.rates;
+    const { fullData, latestRates } = get();
+    if (!fullData || fullData.length === 0) return latestRates ?? DEFAULT_EXCHANGE_RATE.rates;
 
     let selected = DEFAULT_EXCHANGE_RATE.rates;
     for (let i = 0; i < fullData.length; i++) {
@@ -87,7 +87,7 @@ const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((se
   },
 
   toCny: (amount: number, currency: string, rate?: Record<string, number>) => {
-    const useRate = rate ?? get().latestData ?? DEFAULT_EXCHANGE_RATE.rates;
+    const useRate = rate ?? get().latestRates ?? DEFAULT_EXCHANGE_RATE.rates;
     if (currency === "CNY") return Math.round(amount * 100) / 100;
     const r = useRate[currency] ?? DEFAULT_EXCHANGE_RATE.rates[currency] ?? 1;
     // stored rate is currency-per-CNY, so CNY = amount / rate

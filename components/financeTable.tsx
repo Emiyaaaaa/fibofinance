@@ -19,7 +19,7 @@ import { SortDirection } from "@react-types/shared";
 import AmountOffset from "./amountOffset";
 import IconRenderer from "./iconRenderer";
 
-import { chartColors, financeTypeColors, financeTypeOrder, toFixed2 } from "@/utils";
+import { chartColors, convertCurrency, financeTypeColors, financeTypeOrder, toFixed2 } from "@/utils";
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
@@ -27,11 +27,15 @@ import { Finance } from "@/types";
 import { FinanceString } from "@/components/financeString";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
 import { transformDate } from "@/utils/transformDate";
+import useCurrencyData from "@/utils/store/useCurrencyData";
+import useFinanceExchangeRateData from "@/utils/store/useFinanceExchangeRateData";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
 
   const { data, setData, aiData, updating } = useFinanceData();
+  const { currencyMap } = useCurrencyData();
+  const { latestRates } = useFinanceExchangeRateData();
 
   const [status, setStatus] = useState<"updating" | "animate-start" | "animate-end">("updating");
 
@@ -85,23 +89,31 @@ export default function FinanceTable() {
           </span>
         ) : null,
         amount: (
-          <div
-            className={classNames(
-              "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max whitespace-nowrap",
-              { "text-sm": hasOffset }
-            )}
+          <Tooltip
+            content={
+              item.currency !== t("defaultCurrency")
+                ? `${currencyMap[t("defaultCurrency")]?.symbol}${toFixed2(convertCurrency(Number(item.amount), item.currency, t("defaultCurrency"), latestRates))}`
+                : undefined
+            }
           >
-            <FinanceString
-              amount={Number(item.amount)}
-              currency={item.currency}
-              className="text-primary"
-              styles={{
-                currency: { paddingRight: "1px" },
-                unit: { paddingLeft: "1px" },
-              }}
-            />
-            <AmountOffset currency={item.currency} offset={offset} />
-          </div>
+            <div
+              className={classNames(
+                "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max whitespace-nowrap",
+                { "text-sm": hasOffset }
+              )}
+            >
+              <FinanceString
+                amount={Number(item.amount)}
+                currency={item.currency}
+                className="text-primary"
+                styles={{
+                  currency: { paddingRight: "1px" },
+                  unit: { paddingLeft: "1px" },
+                }}
+              />
+              <AmountOffset currency={item.currency} offset={offset} />
+            </div>
+          </Tooltip>
         ),
         updated_at: (
           <Tooltip content={transformDate(new Date(item.updated_at), "YYYY-MM-DD HH:mm")}>

@@ -21,20 +21,23 @@ export const toFixed2 = (amount: number) => {
 export const subAmount = (
   a: { amount: number; currency: string },
   b: { amount: number; currency: string },
-  targetCurrency: string
+  targetCurrency: string,
+  rate?: Record<string, number>
 ) => {
-  const aAmount = convertCurrency(a.amount, a.currency, targetCurrency);
-  const bAmount = convertCurrency(b.amount, b.currency, targetCurrency);
+  const aAmount = convertCurrency(a.amount, a.currency, targetCurrency, rate);
+  const bAmount = convertCurrency(b.amount, b.currency, targetCurrency, rate);
 
   return toFixed2(aAmount - bAmount);
 };
 
-export const convertCurrency = (amount: number, from: string, to: string) => {
+export const convertCurrency = (amount: number, from: string, to: string, rate?: Record<string, number> | null) => {
   if (from === to) {
     return toFixed2(amount);
   }
 
-  return toFixed2((amount / DEFAULT_EXCHANGE_RATE.rates[from]) * DEFAULT_EXCHANGE_RATE.rates[to]);
+  return toFixed2(
+    (amount / (rate?.[from] ?? DEFAULT_EXCHANGE_RATE.rates[from])) * (rate?.[to] ?? DEFAULT_EXCHANGE_RATE.rates[to])
+  );
 };
 
 export const USD2CNY = (amount: number) => {

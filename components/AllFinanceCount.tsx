@@ -9,14 +9,14 @@ import { useCurrencyData } from "@/utils/store/useCurrencyData";
 
 export default function AllFinanceCount() {
   const { data: financeData } = useRequest<Finance[], []>(() => fetch("/api/finance").then((res) => res.json()));
-  const { latestData } = useFinanceExchangeRateData();
+  const { latestRates } = useFinanceExchangeRateData();
   const { currencyMap } = useCurrencyData();
   const t = useTranslations("chart");
 
   if (!financeData) return null;
-  if (!latestData) return null;
+  if (!latestRates) return null;
 
-  const totalAmount = toFixed2(getTotalFinance(financeData, t("defaultCurrency"), latestData));
+  const totalAmount = toFixed2(getTotalFinance(financeData, t("defaultCurrency"), latestRates));
   const defaultCurrencySymbol = currencyMap[t("defaultCurrency")]?.symbol || t("defaultCurrency");
 
   return (
