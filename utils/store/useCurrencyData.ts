@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { useEffect } from "react";
 
 import { Currency } from "@/types";
 
@@ -117,10 +116,6 @@ const useCurrencyDataStore = create<CurrencyDataStore>((set, get) => ({
 
 export const useCurrencyData = () => {
   const currencyDataStore = useCurrencyDataStore();
-
-  useEffect(() => {
-    currencyDataStore.initData();
-  }, []);
 
   return currencyDataStore;
 };

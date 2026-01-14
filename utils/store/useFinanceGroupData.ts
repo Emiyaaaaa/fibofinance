@@ -4,6 +4,7 @@ import { create } from "zustand";
 type StoreType = {
   data: { id: number; name: string }[];
   loading: boolean;
+  inited: boolean;
   setData: (data: StoreType["data"]) => void;
   refresh: () => void;
   initData: () => void;
@@ -12,6 +13,7 @@ type StoreType = {
 const useFinanceGroupDataStore = create<StoreType>((set, get) => ({
   data: [],
   loading: true,
+  inited: false,
   setData: (data: StoreType["data"]) => set({ data }),
   refresh: async () => {
     set({ loading: true });
@@ -22,7 +24,12 @@ const useFinanceGroupDataStore = create<StoreType>((set, get) => ({
     set({ loading: false });
   },
   initData: () => {
+    if (get().inited) {
+      return;
+    }
+
     get().refresh();
+    set({ inited: true });
   },
 }));
 

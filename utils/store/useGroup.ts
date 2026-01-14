@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
@@ -79,18 +78,8 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
 export const useGroup = () => {
   const { groupId, groupList, setGroupId, setGroupList, setChanged, changed, debounceUpdateData, initData } =
     useGroupStore();
-  const query = useSearchParams();
   const router = useRouter();
   const t = useTranslations("home");
-
-  // 初始化 groupId
-  useEffect(() => {
-    const queryGroupId = query.get("group_id");
-
-    if (queryGroupId) {
-      setGroupId(Number(queryGroupId));
-    }
-  }, []);
 
   const changeGroup = (newGroupId: number) => {
     setGroupId(newGroupId);

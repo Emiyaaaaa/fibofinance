@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { useEffect } from "react";
 
 import { DEFAULT_EXCHANGE_RATE } from "@/utils/exchangeRate";
 
@@ -24,7 +23,7 @@ interface FinanceExchangeRateDataStore {
   initData: () => void;
 }
 
-const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((set, get) => ({
+export const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((set, get) => ({
   inited: false,
   fullData: null,
   latestRates: null,
@@ -107,10 +106,6 @@ const useFinanceExchangeRateDataStore = create<FinanceExchangeRateDataStore>((se
 
 export const useFinanceExchangeRateData = () => {
   const financeExchangeRateDataStore = useFinanceExchangeRateDataStore();
-
-  useEffect(() => {
-    financeExchangeRateDataStore.initData();
-  }, []);
 
   return financeExchangeRateDataStore;
 };
