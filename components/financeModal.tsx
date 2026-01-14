@@ -166,9 +166,9 @@ export default function FinanceModal() {
                 endContent={
                   <Select
                     variant="faded"
-                    className="w-[100px] grow-0 shrink-0"
+                    className="w-[120px] grow-0 shrink-0"
                     classNames={{
-                      popoverContent: "w-[110px]",
+                      popoverContent: "w-[130px]",
                     }}
                     defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
                     name="currency"
