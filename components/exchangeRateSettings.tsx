@@ -24,7 +24,8 @@ import { useTranslations } from "next-intl";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
 import { Currency } from "@/types";
 import { useConfirm } from "@/utils/hook/useComfirm";
-import { RiMore2Fill, RiMore2Line } from "@remixicon/react";
+import { RiMore2Line } from "@remixicon/react";
+import { useFinanceExchangeRateDataStore } from "@/utils/store/useFinanceExchangeRateData";
 
 const toFixed4 = (amount: number) => {
   return Math.round(amount * 10000) / 10000;
@@ -224,6 +225,9 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
         date: todayStr,
       }),
     })
+      .then(() => {
+        useFinanceExchangeRateDataStore.setState({ latestRates: nextRates });
+      })
       .catch(() => {})
       .finally(() => {
         setSaving(false);

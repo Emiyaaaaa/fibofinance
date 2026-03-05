@@ -24,6 +24,8 @@ import IconPicker from "./iconPicker";
 
 import useFinanceModal from "@/utils/store/useFinanceModal";
 import useFinanceData from "@/utils/store/useFinanceData";
+import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
+import useFinanceTotalDataStore from "@/utils/store/useFinanceTotalData";
 import { financeType } from "@/utils";
 import { useGroup } from "@/utils/store/useGroup";
 import { fetchWithTime } from "@/utils/fetchWithTime";
@@ -43,6 +45,8 @@ export default function FinanceModal() {
   const [notCount, setIgnoreInTotal] = useState(false);
 
   const { data, updateData } = useFinanceData();
+  const { updateData: updateChangeData } = useFinanceChangeData();
+  const { fetchData: updateTotalData } = useFinanceTotalDataStore();
   const { data: currencies, currencyMap } = useCurrencyData();
   const submitType = props?.submitType ?? "create";
 
@@ -93,6 +97,8 @@ export default function FinanceModal() {
         body: JSON.stringify(newData),
       }).finally(() => {
         updateData();
+        updateChangeData();
+        updateTotalData();
       });
     } else if (submitType === "update" && props?.data?.id !== undefined) {
       fetchWithTime("/api/finance", {
@@ -100,6 +106,8 @@ export default function FinanceModal() {
         body: JSON.stringify({ ...newData, id: props!.data!.id }),
       }).finally(() => {
         updateData();
+        updateChangeData();
+        updateTotalData();
       });
     }
   };
@@ -110,6 +118,8 @@ export default function FinanceModal() {
       body: JSON.stringify({ id: props!.data!.id }),
     }).finally(() => {
       updateData();
+      updateChangeData();
+      updateTotalData();
     });
   };
 

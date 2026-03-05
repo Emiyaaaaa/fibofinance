@@ -102,7 +102,9 @@
     "total": "总资产",
     "diffWith": "对比",
     "showUnCount": "展示不计入统计的项目",
-    "groupByGroup": "按分组统计"
+    "groupByGroup": "按分组统计",
+    "switchToAll": "点击切换展示总数据",
+    "switchToGroup": "点击切换展示当前组数据"
   },
   "iconPicker": {
     "selectIcon": "选择图标",

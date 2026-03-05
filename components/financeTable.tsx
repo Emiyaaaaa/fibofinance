@@ -33,7 +33,7 @@ import useFinanceExchangeRateData from "@/utils/store/useFinanceExchangeRateData
 export default function FinanceTable() {
   const t = useTranslations("finance");
 
-  const { data, setData, aiData, updating } = useFinanceData();
+  const { data, setData, aiData, changing } = useFinanceData();
   const { currencyMap } = useCurrencyData();
   const { latestRates } = useFinanceExchangeRateData();
 
@@ -110,6 +110,7 @@ export default function FinanceTable() {
                   currency: { paddingRight: "1px" },
                   unit: { paddingLeft: "1px" },
                 }}
+                animated
               />
               <AmountOffset currency={item.currency} offset={offset} />
             </div>
@@ -125,7 +126,7 @@ export default function FinanceTable() {
   }, [data, aiData]);
 
   useEffect(() => {
-    if (updating) {
+    if (changing) {
       setStatus("updating");
     } else {
       setStatus("animate-start");
@@ -133,7 +134,7 @@ export default function FinanceTable() {
         setStatus("animate-end");
       });
     }
-  }, [updating]);
+  }, [changing]);
 
   return (
     <>
@@ -194,8 +195,8 @@ export default function FinanceTable() {
         </TableHeader>
         <TableBody
           emptyContent={t("empty-content")}
-          isLoading={updating}
-          className={classNames("transition-opacity duration-100", { "opacity-40": updating })}
+          isLoading={changing}
+          className={classNames("transition-opacity duration-100", { "opacity-40": changing })}
           loadingContent={
             <div className="relative h-full w-full">
               <div className="absolute flex items-center justify-center h-[calc(100%-50px)] w-full bottom-0">

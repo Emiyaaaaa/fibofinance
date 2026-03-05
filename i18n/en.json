@@ -103,7 +103,9 @@
     "total": "Total Finance",
     "diffWith": "Diff with",
     "showUnCount": "Show unCounted",
-    "groupByGroup": "Group by group"
+    "groupByGroup": "Group by group",
+    "switchToAll": "Click to show all groups total",
+    "switchToGroup": "Click to show current group total"
   },
   "iconPicker": {
     "selectIcon": "Select Icon",

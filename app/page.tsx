@@ -24,6 +24,7 @@ import FinanceTotal from "@/components/financeTotal";
 import ExchangeRateSettings from "@/components/exchangeRateSettings";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
 import { useFinanceExchangeRateData } from "@/utils/store/useFinanceExchangeRateData";
+import useFinanceTotalDataStore from "@/utils/store/useFinanceTotalData";
 
 const Page = () => {
   const { onOpen } = useFinanceModal();
@@ -36,6 +37,7 @@ const Page = () => {
   const { initData: initFinanceData } = useFinanceData();
   const { initData: initCurrencyData } = useCurrencyData();
   const { initData: initExchangeRateData } = useFinanceExchangeRateData();
+  const initTotalData = useFinanceTotalDataStore((s) => s.initData);
 
   // 初始化 groupId
   useEffect(() => {
@@ -52,6 +54,7 @@ const Page = () => {
     initFinanceGroupData();
     initCurrencyData();
     initExchangeRateData();
+    initTotalData();
   }, []);
 
   // 初始化依赖 groupId 的数据
@@ -64,7 +67,7 @@ const Page = () => {
 
   return (
     <>
-      <header className="w-full pt-6 px-6 flex items-center">
+      <header className="w-full pt-6 px-6 flex items-center md:h-[80px] md:pt-0">
         <Logo />
         <FinanceTotal />
         <div className="flex-1" />
