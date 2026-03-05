@@ -41,7 +41,7 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
   aiData: [],
   inited: false,
   updating: true,
-  changing: false,
+  changing: true,
   groupId: undefined,
   setData: (data: Finance[]) => set({ data }),
   fetchData: async (groupId: number) => {

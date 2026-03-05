@@ -21,12 +21,26 @@ export default function FinanceTotal() {
 
   useEffect(() => {
     if (!financeData || !latestRates) return;
-    setGroupAmount(toFixed2(getTotalFinance(financeData, t("defaultCurrency"), latestRates)));
+    setGroupAmount(
+      toFixed2(
+        getTotalFinance(financeData, t("defaultCurrency"), {
+          rates: latestRates,
+          useLatestRates: true,
+        })
+      )
+    );
   }, [financeData, latestRates]);
 
   useEffect(() => {
     if (!totalData?.length || !latestRates) return;
-    setAllAmount(toFixed2(getTotalFinance(totalData, t("defaultCurrency"), latestRates)));
+    setAllAmount(
+      toFixed2(
+        getTotalFinance(totalData, t("defaultCurrency"), {
+          rates: latestRates,
+          useLatestRates: true,
+        })
+      )
+    );
   }, [totalData, latestRates]);
 
   const displayAmount = showAll ? allAmount : groupAmount;
