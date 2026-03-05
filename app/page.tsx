@@ -20,7 +20,7 @@ import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 import { useGroup } from "@/utils/store/useGroup";
 import { useFinanceData } from "@/utils/store/useFinanceData";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
-import AllFinanceCount from "@/components/AllFinanceCount";
+import FinanceTotal from "@/components/financeTotal";
 import ExchangeRateSettings from "@/components/exchangeRateSettings";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
 import { useFinanceExchangeRateData } from "@/utils/store/useFinanceExchangeRateData";
@@ -66,7 +66,7 @@ const Page = () => {
     <>
       <header className="w-full pt-6 px-6 flex items-center">
         <Logo />
-        <AllFinanceCount />
+        <FinanceTotal />
         <div className="flex-1" />
         <div className="flex gap-4 items-center">
           <ExchangeRateSettings />
