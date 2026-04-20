@@ -35,9 +35,7 @@ export default function FinanceAI() {
 
   useEffect(() => {
     if (!content) return;
-    const { reason } = JSON.parse(content);
-
-    setHtml(mdToHtml(reason));
+    setHtml(mdToHtml(content));
   }, [content]);
 
   const handleSuggestion = () => {
@@ -58,13 +56,7 @@ export default function FinanceAI() {
         - 以下是汇率情况（供你理解多币种资产）：
         ${JSON.stringify(DEFAULT_EXCHANGE_RATE)}
 
-        - 注意：reason 使用 ${t("language")} 输出，内容为 Markdown 字符串。
-
-        - 输出格式：
-          以 JSON 输出，且仅包含以下字段（不要输出其他内容）：
-          {
-            "reason": string
-          }
+        - 请使用 ${t("language")} 直接输出 Markdown 正文（标题、列表、加粗等均可），不要输出 JSON、不要包在代码块里，不要添加前言或后记说明「以下为建议」以外的套话。
         `,
       },
     ];

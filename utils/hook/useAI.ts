@@ -1,5 +1,11 @@
 import { useState } from "react";
 
+function stripCodeFence(text: string): string {
+  const t = text.trim();
+  const m = t.match(/^```(?:\w+)?\s*\n?([\s\S]*?)\n?```$/);
+  return m ? m[1].trim() : t;
+}
+
 export default function useAI() {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -11,11 +17,8 @@ export default function useAI() {
       body: JSON.stringify({ messages }),
     });
 
-    setContent(
-      await response.text().then((text) => {
-        return text.replace("```json", "").replace("```", "");
-      })
-    );
+    const raw = await response.text();
+    setContent(stripCodeFence(raw));
     setIsLoading(false);
   };
 
