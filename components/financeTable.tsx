@@ -16,7 +16,6 @@ import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { SortDirection } from "@react-types/shared";
 
-import AmountOffset from "./amountOffset";
 import IconRenderer from "./iconRenderer";
 
 import { chartColors, convertCurrency, financeTypeColors, financeTypeOrder, toFixed2 } from "@/utils";
@@ -33,7 +32,7 @@ import useFinanceExchangeRateData from "@/utils/store/useFinanceExchangeRateData
 export default function FinanceTable() {
   const t = useTranslations("finance");
 
-  const { data, setData, aiData, changing } = useFinanceData();
+  const { data, setData, changing } = useFinanceData();
   const { currencyMap } = useCurrencyData();
   const { latestRates } = useFinanceExchangeRateData();
 
@@ -63,12 +62,6 @@ export default function FinanceTable() {
 
   const rows = useMemo(() => {
     return data.map((item) => {
-      const adviceAmount = aiData.find((advice) => advice.id === item.id)?.amount ?? item.amount;
-
-      const offset = toFixed2(adviceAmount - item.amount);
-
-      const hasOffset = offset !== 0;
-
       return {
         raw: item,
         key: item.id,
@@ -96,12 +89,7 @@ export default function FinanceTable() {
                 : undefined
             }
           >
-            <div
-              className={classNames(
-                "flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max whitespace-nowrap",
-                { "text-sm": hasOffset }
-              )}
-            >
+            <div className="flex flex-col gap-0.5 transition-all duration-250 h-8 justify-center font-bold w-max whitespace-nowrap">
               <FinanceString
                 amount={Number(item.amount)}
                 currency={item.currency}
@@ -112,7 +100,6 @@ export default function FinanceTable() {
                 }}
                 animated
               />
-              <AmountOffset currency={item.currency} offset={offset} />
             </div>
           </Tooltip>
         ),
@@ -123,7 +110,7 @@ export default function FinanceTable() {
         ),
       };
     });
-  }, [data, aiData]);
+  }, [data, currencyMap, latestRates, t]);
 
   useEffect(() => {
     if (changing) {

@@ -44,12 +44,6 @@ export interface FinanceGroup {
   is_default: boolean;
 }
 
-export interface AssetAdvice {
-  id: number;
-  name: string;
-  amount: number;
-}
-
 export interface Icon {
   id: number;
   key: string;

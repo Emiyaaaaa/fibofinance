@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 
 import { useGroup } from "./useGroup";
 
-import { Finance, AssetAdvice } from "@/types";
+import { Finance } from "@/types";
 import { useFinanceExchangeRateDataStore } from "./useFinanceExchangeRateData";
 import { DEFAULT_EXCHANGE_RATE } from "../exchangeRate";
 
@@ -26,10 +26,8 @@ interface FinanceDataStore {
   changing: boolean;
   groupId: number | undefined;
   inited: boolean;
-  aiData: AssetAdvice[];
   setData: (data: Finance[]) => void;
   fetchData: (groupId: number) => Promise<void>;
-  updateAiData: (data: AssetAdvice[]) => void;
   initData: (groupId: number) => void;
 }
 
@@ -38,7 +36,6 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
   order: "DESC",
   rawData: [],
   data: [],
-  aiData: [],
   inited: false,
   updating: true,
   changing: true,
@@ -60,7 +57,6 @@ const useFinanceDataStore = create<FinanceDataStore>((set, get) => ({
     get().fetchData(groupId);
     set({ groupId, inited: true });
   },
-  updateAiData: (data) => set({ aiData: data }),
 }));
 
 export const useFinanceData = () => {

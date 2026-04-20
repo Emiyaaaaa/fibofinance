@@ -6,7 +6,6 @@ import { AIIcon } from "./icons";
 
 import useAI from "@/utils/hook/useAI";
 import useFinanceData from "@/utils/store/useFinanceData";
-import { getTotalFinance } from "@/utils/totalFinance";
 import { DEFAULT_EXCHANGE_RATE } from "@/utils/exchangeRate";
 import { mdToHtml } from "@/utils/mdToHtml";
 import { useGroup } from "@/utils/store/useGroup";
@@ -16,11 +15,10 @@ export default function FinanceAI() {
   const { content, pushMessage, isLoading } = useAI();
   const [hasAI, setHasAI] = useState<boolean>(false);
   const [html, setHtml] = useState<string>("");
-  const { data, updateAiData } = useFinanceData();
+  const { data } = useFinanceData();
   const { groupId } = useGroup();
 
   useEffect(() => {
-    updateAiData([]);
     setHtml("");
   }, [groupId]);
 
@@ -37,11 +35,9 @@ export default function FinanceAI() {
 
   useEffect(() => {
     if (!content) return;
-    const { assetAdvice, reason } = JSON.parse(content);
+    const { reason } = JSON.parse(content);
 
     setHtml(mdToHtml(reason));
-
-    updateAiData(assetAdvice);
   }, [content]);
 
   const handleSuggestion = () => {
@@ -49,41 +45,25 @@ export default function FinanceAI() {
       {
         role: "system",
         content:
-          "你是一位经验丰富的金融顾问，擅长根据用户的资产情况和风险偏好提供合理的资产配置建议。你的建议应结合用户的各类资产，并确保合理分配资金以优化收益和风险。",
+          "你是一位经验丰富的金融顾问，擅长根据用户的资产情况和风险偏好提供分析与建议。请给出清晰、可执行的文字建议，不要替用户修改具体账户金额。",
       },
       {
         role: "user",
         content: `
-        请基于下信息，结合当前全球经济形势，提供一个合理的资产配置方案，并确保调整后的资产总额仍然等于 ${getTotalFinance(data, t("defaultCurrency"))} ${t("defaultCurrency")}，
-        在调整后检查总资产是否等于 ${getTotalFinance(data, t("defaultCurrency"))} ${t("defaultCurrency")}，并将计算过程和检查结果输出到 "check" 中
+        请基于以下信息，结合当前经济形势，用文字给出资产配置与风险方面的建议（可使用 Markdown 小节与列表）。
 
         - 以下是我的资产情况：
-        ${data.map((item) => `- id: ${item.id}，name: ${item.name}，amount: ${item.amount} ${item.currency}`).join("\n")}
+        ${data.map((item) => `- name: ${item.name}，amount: ${item.amount} ${item.currency}`).join("\n")}
 
-        - 以下是汇率情况：
+        - 以下是汇率情况（供你理解多币种资产）：
         ${JSON.stringify(DEFAULT_EXCHANGE_RATE)}
 
-        - 需要注意以下几点：
-          - 建议金额需要和原有资产金额相等
-          - 资产配置建议需要考虑资产的流动性、风险性、收益性等因素
-          - 需要考虑一些资产的最小值限制，例如股票，定期存款等
-          - 建议资产结果精确到小数点后两位
-          - 每项的建议金额的单位需要和原有资产金额的单位一致
-          - reason 使用 ${t("language")} 输出
+        - 注意：reason 使用 ${t("language")} 输出，内容为 Markdown 字符串。
 
         - 输出格式：
-          以JSON格式输出，输出格式如下(请严格按照以下格式输出，不要输出其他内容)：
+          以 JSON 输出，且仅包含以下字段（不要输出其他内容）：
           {
-            "assetAdvice": [
-              { 
-                "id": number,
-                "name": string,
-                "amount": number
-              },
-            ],
-            "reason": string,
-            "total": number, // 调整后的总资产
-            "check": string // 检查结果
+            "reason": string
           }
         `,
       },
