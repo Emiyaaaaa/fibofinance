@@ -7,7 +7,7 @@ export const useConfirm = (props: { message: string; color?: "danger" | "warning
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const resolver = useRef<{ resolve: (value: boolean) => void }>();
+  const resolver = useRef<{ resolve: (value: boolean) => void } | null>(null);
 
   const openConfirm = () => {
     onOpen();

@@ -82,12 +82,13 @@ export const useGroup = () => {
   const t = useTranslations("home");
 
   const changeGroup = (newGroupId: number) => {
+    const groupName = groupList.find((group) => group.id === newGroupId)?.name ?? "";
     setGroupId(newGroupId);
     setChanged();
     addToast({
       color: "success",
       description: t("changeGroupSuccess", {
-        groupName: groupList.find((group) => group.id === newGroupId)?.name,
+        groupName,
       }),
     });
     router.push(`?group_id=${newGroupId}`);
