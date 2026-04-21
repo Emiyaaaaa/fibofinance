@@ -26,6 +26,7 @@ function GroupSwitcher() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isEdit, setIsEdit] = useState(false);
   const t = useTranslations("addGroup");
+  const currentGroup = useMemo(() => groupList.find((group) => group.id === groupId), [groupList, groupId]);
   const { ComfirmModal, openConfirm } = useConfirm({
     message: t("deleteGroup"),
     color: "danger",
@@ -83,8 +84,6 @@ function GroupSwitcher() {
   };
 
   const handleSetIsDefault = () => {
-    const currentGroup = groupList.find((group) => group.id === groupId);
-
     if (!currentGroup) return;
 
     if (currentGroup.is_default) {
@@ -115,13 +114,7 @@ function GroupSwitcher() {
               <div className="flex w-full flex-row gap-4 pb-9">
                 <Input
                   className="w-full flex-1"
-                  defaultValue={
-                    isEdit
-                      ? groupList.find((group) => group.id === groupId)?.name
-                        ? t(groupList.find((group) => group.id === groupId)?.name)
-                        : ""
-                      : ""
-                  }
+                  defaultValue={isEdit && currentGroup?.name ? t(currentGroup.name) : ""}
                   name="name"
                   placeholder={t("namePlaceholder")}
                 />
@@ -179,7 +172,7 @@ function GroupSwitcher() {
               endContent={
                 <Checkbox
                   className="translate-x-2"
-                  isSelected={groupList.find((group) => group.id === groupId)?.is_default}
+                  isSelected={currentGroup?.is_default}
                   size="sm"
                   onSelect={handleSetIsDefault}
                 />
