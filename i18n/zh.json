@@ -5,6 +5,9 @@
     "defaultCurrency": "CNY",
     "title": "斐波纳财",
     "getAIAdvice": "获取AI建议",
+    "viewAIAdvice": "查看AI建议",
+    "aiChatPlaceholder": "继续提问（Shift+Enter 换行）",
+    "aiChatSend": "发送",
     "changeGroupSuccess": "已成功切换至 - {groupName}"
   },
   "addGroup": {

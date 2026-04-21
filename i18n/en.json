@@ -5,6 +5,9 @@
     "defaultCurrency": "USD",
     "title": "FiboFinance",
     "getAIAdvice": "Get AI Advice",
+    "viewAIAdvice": "View AI Advice",
+    "aiChatPlaceholder": "Follow up (Shift+Enter for new line)",
+    "aiChatSend": "Send",
     "changeGroupSuccess": "Successfully switched to - {groupName}"
   },
   "addGroup": {

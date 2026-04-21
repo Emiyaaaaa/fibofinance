@@ -2,6 +2,8 @@
 
 @config "../tailwind.config.js";
 
+@import "markstream-react/index.tailwind.css";
+
 /* 隐藏滚动条但保持滚动功能 */
 * {
   scrollbar-width: none; /* Firefox */
