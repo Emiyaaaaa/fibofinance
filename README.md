@@ -28,6 +28,8 @@ Create a Neon database
 Connect the database
 ![Deployment screenshot](./public/connect-database.png)
 
+Database initialization runs during the build process, so deployment may fail if the database is not connected. If that happens, connect the database and redeploy.
+
 Configure AI analysis (optional)
 ![Deployment screenshot](./public/settings-env.png)
 
