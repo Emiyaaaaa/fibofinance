@@ -106,6 +106,9 @@
     "diffWith": "对比",
     "showUnCount": "展示不计入统计的项目",
     "groupByGroup": "按分组统计",
+    "currentYear": "今年",
+    "pastThreeMonths": "过去三个月",
+    "pastYear": "过去一年",
     "switchToAll": "点击切换展示总数据",
     "switchToGroup": "点击切换展示当前组数据"
   },

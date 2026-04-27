@@ -107,6 +107,9 @@
     "diffWith": "Diff with",
     "showUnCount": "Show unCounted",
     "groupByGroup": "Group by group",
+    "currentYear": "This year",
+    "pastThreeMonths": "Past 3 months",
+    "pastYear": "Past year",
     "switchToAll": "Click to show all groups total",
     "switchToGroup": "Click to show current group total"
   },

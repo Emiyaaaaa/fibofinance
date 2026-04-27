@@ -4,9 +4,10 @@ import { sql } from "@/utils/sql";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { iconKey: string } }
+  { params }: { params: Promise<{ iconKey: string }> }
 ) {
-  const iconKey = decodeURIComponent(params.iconKey);
+  const { iconKey: rawIconKey } = await params;
+  const iconKey = decodeURIComponent(rawIconKey);
 
   if (!iconKey || iconKey.length > 50 || !/^[a-zA-Z0-9-]+$/.test(iconKey)) {
     return NextResponse.json({ error: "Invalid icon key" }, { status: 400 });

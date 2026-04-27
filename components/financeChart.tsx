@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { Card, CardHeader, CardBody, Divider, Switch, DateRangePicker } from "@heroui/react";
+import { Button, ButtonGroup, Card, CardHeader, CardBody, Divider, Switch, DateRangePicker } from "@heroui/react";
 
 import AmountOffset from "./amountOffset";
 
@@ -301,6 +301,25 @@ export default function FinanceChart() {
             label={null}
             aria-label="Date range selector"
             maxValue={maxDate}
+            CalendarTopContent={
+              <ButtonGroup
+                fullWidth
+                className="px-3 pb-2 pt-3 bg-content1 [&>button]:text-default-500 [&>button]:border-default-200/60"
+                radius="full"
+                size="sm"
+                variant="bordered"
+              >
+                <Button onPress={() => setDateRange({ start: maxDate.set({ month: 1, day: 1 }), end: maxDate })}>
+                  {t("currentYear")}
+                </Button>
+                <Button onPress={() => setDateRange({ start: maxDate.subtract({ months: 3 }), end: maxDate })}>
+                  {t("pastThreeMonths")}
+                </Button>
+                <Button onPress={() => setDateRange({ start: maxDate.subtract({ years: 1 }), end: maxDate })}>
+                  {t("pastYear")}
+                </Button>
+              </ButtonGroup>
+            }
             onError={() => setDateRange(dateRange)}
             value={dateRange}
             onChange={(range) => {
