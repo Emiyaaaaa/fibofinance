@@ -13,70 +13,26 @@ export const syncDatabase = async () => {
   ]);
 };
 
-const isTableExists = async (tableName: string): Promise<boolean> => {
-  const result = await sql(
-    `
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_name = '${tableName}';
-    `
-  ).then((res) => Boolean(res[0]));
-
-  return result;
-};
-
-const isFieldExists = async (tableName: string, fieldName: string): Promise<boolean> => {
-  const result = await sql(
-    `
-      SELECT column_name 
-      FROM information_schema.columns 
-      WHERE table_name = '${tableName}' 
-      AND column_name = '${fieldName}';
-    `
-  ).then((res) => Boolean(res[0]));
-
-  return result;
-};
-
-const isTableEmpty = async (tableName: string): Promise<boolean> => {
-  const result = await sql(
-    `
-      SELECT NOT EXISTS (
-        SELECT 1
-        FROM ${tableName}
-        LIMIT 1
-      ) AS is_empty;
-    `
-  ).then((res) => res[0]?.is_empty === true);
-
-  return result;
-};
-
 const syncFinanceData = async () => {
-  // check if the table exists
-  const finance_data_tableEexists = await isTableExists("finance_data");
-  if (!finance_data_tableEexists) {
-    await sql(
-      `
-          CREATE TABLE IF NOT EXISTS finance_data (
-            id SERIAL PRIMARY KEY,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            name VARCHAR(255) NOT NULL,
-            description TEXT,
-            owner VARCHAR(255),
-            type VARCHAR(255),
-            amount DECIMAL(10, 2) NOT NULL,
-            currency VARCHAR(255) NOT NULL,
-            group_id INTEGER NOT NULL DEFAULT 1
-          )
-        `
-    );
-  }
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS finance_data (
+        id SERIAL PRIMARY KEY,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        owner VARCHAR(255),
+        type VARCHAR(255),
+        amount DECIMAL(10, 2) NOT NULL,
+        currency VARCHAR(255) NOT NULL,
+        group_id INTEGER NOT NULL DEFAULT 1
+      )
+    `
+  );
 };
 
 const syncFinanceChangeData = async () => {
-  // check if the table exists
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_change_data (
@@ -102,17 +58,18 @@ const syncFinanceGroupData = async () => {
     `
   );
 
-  if (await isTableEmpty("finance_group_data")) {
-    await sql(
-      `
-        INSERT INTO finance_group_data (name, is_default) VALUES ('default_group', TRUE);
-      `
-    );
-  }
+  await sql(`CREATE UNIQUE INDEX IF NOT EXISTS finance_group_data_name_idx ON finance_group_data (name)`);
+  await sql(
+    `
+      INSERT INTO finance_group_data (name, is_default)
+      SELECT 'default_group', TRUE
+      WHERE NOT EXISTS (SELECT 1 FROM finance_group_data)
+      ON CONFLICT (name) DO NOTHING
+    `
+  );
 };
 
 const syncFinanceGroup2Data = async () => {
-  // check if the table exists
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_group (
@@ -135,12 +92,16 @@ const syncExchangeRateData = async () => {
     `
   );
 
-  if (await isTableEmpty("exchange_rate_data")) {
-    await sql(`INSERT INTO exchange_rate_data (rates_json, date) VALUES ($1, $2)`, [
-      JSON.stringify(DEFAULT_EXCHANGE_RATE),
-      new Date().toISOString().slice(0, 10),
-    ]);
-  }
+  await sql(`CREATE UNIQUE INDEX IF NOT EXISTS exchange_rate_data_date_idx ON exchange_rate_data (date)`);
+  await sql(
+    `
+      INSERT INTO exchange_rate_data (rates_json, date)
+      SELECT $1, $2
+      WHERE NOT EXISTS (SELECT 1 FROM exchange_rate_data)
+      ON CONFLICT (date) DO NOTHING
+    `,
+    [JSON.stringify(DEFAULT_EXCHANGE_RATE), new Date().toISOString().slice(0, 10)]
+  );
 };
 
 const syncIconsData = async () => {
@@ -156,12 +117,12 @@ const syncIconsData = async () => {
     `
   );
 
-  if (await isTableEmpty("icons")) {
-    // Add some default icons
-    await sql(
-      `
-        INSERT INTO icons (key, name, svg) VALUES 
-        ('cash', 'Cash', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>'),
+  await sql(
+    `
+      INSERT INTO icons (key, name, svg)
+      SELECT *
+      FROM (VALUES
+      ('cash', 'Cash', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>'),
         ('bank', 'Bank', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>'),
         ('house', 'House', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>'),
         ('wallet', 'Wallet', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12v5"></path><path d="M10 3v18"></path><path d="M13 21v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-5"></path></svg>'),
@@ -173,10 +134,11 @@ const syncIconsData = async () => {
         ('shield', 'Insurance', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'),
         ('building', 'Real Estate', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>'),
         ('briefcase', 'Business', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>')
-        ON CONFLICT (key) DO NOTHING
+      ) AS seed(key, name, svg)
+      WHERE NOT EXISTS (SELECT 1 FROM icons)
+      ON CONFLICT (key) DO NOTHING
       `
-    );
-  }
+  );
 };
 
 const syncCurrencyData = async () => {
@@ -192,11 +154,11 @@ const syncCurrencyData = async () => {
     `
   );
 
-  if (await isTableEmpty("currency_data")) {
-    // Add default currencies
-    await sql(
-      `
-        INSERT INTO currency_data (code, symbol, unit) VALUES 
+  await sql(
+    `
+      INSERT INTO currency_data (code, symbol, unit)
+      SELECT *
+      FROM (VALUES
         ('USD', '$', NULL),
         ('CNY', '¥', NULL),
         ('EUR', '€', NULL),
@@ -204,8 +166,9 @@ const syncCurrencyData = async () => {
         ('JPY', '¥', NULL),
         ('XAU', 'Au', 'g'),
         ('XAG', 'Ag', 'g')
-        ON CONFLICT (code) DO NOTHING
-      `
-    );
-  }
+      ) AS seed(code, symbol, unit)
+      WHERE NOT EXISTS (SELECT 1 FROM currency_data)
+      ON CONFLICT (code) DO NOTHING
+    `
+  );
 };

@@ -6,7 +6,6 @@ import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "./providers";
 
 import { fontSans } from "@/config/fonts";
-import { syncDatabase } from "@/utils/syncDatabase";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -40,8 +39,6 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  await syncDatabase();
-
   const locale = await getLocale();
   const messages = await getMessages();
 
