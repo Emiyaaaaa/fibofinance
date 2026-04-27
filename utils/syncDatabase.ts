@@ -164,6 +164,14 @@ const syncFinanceGroup2Data = async () => {
       `
     );
   }
+
+  await sql(
+    `
+      INSERT INTO finance_group (name)
+      SELECT 'default_group'
+      WHERE NOT EXISTS (SELECT 1 FROM finance_group);
+    `
+  );
 };
 
 const syncExchangeRateData = async () => {
