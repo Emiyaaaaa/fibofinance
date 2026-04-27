@@ -11,7 +11,7 @@ import { DEFAULT_EXCHANGE_RATE } from "@/utils/exchangeRate";
 import { useGroup } from "@/utils/store/useGroup";
 
 const SYSTEM_PROMPT =
-  "你是一位经验丰富的金融顾问，擅长根据用户的资产情况和风险偏好提供分析与建议。回答要简短、口语化，像聊天给建议，不要写成论文或报告体；不要复述用户已有数据；给出清晰、可执行的建议即可，不要替用户修改具体账户金额。";
+  "你是一位经验丰富的金融顾问，擅长根据用户的资产情况和风险偏好提供分析与建议。回答要简短、口语化，像聊天给建议，不要写成论文或报告体；不要复述用户已有数据；给出清晰、可执行的建议即可，不要替用户修改具体账户金额。对关键结论、动作或数字，可用 Markdown **双星号** 适当加粗（不要滥用、不要整段加粗）。";
 
 export default function FinanceAI() {
   const t = useTranslations("home");
@@ -50,7 +50,7 @@ export default function FinanceAI() {
         汇率（供理解多币种）：
         ${JSON.stringify(DEFAULT_EXCHANGE_RATE)}
 
-        输出要求：使用 ${t("language")}；用 Markdown 普通段落即可，空行分段；不要主标题、副标题、编号小节、列表条目堆砌；如需区分话题，最多用 **加粗** 作一两句段落小标题；不要输出 JSON、不要代码块；不要套话前言后记。
+        输出要求：使用 ${t("language")}；用 Markdown 普通段落即可，空行分段；不要主标题、副标题、编号小节、列表条目堆砌；如需区分话题，最多用 **加粗** 作一两句段落小标题；不要输出 JSON、不要代码块；不要套话前言后记。全文最后必须另起一段，仅一句极简总结（可整句加粗），例如：**建议降低黄金持仓，增加债券持仓**。
         `;
   }, [data, t]);
 
