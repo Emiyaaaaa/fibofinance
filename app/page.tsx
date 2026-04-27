@@ -72,8 +72,8 @@ const Page = () => {
         <FinanceTotal />
         <div className="flex-1" />
         <div className="flex gap-4 items-center">
-          <ExchangeRateSettings />
           <GroupSwitcher />
+          <ExchangeRateSettings />
           <LocaleSwitcher />
           <Link href="https://github.com/emiyaaaaa/fibofinance">
             <RiGithubLine size={22} />

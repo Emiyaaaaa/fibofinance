@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { RiAddLine, RiDeleteBinLine, RiEditLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 
 export default function FinanceGroupSwitcher(props: {

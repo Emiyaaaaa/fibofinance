@@ -128,7 +128,9 @@ function GroupSwitcher() {
       </Modal>
       <Dropdown>
         <DropdownTrigger>
-          <RiGroupLine className="cursor-pointer" size={21} />
+          <Button size="sm" color="primary" className="h-6">
+            {currentGroup?.name}
+          </Button>
         </DropdownTrigger>
         <DropdownMenu disallowEmptySelection selectedKeys={selectedKeys} selectionMode="single">
           <DropdownSection showDivider>
