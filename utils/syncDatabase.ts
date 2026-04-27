@@ -1,3 +1,4 @@
+import { DEFAULT_EXCHANGE_RATE } from "./exchangeRate";
 import { sql } from "./sql";
 
 export const syncDatabase = async () => {
@@ -12,7 +13,7 @@ export const syncDatabase = async () => {
   ]);
 };
 
-const isTableExists = async (tableName: string) => {
+const isTableExists = async (tableName: string): Promise<boolean> => {
   const result = await sql(
     `
       SELECT table_name 
@@ -24,7 +25,7 @@ const isTableExists = async (tableName: string) => {
   return result;
 };
 
-const isFieldExists = async (tableName: string, fieldName: string) => {
+const isFieldExists = async (tableName: string, fieldName: string): Promise<boolean> => {
   const result = await sql(
     `
       SELECT column_name 
@@ -33,6 +34,20 @@ const isFieldExists = async (tableName: string, fieldName: string) => {
       AND column_name = '${fieldName}';
     `
   ).then((res) => Boolean(res[0]));
+
+  return result;
+};
+
+const isTableEmpty = async (tableName: string): Promise<boolean> => {
+  const result = await sql(
+    `
+      SELECT NOT EXISTS (
+        SELECT 1
+        FROM ${tableName}
+        LIMIT 1
+      ) AS is_empty;
+    `
+  ).then((res) => res[0]?.is_empty === true);
 
   return result;
 };
@@ -58,106 +73,36 @@ const syncFinanceData = async () => {
         `
     );
   }
-
-  // check if description column exists
-  const descriptionExists = await isFieldExists("finance_data", "description");
-  if (!descriptionExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN description TEXT`);
-  }
-
-  // check if owner column exists
-  const ownerExists = await isFieldExists("finance_data", "owner");
-  if (!ownerExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN owner VARCHAR(255)`);
-  }
-
-  const groupIdExists = await isFieldExists("finance_data", "group_id");
-  if (!groupIdExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN group_id INTEGER`);
-    await sql(
-      `
-        UPDATE finance_data 
-        SET group_id = 1;
-      `
-    );
-  }
-
-  // set group_id default value to 1
-  await sql(`ALTER TABLE finance_data ALTER COLUMN group_id SET DEFAULT 1`);
-
-  // check if icon column exists
-  const iconExists = await isFieldExists("finance_data", "icon");
-  if (!iconExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN icon VARCHAR(255)`);
-  }
-
-  // check if not_count column exists
-  const ignore_in_totalExists = await isFieldExists("finance_data", "not_count");
-  if (!ignore_in_totalExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN not_count BOOLEAN`);
-  }
-
-  const finance_group_idExists = await isFieldExists("finance_data", "finance_group_id");
-  if (!finance_group_idExists) {
-    await sql(`ALTER TABLE finance_data ADD COLUMN finance_group_id INTEGER`);
-  }
 };
 
 const syncFinanceChangeData = async () => {
   // check if the table exists
-  const finance_change_data_tableEexists = await isTableExists("finance_change_data");
-  if (!finance_change_data_tableEexists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS finance_change_data (
-          id SERIAL PRIMARY KEY,
-          updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          group_id INTEGER NOT NULL,
-          finance_json TEXT NOT NULL,
-          date VARCHAR(255) NOT NULL
-        )
+  await sql(
     `
-    );
-  }
+      CREATE TABLE IF NOT EXISTS finance_change_data (
+        id SERIAL PRIMARY KEY,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        group_id INTEGER NOT NULL,
+        finance_json TEXT NOT NULL,
+        date VARCHAR(255) NOT NULL
+      )
+    `
+  );
 };
 
 const syncFinanceGroupData = async () => {
-  // check if the table exists
-  const finance_group_data_tableEexists = await isTableExists("finance_group_data");
-
-  if (!finance_group_data_tableEexists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS finance_group_data (
-          id SERIAL PRIMARY KEY,
-          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          name VARCHAR(255) NOT NULL,
-          is_default BOOLEAN NOT NULL DEFAULT FALSE
-        )
-      `
-    );
-    await sql(
-      `
-        INSERT INTO finance_group_data (name, is_default) VALUES ('default_group', TRUE);
-      `
-    );
-  }
-
-  const is_defaultExist = await isFieldExists("finance_group_data", "is_default");
-
-  if (!is_defaultExist) {
-    await sql(`ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`);
-  }
-
-  const hasFinanceGroups = await sql(
+  await sql(
     `
-      SELECT id
-      FROM finance_group_data
-      LIMIT 1;
+      CREATE TABLE IF NOT EXISTS finance_group_data (
+        id SERIAL PRIMARY KEY,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        name VARCHAR(255) NOT NULL,
+        is_default BOOLEAN NOT NULL DEFAULT FALSE
+      )
     `
-  ).then((res) => Boolean(res[0]));
+  );
 
-  if (!hasFinanceGroups) {
+  if (await isTableEmpty("finance_group_data")) {
     await sql(
       `
         INSERT INTO finance_group_data (name, is_default) VALUES ('default_group', TRUE);
@@ -168,54 +113,50 @@ const syncFinanceGroupData = async () => {
 
 const syncFinanceGroup2Data = async () => {
   // check if the table exists
-  const finance_group_tableEexists = await isTableExists("finance_group");
-
-  if (!finance_group_tableEexists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS finance_group (
-          id SERIAL PRIMARY KEY,
-          name VARCHAR(255) NOT NULL
-        )
-      `
-    );
-  }
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS finance_group (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      )
+    `
+  );
 };
 
 const syncExchangeRateData = async () => {
-  const exchange_rate_tableExists = await isTableExists("exchange_rate_data");
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS exchange_rate_data (
+        id SERIAL PRIMARY KEY,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        rates_json TEXT NOT NULL,
+        date VARCHAR(255) NOT NULL
+      )
+    `
+  );
 
-  if (!exchange_rate_tableExists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS exchange_rate_data (
-          id SERIAL PRIMARY KEY,
-          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          rates_json TEXT NOT NULL,
-          date VARCHAR(255) NOT NULL
-        )
-      `
-    );
+  if (await isTableEmpty("exchange_rate_data")) {
+    await sql(`INSERT INTO exchange_rate_data (rates_json, date) VALUES ($1, $2)`, [
+      JSON.stringify(DEFAULT_EXCHANGE_RATE),
+      new Date().toISOString().slice(0, 10),
+    ]);
   }
 };
 
 const syncIconsData = async () => {
-  // check if the table exists
-  const icons_tableExists = await isTableExists("icons");
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS icons (
+        id SERIAL PRIMARY KEY,
+        key VARCHAR(255) UNIQUE NOT NULL,
+        svg TEXT NOT NULL,
+        name VARCHAR(255),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  );
 
-  if (!icons_tableExists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS icons (
-          id SERIAL PRIMARY KEY,
-          key VARCHAR(255) UNIQUE NOT NULL,
-          svg TEXT NOT NULL,
-          name VARCHAR(255),
-          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )
-      `
-    );
-
+  if (await isTableEmpty("icons")) {
     // Add some default icons
     await sql(
       `
@@ -239,22 +180,19 @@ const syncIconsData = async () => {
 };
 
 const syncCurrencyData = async () => {
-  // check if the table exists
-  const currency_tableExists = await isTableExists("currency_data");
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS currency_data (
+        id SERIAL PRIMARY KEY,
+        code VARCHAR(255) UNIQUE NOT NULL,
+        symbol VARCHAR(255) NOT NULL,
+        unit VARCHAR(255),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  );
 
-  if (!currency_tableExists) {
-    await sql(
-      `
-        CREATE TABLE IF NOT EXISTS currency_data (
-          id SERIAL PRIMARY KEY,
-          code VARCHAR(255) UNIQUE NOT NULL,
-          symbol VARCHAR(255) NOT NULL,
-          unit VARCHAR(255),
-          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )
-      `
-    );
-
+  if (await isTableEmpty("currency_data")) {
     // Add default currencies
     await sql(
       `
