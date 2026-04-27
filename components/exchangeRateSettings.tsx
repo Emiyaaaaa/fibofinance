@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   NumberInput,
+  Spinner,
   useDisclosure,
   Dropdown,
   DropdownTrigger,
@@ -248,7 +249,7 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
         <ModalContent>
           <ModalHeader>{t("title")}</ModalHeader>
           <Form onSubmit={onSubmit}>
-            <ModalBody>
+            <ModalBody className="relative">
               <div className="grid grid-cols-2 gap-4">
                 {currencies.map((currency) => (
                   <div key={currency.code} className="flex items-end gap-2">
@@ -294,17 +295,22 @@ function ExchangeRateSettingsModal(props: { isOpen: boolean; onClose: () => void
                     />
                   </div>
                 ))}
-                <Button onPress={handleAddCurrency} variant="flat" className="h-[56px]">
+                <Button onPress={handleAddCurrency} variant="flat" className="h-[56px]" isDisabled={loading}>
                   + {t("addCurrency")}
                 </Button>
               </div>
+              {loading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-medium">
+                  <Spinner size="lg" variant="gradient" />
+                </div>
+              )}
             </ModalBody>
             <ModalFooter className="w-full">
               <div className="flex-1"></div>
               <Button variant="bordered" onPress={onClose} disabled={saving}>
                 {t("cancel")}
               </Button>
-              <Button color="primary" type="submit" isLoading={saving}>
+              <Button color="primary" type="submit" isLoading={saving} isDisabled={loading}>
                 {t("confirm")}
               </Button>
             </ModalFooter>
