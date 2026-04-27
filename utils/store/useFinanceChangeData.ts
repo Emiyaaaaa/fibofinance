@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useGroup } from "./useGroup";
 
 import { FinanceChange, Finance } from "@/types";
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { CalendarDate } from "@internationalized/date";
 import { useFinanceExchangeRateDataStore } from "./useFinanceExchangeRateData";
 
 export type FinanceChangeData = FinanceChange & {
@@ -20,9 +20,9 @@ type StoreType = {
   dateRange: {
     start: CalendarDate;
     end: CalendarDate;
-  };
+  } | null;
   setData: (data: StoreType["data"]) => void;
-  setDateRange: (start: CalendarDate, end: CalendarDate) => void;
+  setDateRange: (dateRange: StoreType["dateRange"]) => void;
   initData: (group_id: number) => void;
   updateData: (group_id: number) => void;
   filterDataByDateRange: () => void;
@@ -33,21 +33,26 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
   filteredData: [],
   updating: true,
   inited: false,
-  dateRange: {
-    start: new CalendarDate(2025, 4, 1),
-    end: today(getLocalTimeZone()),
-  },
+  dateRange: null,
   setData: (data: StoreType["data"]) => {
     set({ data });
     get().filterDataByDateRange();
   },
-  setDateRange: (start: CalendarDate, end: CalendarDate) => {
+  setDateRange: (dateRange: StoreType["dateRange"]) => {
+    if (!dateRange) {
+      set({ dateRange });
+      get().filterDataByDateRange();
+      return;
+    }
+
+    const { start, end } = dateRange;
+
     // 如果开始时间大于结束时间，则不进行后续操作
     if (start.compare(end) > 0) {
       return;
     }
     set({
-      dateRange: { start, end },
+      dateRange,
     });
     get().filterDataByDateRange();
   },
@@ -97,7 +102,7 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
   filterDataByDateRange: () => {
     const { data, dateRange } = get();
 
-    if (!dateRange.start || !dateRange.end) {
+    if (!dateRange?.start || !dateRange.end) {
       set({ filteredData: data });
       return;
     }

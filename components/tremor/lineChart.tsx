@@ -535,6 +535,16 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>((props, ref) 
   const hasOnValueChange = !!onValueChange || clickable;
   const prevActiveRef = React.useRef<boolean | undefined>(undefined);
   const prevLabelRef = React.useRef<string | undefined>(undefined);
+  const xAxisTicks = React.useMemo(() => {
+    if (!startEndOnly || data.length === 0) {
+      return undefined;
+    }
+
+    const startTick = data[0][index];
+    const endTick = data[data.length - 1][index];
+
+    return startTick === endTick ? [startTick] : [startTick, endTick];
+  }, [data, index, startEndOnly]);
 
   function onDotClick(itemData: any, event: React.MouseEvent) {
     event.stopPropagation();
@@ -628,7 +638,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>((props, ref) 
             stroke=""
             tick={{ transform: "translate(0, 6)" }}
             tickLine={false}
-            ticks={startEndOnly ? [data[0][index], data[data.length - 1][index]] : undefined}
+            ticks={xAxisTicks}
           >
             {xAxisLabel && (
               <Label

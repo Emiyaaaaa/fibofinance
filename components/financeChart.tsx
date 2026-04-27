@@ -14,7 +14,7 @@ import { Finance } from "@/types";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import { useLocale } from "@/utils/hook/useLocale";
 import { FinanceString } from "@/components/financeString";
@@ -235,7 +235,7 @@ export default function FinanceChart() {
         for (let i = 0; i < lastDateLength; i++) {
           const date = new Date(lastDate);
 
-          date.setDate(date.getDate() + i);
+          date.setDate(date.getDate() + i + 1);
 
           data.push({
             date: date.toLocaleDateString(),
@@ -277,7 +277,6 @@ export default function FinanceChart() {
     return Math.max(minValue - (maxValue - minValue), 0);
   }, [chartdata]);
 
-  const minDate = new CalendarDate(2025, 4, 1);
   const maxDate = today(getLocalTimeZone());
 
   if (!chartdata.length) {
@@ -301,17 +300,11 @@ export default function FinanceChart() {
             pageBehavior="single"
             label={null}
             aria-label="Date range selector"
-            minValue={minDate}
             maxValue={maxDate}
-            onError={(error) => setDateRange(dateRange.start, dateRange.end)}
-            defaultValue={dateRange}
+            onError={() => setDateRange(dateRange)}
             value={dateRange}
             onChange={(range) => {
-              if (range) {
-                setDateRange(range.start, range.end);
-              } else {
-                setDateRange(minDate, maxDate);
-              }
+              setDateRange(range);
             }}
           ></DateRangePicker>
         </I18nProvider>
