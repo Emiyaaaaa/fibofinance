@@ -92,13 +92,7 @@ const Page = () => {
           <div className="h-4" />
           <FinanceAI />
         </div>
-        <div className="text-center mt-16 text-sm opacity-80">
-          <span>Powered by </span>
-          <Link className="text-primary" href="https://github.com/emiyaaaaa">
-            Haozheng Li
-          </Link>
-        </div>
-        <div className="mt-4" />
+        <div className="mt-6" />
       </main>
     </>
   );

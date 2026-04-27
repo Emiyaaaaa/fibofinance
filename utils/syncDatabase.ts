@@ -138,7 +138,7 @@ const syncFinanceGroupData = async () => {
     );
     await sql(
       `
-        INSERT INTO finance_group_data (name, is_default) VALUES ('Default Group', TRUE);
+        INSERT INTO finance_group_data (name, is_default) VALUES ('default_group', TRUE);
       `
     );
   }
@@ -147,6 +147,22 @@ const syncFinanceGroupData = async () => {
 
   if (!is_defaultExist) {
     await sql(`ALTER TABLE finance_group_data ADD COLUMN is_default BOOLEAN NOT NULL DEFAULT FALSE`);
+  }
+
+  const hasFinanceGroups = await sql(
+    `
+      SELECT id
+      FROM finance_group_data
+      LIMIT 1;
+    `
+  ).then((res) => Boolean(res[0]));
+
+  if (!hasFinanceGroups) {
+    await sql(
+      `
+        INSERT INTO finance_group_data (name, is_default) VALUES ('default_group', TRUE);
+      `
+    );
   }
 };
 
@@ -164,14 +180,6 @@ const syncFinanceGroup2Data = async () => {
       `
     );
   }
-
-  await sql(
-    `
-      INSERT INTO finance_group (name)
-      SELECT 'default_group'
-      WHERE NOT EXISTS (SELECT 1 FROM finance_group);
-    `
-  );
 };
 
 const syncExchangeRateData = async () => {
