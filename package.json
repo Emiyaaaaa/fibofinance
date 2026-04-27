@@ -1,14 +1,35 @@
 {
-  "name": "next-app-template",
-  "version": "0.0.1",
+  "name": "fibofinance",
+  "version": "0.1.0",
+  "description": "A lightweight, self-hosted asset tracking app with charts and optional AI analysis.",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emiyaaaaa/fibofinance.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Emiyaaaaa/fibofinance/issues"
+  },
+  "homepage": "https://github.com/Emiyaaaaa/fibofinance#readme",
+  "keywords": [
+    "finance",
+    "asset-tracking",
+    "self-hosted",
+    "nextjs",
+    "neon",
+    "ai"
+  ],
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "dev": "next dev --turbopack --port 8081",
     "db:sync": "tsx scripts/sync-database.ts",
     "db:sync:production": "if [ \"$VERCEL_ENV\" = \"production\" ]; then npm run db:sync; fi",
     "build": "npm run db:sync:production && next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
+    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json",
+    "lint:fix": "npm run lint -- --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@antv/infographic": "^0.2.17",
