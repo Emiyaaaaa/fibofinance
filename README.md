@@ -1,50 +1,55 @@
 # FiboFinance
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-15.0.4-black)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![Self-hosted](https://img.shields.io/badge/self--hosted-first-brightgreen)
 
-[![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
+[English](./README.md) | [简体中文](./README_ZH.md)
 
-斐波纳财(FiboFinance) 是一个个人资产记录应用，可以通过 AI 分析你的资产情况，并给出资产配置建议。
+FiboFinance is a lightweight, self-hosted asset tracking app: record assets, view trends and allocation, and get AI analysis when needed.
 
-## ✨ 功能
+## Highlights
 
-- **智能资产配置** - 基于黄金比例原则使用AI优化你的资产配置
-- **支持资产分组** - 支持配置多组资产，私房钱也可单独管理
-- **资产趋势查看** - 简洁图表展示资产变化趋势，轻松跟踪每月收支
-- **数据泄露保护** - 私有部署，数据不泄露
+- Self-hosted with safer data ownership
+- Supports group management
+- Multi-currency support with custom exchange rates (silver, gold, and similar assets can be recorded by gram and automatically converted to CNY)
+- Supports trend charts, allocation pie charts, and history records
+- Supports AI analysis
 
-## 🚀 快速开始
+## Deployment
 
-### Vercel 一键部署
+One-click deployment on Vercel
 
-[![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-### 新增数据库
+Create a Neon database
+![Deployment screenshot](./public/database.png)
 
-在 vercel 中添加 nero 数据库
+Connect the database
+![Deployment screenshot](./public/connect-database.png)
 
-![Nero 数据库](./public/database.png)
+Configure AI analysis (optional)
+![Deployment screenshot](./public/settings-env.png)
 
-### 连接数据库
+## Local Development
 
-点击 connect database 按钮，选择你的 fibofinance 项目
-![](./public/connect-database.png)
+Configure `.env.local`
 
-### 配置 AI 模型（可选，不配置则无法使用 AI 分析功能）
+```bash
+DATABASE_URL="postgres://..."
+OPENAI_API_KEY="" # Optional
+OPENAI_MODEL="" # Optional
+OPENAI_BASE_URL="" # Optional
+```
 
-在 vercel env 中配置 OpenAI api 或任何其他兼容 OpenAI api 的模型（豆包、deepseek、claude 等）
+Start the app
 
-需配置：
+```bash
+npm install
 
-- OPENAI_BASE_URL
-- OPENAI_API_KEY
-- OPENAI_MODEL
+npm run dev
+```
 
-![配置环境变量](./public/settings-env.png)
+## License
 
-## 🙏 鸣谢
-
-- [Next.js](https://nextjs.org/)
-- [OpenAI](https://openai.com/)
-- [HeroUI](https://github.com/heroui)
+[MIT](./LICENSE)
