@@ -10,7 +10,7 @@ FiboFinance is a lightweight, self-hosted asset tracking app: record assets, vie
 
 ## Highlights
 
-- Self-hosted with safer data ownership
+- Self-hosted, data-secure, and password-protected
 - Supports group management
 - Multi-currency support with custom exchange rates (silver, gold, and similar assets can be recorded by gram and automatically converted to CNY)
 - Supports trend charts, allocation pie charts, and history records
@@ -28,10 +28,10 @@ Create a Neon database
 Connect the database
 ![Deployment screenshot](./public/connect-database.png)
 
-Database initialization runs during the build process, so deployment may fail if the database is not connected. If that happens, connect the database and redeploy.
-
 Configure AI analysis (optional)
 ![Deployment screenshot](./public/settings-env.png)
+
+Database initialization runs during the build process, so deployment may fail if the database is not connected. If that happens, connect the database and redeploy.
 
 ## Local Development
 
