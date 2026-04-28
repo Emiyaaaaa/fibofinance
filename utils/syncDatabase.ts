@@ -10,6 +10,7 @@ export const syncDatabase = async () => {
     syncExchangeRateData(),
     syncIconsData(),
     syncCurrencyData(),
+    syncSettingsData(),
   ]);
 };
 
@@ -172,6 +173,19 @@ const syncCurrencyData = async () => {
       ) AS seed(code, symbol, unit)
       WHERE NOT EXISTS (SELECT 1 FROM currency_data)
       ON CONFLICT (code) DO NOTHING
+    `
+  );
+};
+
+const syncSettingsData = async () => {
+  await sql(
+    `
+      CREATE TABLE IF NOT EXISTS settings (
+        id SERIAL PRIMARY KEY,
+        key VARCHAR(255) UNIQUE NOT NULL,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
     `
   );
 };

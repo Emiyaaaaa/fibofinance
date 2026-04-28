@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
+import { requirePasswordAuth } from "@/utils/passwordServer";
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ iconKey: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ iconKey: string }> }) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { iconKey: rawIconKey } = await params;
   const iconKey = decodeURIComponent(rawIconKey);
 

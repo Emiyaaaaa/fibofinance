@@ -6,6 +6,7 @@ import * as React from "react";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { NextIntlClientProvider, AbstractIntlMessages } from "next-intl";
+
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;

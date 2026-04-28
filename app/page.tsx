@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@heroui/react";
+import { Button, Spinner } from "@heroui/react";
 import { RiGithubLine } from "@remixicon/react";
 import Link from "next/link";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import FinanceModal from "@/components/financeModal";
@@ -25,11 +25,15 @@ import ExchangeRateSettings from "@/components/exchangeRateSettings";
 import { useCurrencyData } from "@/utils/store/useCurrencyData";
 import { useFinanceExchangeRateData } from "@/utils/store/useFinanceExchangeRateData";
 import useFinanceTotalDataStore from "@/utils/store/useFinanceTotalData";
+import PasswordSettings from "@/components/passwordSettings";
+import { DEFAULT_PASSWORD_LENGTH, normalizePasswordLength } from "@/utils/password";
 
 const Page = () => {
   const { onOpen } = useFinanceModal();
   const t = useTranslations("home");
   const query = useSearchParams();
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const { initData: initGroupData, groupId, setGroupId } = useGroup();
   const { initData: initFinanceChangeData } = useFinanceChangeData();
@@ -39,31 +43,63 @@ const Page = () => {
   const { initData: initExchangeRateData } = useFinanceExchangeRateData();
   const initTotalData = useFinanceTotalDataStore((s) => s.initData);
 
+  useEffect(() => {
+    fetch("/api/auth/check")
+      .then(async (res) => {
+        if (res.ok) {
+          setIsAuthorized(true);
+          return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+        const passwordLength = normalizePasswordLength(data.passwordLength ?? DEFAULT_PASSWORD_LENGTH);
+
+        router.replace(`/login?length=${passwordLength}`);
+      })
+      .catch(() => {
+        router.replace(`/login?length=${DEFAULT_PASSWORD_LENGTH}`);
+      });
+  }, [router]);
+
   // 初始化 groupId
   useEffect(() => {
+    if (!isAuthorized) return;
+
     const queryGroupId = query.get("group_id");
 
     if (queryGroupId) {
       setGroupId(Number(queryGroupId));
     }
-  }, []);
+  }, [isAuthorized, query, setGroupId]);
 
   // 初始化全局数据（只需要初始化一次）
   useEffect(() => {
+    if (!isAuthorized) return;
+
     initGroupData();
     initFinanceGroupData();
     initCurrencyData();
     initExchangeRateData();
     initTotalData();
-  }, []);
+  }, [isAuthorized, initCurrencyData, initExchangeRateData, initFinanceGroupData, initGroupData, initTotalData]);
 
   // 初始化依赖 groupId 的数据
   useEffect(() => {
+    if (!isAuthorized) return;
+
     if (groupId) {
       initFinanceData();
       initFinanceChangeData();
     }
-  }, [groupId]);
+  }, [groupId, initFinanceChangeData, initFinanceData, isAuthorized]);
+
+  if (!isAuthorized) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner size="lg" variant="gradient" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -74,6 +110,7 @@ const Page = () => {
         <div className="flex gap-4 items-center">
           <GroupSwitcher />
           <ExchangeRateSettings />
+          <PasswordSettings />
           <LocaleSwitcher />
           <Link href="https://github.com/emiyaaaaa/fibofinance">
             <RiGithubLine size={22} />

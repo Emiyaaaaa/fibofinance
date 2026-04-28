@@ -1,6 +1,11 @@
 import OpenAI from "openai";
 
+import { requirePasswordAuth } from "@/utils/passwordServer";
+
 export async function POST(req: Request) {
+  const authResponse = await requirePasswordAuth(req);
+  if (authResponse) return authResponse;
+
   if (!process.env.OPENAI_API_KEY) {
     return new Response("Missing OPENAI_API_KEY", { status: 500 });
   }

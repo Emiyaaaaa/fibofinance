@@ -87,6 +87,26 @@
     "deleteCurrencyConfirm": "Are you sure you want to delete this currency?",
     "deleteCurrencyWarning": "Warning: Deleting this currency may affect existing financial records using it."
   },
+  "password": {
+    "title": "Password Settings",
+    "lengthLabel": "Password Length",
+    "lengthOption": "{length} digits",
+    "description": "Numbers only",
+    "enabled": "Password protection enabled",
+    "disabled": "Password protection disabled",
+    "remove": "Remove Password",
+    "cancel": "Cancel",
+    "save": "Save",
+    "update": "Update Password",
+    "loadFailed": "Failed to load password settings",
+    "saveFailed": "Failed to save password",
+    "removeFailed": "Failed to remove password",
+    "invalidPassword": "Enter a {length}-digit numeric password",
+    "loginTitle": "Enter Password",
+    "loginDescription": "Enter the {length}-digit numeric password to continue",
+    "login": "Log in",
+    "loginFailed": "Incorrect password, please try again"
+  },
   "addFinance": {
     "confirmButton": "Add",
     "notCount": "Ignore in Total",

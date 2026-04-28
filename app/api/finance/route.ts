@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
+import { requirePasswordAuth } from "@/utils/passwordServer";
 
 const syncFinanceData = async (request: Request, group_id: number) => {
   const date = request.headers.get("x-fetch-local-date");
@@ -38,6 +39,9 @@ const syncFinanceData = async (request: Request, group_id: number) => {
 };
 
 export async function GET(request: NextRequest) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   // get by group_id
   const group_id = request.nextUrl.searchParams.get("group_id");
   const orderBy = request.nextUrl.searchParams.get("order_by") || "updated_at";
@@ -61,6 +65,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { name, type, amount, description, currency, owner, group_id, icon, not_count, finance_group_id } =
     await request.json();
 
@@ -75,6 +82,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { id } = await request.json();
 
   const result = await sql("DELETE FROM finance_data WHERE id = $1 RETURNING group_id", [id]);
@@ -87,6 +97,9 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const {
     id,
     name,

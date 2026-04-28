@@ -2,14 +2,21 @@ import { NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
 import { sanitizeSvgServer, validateSvgServer } from "@/utils/sanitizeSvgServer";
+import { requirePasswordAuth } from "@/utils/passwordServer";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const rows = await sql("SELECT * FROM icons ORDER BY created_at DESC");
 
   return NextResponse.json(rows);
 }
 
 export async function POST(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { key, svg, name } = await request.json();
 
   // Validate key
@@ -56,6 +63,9 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { key, svg, name } = await request.json();
 
   // Validate key
@@ -97,6 +107,9 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { key } = await request.json();
 
   if (!key) {

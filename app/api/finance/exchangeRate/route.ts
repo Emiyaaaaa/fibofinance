@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
+import { requirePasswordAuth } from "@/utils/passwordServer";
 
 const TABLE = "exchange_rate_data";
 
 export async function GET(request: NextRequest) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const date = request.nextUrl.searchParams.get("date");
 
   if (date) {
@@ -17,6 +21,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { rates_json, date } = await request.json();
 
   if (typeof rates_json !== "string" || typeof date !== "string") {
@@ -38,6 +45,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { id } = await request.json();
 
   if (typeof id !== "number") {

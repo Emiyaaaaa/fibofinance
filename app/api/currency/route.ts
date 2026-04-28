@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
+import { requirePasswordAuth } from "@/utils/passwordServer";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const rows = await sql("SELECT * FROM currency_data ORDER BY created_at ASC");
   return NextResponse.json(rows);
 }
 
 export async function POST(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { code, symbol, unit } = await request.json();
 
   if (!code || !symbol) {
@@ -31,6 +38,9 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { id, code, symbol, unit } = await request.json();
 
   if (!id || !code || !symbol) {
@@ -59,6 +69,9 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authResponse = await requirePasswordAuth(request);
+  if (authResponse) return authResponse;
+
   const { id } = await request.json();
 
   if (!id) {

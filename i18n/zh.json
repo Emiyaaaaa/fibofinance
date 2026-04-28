@@ -75,6 +75,26 @@
     "deleteCurrencyConfirm": "确定要删除此货币吗？",
     "deleteCurrencyWarning": "警告：删除此货币可能会影响正在使用它的财务记录。"
   },
+  "password": {
+    "title": "密码设置",
+    "lengthLabel": "密码位数",
+    "lengthOption": "{length} 位",
+    "description": "仅支持数字密码",
+    "enabled": "已开启密码保护",
+    "disabled": "未开启密码保护",
+    "remove": "移除密码",
+    "cancel": "取消",
+    "save": "保存",
+    "update": "更新密码",
+    "loadFailed": "读取密码设置失败",
+    "saveFailed": "保存密码失败",
+    "removeFailed": "移除密码失败",
+    "invalidPassword": "请输入 {length} 位数字密码",
+    "loginTitle": "输入访问密码",
+    "loginDescription": "请输入 {length} 位数字密码继续访问",
+    "login": "登录",
+    "loginFailed": "密码错误，请重试"
+  },
   "financeGroup": {
     "confirm": "确认",
     "cancel": "取消",
