@@ -8,6 +8,9 @@
     "viewAIAdvice": "View AI Advice",
     "aiChatPlaceholder": "Follow up (Shift+Enter for new line)",
     "aiChatSend": "Send",
+    "aiAdviceErrorServer": "The advice service is temporarily unavailable. Please try again in a moment.",
+    "aiAdviceErrorClient": "We couldn’t complete this request. Please try again or rephrase your question.",
+    "aiAdviceErrorNetwork": "Network error. Check your connection and try again.",
     "changeGroupSuccess": "Successfully switched to - {groupName}"
   },
   "addGroup": {

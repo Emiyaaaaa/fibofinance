@@ -8,6 +8,9 @@
     "viewAIAdvice": "查看AI建议",
     "aiChatPlaceholder": "继续提问（Shift+Enter 换行）",
     "aiChatSend": "发送",
+    "aiAdviceErrorServer": "建议服务暂时不可用，请稍后重试。",
+    "aiAdviceErrorClient": "请求未能完成，请稍后重试或换个说法。",
+    "aiAdviceErrorNetwork": "网络异常，请检查连接后重试。",
     "changeGroupSuccess": "已成功切换至 - {groupName}"
   },
   "addGroup": {

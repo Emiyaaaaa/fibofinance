@@ -107,6 +107,22 @@ export default function FinanceAI() {
                   );
                 }
 
+                if (item.error) {
+                  const errorMessage =
+                    item.error === "server"
+                      ? t("aiAdviceErrorServer")
+                      : item.error === "client"
+                        ? t("aiAdviceErrorClient")
+                        : t("aiAdviceErrorNetwork");
+                  return (
+                    <div key={index} className="min-w-0 w-full">
+                      <div className="rounded-xl border border-danger-200 bg-danger-50/90 px-4 py-3 text-sm text-danger-700 dark:border-danger-400/25 dark:bg-danger-900/20 dark:text-danger-300">
+                        {errorMessage}
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div key={index} className="min-w-0 w-full">
                     {item.content.trim() ? (

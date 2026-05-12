@@ -6,7 +6,11 @@ function stripCodeFence(text: string): string {
   return m ? m[1].trim() : t;
 }
 
-export type ChatItem = { role: "user" | "assistant"; content: string };
+export type ChatErrorKind = "server" | "client" | "network";
+
+export type ChatItem =
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string; error?: ChatErrorKind };
 
 type ApiMsg = { role: "system" | "user" | "assistant"; content: string };
 
@@ -26,7 +30,8 @@ export default function useAI() {
       setIsLoading(true);
 
       const threadBeforeAssistant: ChatItem[] = [...items, { role: "user", content: trimmed }];
-      setItems([...threadBeforeAssistant, { role: "assistant", content: "" }]);
+      const pendingAssistant: ChatItem = { role: "assistant", content: "" };
+      setItems([...threadBeforeAssistant, pendingAssistant]);
 
       const apiMessages: ApiMsg[] = [
         { role: "system", content: systemPrompt },
@@ -44,7 +49,9 @@ export default function useAI() {
 
         if (!response.ok) {
           const errText = await response.text().catch(() => "");
-          throw new Error(errText || `Request failed: ${response.status}`);
+          const err = new Error(errText || `Request failed: ${response.status}`) as Error & { status: number };
+          err.status = response.status;
+          throw err;
         }
 
         const reader = response.body?.getReader();
@@ -79,8 +86,22 @@ export default function useAI() {
           next[next.length - 1] = { role: "assistant", content: finalText };
           return next;
         });
-      } catch {
-        setItems((prev) => (prev.length >= 2 ? prev.slice(0, -2) : []));
+      } catch (e) {
+        let errorKind: ChatErrorKind = "network";
+        if (e && typeof e === "object" && "status" in e) {
+          const st = Number((e as { status: unknown }).status);
+          if (!Number.isNaN(st)) {
+            errorKind = st >= 500 ? "server" : "client";
+          }
+        }
+        setItems((prev) => {
+          if (prev.length === 0) return prev;
+          const next = [...prev];
+          const last = next[next.length - 1];
+          if (last?.role !== "assistant") return prev;
+          next[next.length - 1] = { role: "assistant", content: "", error: errorKind };
+          return next;
+        });
       } finally {
         setIsLoading(false);
       }
