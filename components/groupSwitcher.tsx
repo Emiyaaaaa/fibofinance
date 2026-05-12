@@ -13,8 +13,9 @@ import {
   Form,
   Button,
   Checkbox,
+  Spinner,
 } from "@heroui/react";
-import { RiAddLine, RiDeleteBinLine, RiEditLine, RiGroupLine } from "@remixicon/react";
+import { RiAddLine, RiDeleteBinLine, RiEditLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -22,7 +23,7 @@ import { useGroup } from "@/utils/store/useGroup";
 import { useConfirm } from "@/utils/hook/useComfirm";
 
 function GroupSwitcher() {
-  const { groupId, groupList, changeGroup, refreshGroupList, setGroupList } = useGroup();
+  const { inited, groupId, groupList, changeGroup, refreshGroupList, setGroupList } = useGroup();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isEdit, setIsEdit] = useState(false);
   const t = useTranslations("addGroup");
@@ -129,6 +130,7 @@ function GroupSwitcher() {
       <Dropdown>
         <DropdownTrigger>
           <Button size="sm" color="primary" className="h-6">
+            {!inited && <Spinner classNames={{ dots: "bg-black translate-y-[-50%]" }} variant="dots" size="sm" />}
             {currentGroup?.name}
           </Button>
         </DropdownTrigger>

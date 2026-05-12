@@ -76,7 +76,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
 
 // 创建一个 hook 来处理路由和初始化逻辑
 export const useGroup = () => {
-  const { groupId, groupList, setGroupId, setGroupList, setChanged, changed, debounceUpdateData, initData } =
+  const { inited, groupId, groupList, setGroupId, setGroupList, setChanged, changed, debounceUpdateData, initData } =
     useGroupStore();
   const router = useRouter();
   const t = useTranslations("home");
@@ -99,6 +99,7 @@ export const useGroup = () => {
   };
 
   return {
+    inited,
     groupId,
     groupList,
     changeGroup,
