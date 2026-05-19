@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./public/logo-dark.svg" width="70%">
-    <source media="(prefers-color-scheme: light)" srcset="./public/logo-light.svg" width="70%">
-    <img alt="fibofinance logo" src="./public/logo-light.svg" width="70%">
+    <source media="(prefers-color-scheme: dark)" srcset="./public/logo.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./public/logo.svg">
+    <img alt="fibofinance logo" src="./public/logo.svg">
   </picture>
   <p align="center">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
@@ -12,51 +12,51 @@
   <img alt="fibofinance demo" src="./public/en/demo.png">
 </p>
 
-[English](./README.md) | [简体中文](./README_ZH.md)
+[English](./README_EN.md) | [简体中文](./README.md)
 
-FiboFinance is a lightweight, self-hosted asset tracking app: record assets, view trends and allocation, and get AI analysis when needed.
+斐波纳财（FiboFinance）是一个轻量的自部署资产记录应用：记资产、看趋势、看配置，支持 AI 分析。
 
 ## Demo
 
 https://fibofinance.cn
 
-## Highlights
+## 亮点
 
-- Self-hosted, data-secure, and password-protected
-- Supports group management
-- Multi-currency support with custom exchange rates (silver, gold, and similar assets can be recorded by gram and automatically converted to CNY)
-- Supports trend charts, allocation pie charts, and history records
-- Supports AI analysis
+- 自部署、数据安全、密码保护
+- 支持分组管理
+- 多币种支持、自定义汇率（白银、黄金等按克记录，自动转换为人民币）
+- 支持趋势图、配置饼图、历史记录
+- 支持 AI 分析
 
-## Deployment
+## 部署
 
-One-click deployment on Vercel
+Vercel 一键部署
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
+[![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-Create a Neon database
-![Deployment screenshot](./public/database.png)
+创建 Neon 数据库
+![部署截图](./public/database.png)
 
-Connect the database
-![Deployment screenshot](./public/connect-database.png)
+链接数据库
+![部署截图](./public/connect-database.png)
 
-Configure AI analysis (optional)
-![Deployment screenshot](./public/settings-env.png)
+配置 AI 分析（可选）
+![部署截图](./public/settings-env.png)
 
-Database initialization runs during the build process, so deployment may fail if the database is not connected. If that happens, connect the database and redeploy.
+因为数据库初始化这步放在了构建过程中，所以如果没有连接数据就部署可能会失败，需要连接上数据库后重新部署。
 
-## Local Development
+## 本地开发
 
-Configure `.env.local`
+.env.local 配置
 
 ```bash
 DATABASE_URL="postgres://..."
-OPENAI_API_KEY="" # Optional
-OPENAI_MODEL="" # Optional
-OPENAI_BASE_URL="" # Optional
+OPENAI_API_KEY="" # 可选
+OPENAI_MODEL="" # 可选
+OPENAI_BASE_URL="" # 可选
 ```
 
-Start the app
+启动
 
 ```bash
 npm install
@@ -64,6 +64,6 @@ npm install
 npm run dev
 ```
 
-## License
+## 许可证
 
 [MIT](./LICENSE)
