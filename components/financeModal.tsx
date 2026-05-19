@@ -82,6 +82,7 @@ export default function FinanceModal() {
     const newData = {
       ...data,
       type,
+      currency: selectedCurrency,
       group_id: groupId,
       icon: icon || null,
       not_count: notCount,
