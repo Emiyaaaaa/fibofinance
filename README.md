@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./public/logo.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./public/logo.svg">
-    <img alt="fibofinance logo" src="./public/logo.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="./public/logo-dark.svg" width="70%">
+    <source media="(prefers-color-scheme: light)" srcset="./public/logo-light.svg" width="70%">
+    <img alt="fibofinance logo" src="./public/logo-light.svg" width="70%">
   </picture>
   <p align="center">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
@@ -14,7 +14,7 @@
 
 [English](./README_EN.md) | [简体中文](./README.md)
 
-斐波纳财（FiboFinance）是一个轻量的自部署资产记录应用：记资产、看趋势、看配置，支持 AI 分析。
+斐波纳财（FiboFinance）是一个轻量的自部署资产记录应用：管理资产、查看趋势、灵活对比，支持 AI 分析。
 
 ## Demo
 
