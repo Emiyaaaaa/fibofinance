@@ -9,7 +9,7 @@
     <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-blue">
     <img alt="Self-hosted" src="https://img.shields.io/badge/self--hosted-vercel-black">
   </p>
-  <img alt="fibofinance demo" src="./public/en/demo.png">
+  <img alt="fibofinance demo" src="./public/zh/demo.png">
 </p>
 
 [English](./README_EN.md) | [简体中文](./README.md)
