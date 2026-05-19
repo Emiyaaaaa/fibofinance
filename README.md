@@ -1,12 +1,24 @@
-# FiboFinance
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-16-black)
-![Self-hosted](https://img.shields.io/badge/self--hosted-first-brightgreen)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./public/logo.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./public/logo.svg">
+    <img alt="fibofinance logo" src="./public/logo.svg">
+  </picture>
+  <p align="center">
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
+    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-blue">
+    <img alt="Self-hosted" src="https://img.shields.io/badge/self--hosted-vercel-black">
+  </p>
+  <img alt="fibofinance demo" src="./public/en/demo.png">
+</p>
 
 [English](./README.md) | [简体中文](./README_ZH.md)
 
 FiboFinance is a lightweight, self-hosted asset tracking app: record assets, view trends and allocation, and get AI analysis when needed.
+
+## Demo
+
+https://fibofinance.cn
 
 ## Highlights
 
