@@ -24,13 +24,14 @@ import useClientWidth from "@/utils/hook/useClientWidth";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
 import { FinanceString } from "@/components/financeString";
-import { formatRelativeTime } from "@/utils/formatRelativeTime";
+import { useFormatRelativeTime } from "@/utils/formatRelativeTime";
 import { transformDate } from "@/utils/transformDate";
 import useCurrencyData from "@/utils/store/useCurrencyData";
 import useFinanceExchangeRateData from "@/utils/store/useFinanceExchangeRateData";
 
 export default function FinanceTable() {
   const t = useTranslations("finance");
+  const formatRelativeTime = useFormatRelativeTime();
 
   const { data, setData, changing } = useFinanceData();
   const { currencyMap } = useCurrencyData();

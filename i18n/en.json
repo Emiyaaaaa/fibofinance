@@ -131,7 +131,7 @@
     "showUnCount": "Show unCounted",
     "groupByGroup": "Group by group",
     "currentYear": "This year",
-    "pastThreeMonths": "Past 3 months",
+    "pastThreeMonths": "Past 3 mths.",
     "pastYear": "Past year",
     "switchToAll": "Click to show all groups total",
     "switchToGroup": "Click to show current group total"
@@ -171,5 +171,15 @@
     "svgDimensionsWarningTitle": "Remove width and height from SVG",
     "svgDimensionsWarningDescription": "The root <svg> tag has width or height attributes. Remove them so the icon scales correctly—use viewBox instead.",
     "editIcon": "Edit Icon"
+  },
+  "relativeTime": {
+    "now": "Just now",
+    "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
+    "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count, plural, one {# day ago} other {# days ago}}",
+    "lastWeek": "Last week",
+    "weeksAgo": "{count, plural, one {# week ago} other {# weeks ago}}",
+    "lastMonth": "Last month"
   }
 }

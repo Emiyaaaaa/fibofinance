@@ -170,5 +170,15 @@
     "svgDimensionsWarningTitle": "请删除 SVG 中的宽高属性",
     "svgDimensionsWarningDescription": "根 svg 标签包含 width 或 height 属性，请删除它们以便图标正确缩放，建议使用 viewBox。",
     "editIcon": "编辑"
+  },
+  "relativeTime": {
+    "now": "现在",
+    "minutesAgo": "{count}分钟前",
+    "hoursAgo": "{count}小时前",
+    "yesterday": "昨天",
+    "daysAgo": "{count}天前",
+    "lastWeek": "上周",
+    "weeksAgo": "{count}周前",
+    "lastMonth": "上个月"
   }
 }
