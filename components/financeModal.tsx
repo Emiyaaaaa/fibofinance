@@ -49,6 +49,8 @@ export default function FinanceModal() {
   const { fetchData: updateTotalData } = useFinanceTotalDataStore();
   const { data: currencies, currencyMap } = useCurrencyData();
   const submitType = props?.submitType ?? "create";
+  const selectedCurrency = currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency");
+  const selectedCurrencyInfo = currencyMap[selectedCurrency];
 
   const ownerList = [...new Set(data.map((item) => item.owner).filter(Boolean))];
 
@@ -174,35 +176,31 @@ export default function FinanceModal() {
                 className="w-full"
                 defaultValue={props?.data?.amount}
                 endContent={
-                  <Select
-                    variant="faded"
-                    className="w-[120px] grow-0 shrink-0"
-                    classNames={{
-                      popoverContent: "w-[130px]",
-                    }}
-                    defaultSelectedKeys={[props?.data?.currency ?? addFinanceT("defaultCurrency")]}
-                    name="currency"
-                    renderValue={() => {
-                      const selectedCurrency = currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency");
-                      return <div className="text-sm">{financeT(selectedCurrency)}</div>;
-                    }}
-                    size="sm"
-                    onSelectionChange={(e) => {
-                      setCurrency(e.currentKey as string);
-                    }}
-                  >
-                    {currencies.map((item) => (
-                      <SelectItem key={item.code}>{financeT(item.code)}</SelectItem>
-                    ))}
-                  </Select>
+                  <div className="flex items-center gap-2">
+                    {selectedCurrencyInfo?.unit && <div className="text-sm">{selectedCurrencyInfo.unit}</div>}
+                    <Select
+                      variant="faded"
+                      className="w-[120px] grow-0 shrink-0"
+                      classNames={{
+                        popoverContent: "w-[130px]",
+                      }}
+                      defaultSelectedKeys={[selectedCurrency]}
+                      name="currency"
+                      renderValue={() => <div className="text-sm">{financeT(selectedCurrency)}</div>}
+                      size="sm"
+                      onSelectionChange={(e) => {
+                        setCurrency(e.currentKey as string);
+                      }}
+                    >
+                      {currencies.map((item) => (
+                        <SelectItem key={item.code}>{financeT(item.code)}</SelectItem>
+                      ))}
+                    </Select>
+                  </div>
                 }
                 label={financeT("amount")}
                 name="amount"
-                startContent={
-                  <div className="text-sm">
-                    {currencyMap[currency ?? props?.data?.currency ?? addFinanceT("defaultCurrency")]?.symbol ?? ""}
-                  </div>
-                }
+                startContent={<div className="text-sm">{selectedCurrencyInfo?.symbol ?? ""}</div>}
               />
             </div>
             <div className="flex gap-4 w-full">

@@ -44,29 +44,21 @@ export const FinanceString = (props: {
     );
   }
 
-  if (currencyInfo.unit) {
-    return (
-      <Tag className={className}>
-        {animated ? (
-          <NumberFlow value={amount} format={numberFormat} suffix={currencyInfo.unit} style={amountStyles} />
-        ) : (
-          <>
-            <span style={amountStyles}>{toFixed2(amount)}</span>
-            <span style={unitStyles}>{currencyInfo.unit}</span>
-          </>
-        )}
-      </Tag>
-    );
-  }
-
   return (
     <Tag className={className}>
       {animated ? (
-        <NumberFlow value={amount} format={numberFormat} prefix={currencyInfo.symbol} style={amountStyles} />
+        <NumberFlow
+          value={amount}
+          format={numberFormat}
+          prefix={currencyInfo.unit ? undefined : currencyInfo.symbol}
+          suffix={currencyInfo.unit}
+          style={amountStyles}
+        />
       ) : (
         <>
-          <span style={currencyStyles}>{currencyInfo.symbol}</span>
+          {!currencyInfo.unit && <span style={currencyStyles}>{currencyInfo.symbol}</span>}
           <span style={amountStyles}>{toFixed2(amount)}</span>
+          {currencyInfo.unit && <span style={unitStyles}>{currencyInfo.unit}</span>}
         </>
       )}
     </Tag>

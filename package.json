@@ -43,6 +43,7 @@
     "@remixicon/react": "^4.6.0",
     "@terrastruct/d2": "^0.1.33",
     "@vercel/analytics": "^1.5.0",
+    "@xmldom/xmldom": "^0.9.10",
     "ahooks": "^3.9.5",
     "ai": "^4.1.54",
     "classnames": "^2.5.1",

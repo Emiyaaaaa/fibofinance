@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Icon } from "@/types";
+import { useEffect } from "react";
+
+import SafeSvgRenderer from "@/components/SafeSvgRenderer";
+import { useIconDataStore } from "@/utils/store/useIconData";
 
 interface IconRendererProps {
   iconKey?: string;
@@ -9,64 +11,27 @@ interface IconRendererProps {
   className?: string;
 }
 
-// Cache icons to avoid repeated fetches
-let iconCache: Icon[] = [];
-let cachePromise: Promise<Icon[]> | null = null;
-
-const fetchIconsCache = async (): Promise<Icon[]> => {
-  if (iconCache.length > 0) {
-    return iconCache;
-  }
-
-  if (cachePromise) {
-    return cachePromise;
-  }
-
-  cachePromise = fetch("/api/icons")
-    .then((res) => res.json())
-    .then((data) => {
-      iconCache = data;
-      return data;
-    })
-    .catch(() => {
-      cachePromise = null;
-      return [];
-    });
-
-  return cachePromise;
-};
-
 export default function IconRenderer({ iconKey, size = 20, className = "" }: IconRendererProps) {
-  const [icon, setIcon] = useState<Icon | null>(null);
+  const icon = useIconDataStore((s) => (iconKey ? s.iconMap[iconKey] : undefined));
+  const inited = useIconDataStore((s) => s.inited);
+  const initData = useIconDataStore((s) => s.initData);
 
   useEffect(() => {
-    if (!iconKey) return;
-
-    // Check cache first
-    const cachedIcon = iconCache.find((i) => i.key === iconKey);
-    if (cachedIcon) {
-      setIcon(cachedIcon);
-      return;
+    if (!inited) {
+      initData();
     }
-
-    // Fetch icons if not in cache
-    fetchIconsCache().then((icons) => {
-      const foundIcon = icons.find((i) => i.key === iconKey);
-      if (foundIcon) {
-        setIcon(foundIcon);
-      }
-    });
-  }, [iconKey]);
+  }, [inited, initData]);
 
   if (!icon || !iconKey) {
     return null;
   }
 
   return (
-    <div
+    <SafeSvgRenderer
       className={`inline-flex items-center justify-center ${className}`}
-      style={{ width: size, height: size }}
-      dangerouslySetInnerHTML={{ __html: icon.svg }}
+      height={size}
+      svgContent={icon.svg}
+      width={size}
     />
   );
 }

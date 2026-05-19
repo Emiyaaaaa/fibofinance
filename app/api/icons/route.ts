@@ -1,8 +1,29 @@
 import { NextResponse } from "next/server";
 
 import { sql } from "@/utils/sql";
-import { sanitizeSvgServer, validateSvgServer } from "@/utils/sanitizeSvgServer";
+import { containsDangerousSvgPatterns, isSvgWithinSizeLimit, validateSvgStructure } from "@/utils/svgSecurity";
+import { sanitizeSvgServer } from "@/utils/sanitizeSvgServer";
 import { requirePasswordAuth } from "@/utils/passwordServer";
+
+function validateIconSvgInput(svg: unknown) {
+  if (!svg || typeof svg !== "string") {
+    return NextResponse.json({ error: "Invalid SVG content" }, { status: 400 });
+  }
+
+  if (!isSvgWithinSizeLimit(svg)) {
+    return NextResponse.json({ error: "SVG content is too large" }, { status: 400 });
+  }
+
+  if (!validateSvgStructure(svg)) {
+    return NextResponse.json({ error: "Invalid SVG content" }, { status: 400 });
+  }
+
+  if (containsDangerousSvgPatterns(svg)) {
+    return NextResponse.json({ error: "SVG contains potentially dangerous content" }, { status: 400 });
+  }
+
+  return null;
+}
 
 export async function GET(request: Request) {
   const authResponse = await requirePasswordAuth(request);
@@ -29,16 +50,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Icon key can only contain letters, numbers, and hyphens" }, { status: 400 });
   }
 
-  // Validate SVG content
-  if (!svg || !validateSvgServer(svg)) {
+  const svgValidationResponse = validateIconSvgInput(svg);
+  if (svgValidationResponse) return svgValidationResponse;
+
+  const verifiedSvg = sanitizeSvgServer(svg);
+
+  if (!verifiedSvg) {
     return NextResponse.json({ error: "Invalid SVG content" }, { status: 400 });
-  }
-
-  // Sanitize SVG content
-  const sanitizedSvg = sanitizeSvgServer(svg);
-
-  if (!sanitizedSvg) {
-    return NextResponse.json({ error: "Failed to sanitize SVG content" }, { status: 400 });
   }
 
   // Validate name
@@ -47,7 +65,7 @@ export async function POST(request: Request) {
   try {
     const result = await sql("INSERT INTO icons (key, svg, name) VALUES ($1, $2, $3) RETURNING *", [
       key,
-      sanitizedSvg,
+      verifiedSvg,
       sanitizedName,
     ]);
 
@@ -78,16 +96,13 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Icon key can only contain letters, numbers, and hyphens" }, { status: 400 });
   }
 
-  // Validate SVG content
-  if (!svg || !validateSvgServer(svg)) {
+  const svgValidationResponse = validateIconSvgInput(svg);
+  if (svgValidationResponse) return svgValidationResponse;
+
+  const verifiedSvg = sanitizeSvgServer(svg);
+
+  if (!verifiedSvg) {
     return NextResponse.json({ error: "Invalid SVG content" }, { status: 400 });
-  }
-
-  // Sanitize SVG content
-  const sanitizedSvg = sanitizeSvgServer(svg);
-
-  if (!sanitizedSvg) {
-    return NextResponse.json({ error: "Failed to sanitize SVG content" }, { status: 400 });
   }
 
   // Validate name
@@ -95,7 +110,7 @@ export async function PUT(request: Request) {
 
   try {
     const result = await sql("UPDATE icons SET svg = $1, name = $2 WHERE key = $3 RETURNING *", [
-      sanitizedSvg,
+      verifiedSvg,
       sanitizedName,
       key,
     ]);

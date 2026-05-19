@@ -6,6 +6,7 @@ import {
   Input,
   Textarea,
   Button,
+  Alert,
   Modal,
   ModalContent,
   ModalHeader,
@@ -14,7 +15,10 @@ import {
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import { Icon } from "@/types";
+import SafeSvgRenderer from "@/components/SafeSvgRenderer";
+import { sanitizeSvg } from "@/utils/sanitizeSvg";
+import { useIconData } from "@/utils/store/useIconData";
+import { containsDangerousSvgPatterns, isSvgWithinSizeLimit, validateSvgStructure } from "@/utils/svgSecurity";
 import { uuid } from "@/utils/uuid";
 
 interface IconPickerProps {
@@ -60,174 +64,133 @@ function DeleteConfirmModal({ isOpen, iconKey, onClose, onConfirm, isUsed }: Del
 
 export default function IconPicker({ value, onChange }: IconPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [icons, setIcons] = useState<Icon[]>([]);
   const [selectedIcon, setSelectedIcon] = useState<string | undefined>(value);
   const [tempSelectedIcon, setTempSelectedIcon] = useState<string | undefined>(value);
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [svgContentError, setSvgContentError] = useState<string>("");
   const [newIconKey, setNewIconKey] = useState(uuid());
   const [newIconSvg, setNewIconSvg] = useState("");
   const [newIconName, setNewIconName] = useState("");
   const [error, setError] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<{ iconKey: string; isUsed?: boolean } | null>(null);
-  const [iconsLoaded, setIconsLoaded] = useState(false);
 
   const t = useTranslations("iconPicker");
+  const { data: icons, inited, initData, updateData, addIcon, updateIcon, deleteIcon, checkIconUsage } = useIconData();
+
+  useEffect(() => {
+    if (newIconSvg) {
+      if (!isSvgWithinSizeLimit(newIconSvg)) {
+        setSvgContentError(t("svgTooLarge"));
+      } else if (!validateSvgStructure(newIconSvg)) {
+        setSvgContentError(t("invalidSvgStructure"));
+      } else if (containsDangerousSvgPatterns(newIconSvg)) {
+        setSvgContentError(t("dangerousSvgContent"));
+      } else {
+        setSvgContentError("");
+      }
+    }
+  }, [newIconSvg]);
 
   useEffect(() => {
     setSelectedIcon(value);
     setTempSelectedIcon(value);
   }, [value]);
 
-  // Load icons on component mount if we have a value
   useEffect(() => {
-    if (value && !iconsLoaded) {
-      fetchIcons();
+    if (value && !inited) {
+      initData();
     }
-  }, [value, iconsLoaded]);
+  }, [value, inited, initData]);
 
   useEffect(() => {
     if (isOpen) {
-      fetchIcons();
+      if (inited) {
+        updateData();
+      } else {
+        initData();
+      }
       // Reset temp selection to current value when opening
       setTempSelectedIcon(selectedIcon);
     }
   }, [isOpen, selectedIcon]);
 
-  const fetchIcons = async () => {
-    try {
-      const response = await fetch("/api/icons");
-      const data = await response.json();
+  const prepareSvgForSubmit = (): string | null => {
+    if (svgContentError) {
+      setError(svgContentError);
+      return null;
+    }
 
-      setIcons(data);
-      setIconsLoaded(true);
-    } catch (error) {
-      console.error("Failed to fetch icons:", error);
+    const verifiedSvg = sanitizeSvg(newIconSvg);
+
+    if (!verifiedSvg) {
+      setError(t("dangerousSvgContent"));
+
+      return null;
+    }
+
+    return verifiedSvg;
+  };
+
+  const translateApiError = (message: string, fallbackKey: string): string => {
+    switch (message) {
+      case "Icon key already exists":
+        return t("iconKeyExists");
+      case "Invalid SVG content":
+        return t("invalidSvgStructure");
+      case "Invalid icon key":
+        return t("invalidIconKey");
+      case "Icon key can only contain letters, numbers, and hyphens":
+        return t("iconKeyFormat");
+      case "SVG contains potentially dangerous content":
+      case "Failed to sanitize SVG content":
+        return t("dangerousSvgContent");
+      case "SVG content is too large":
+        return t("svgTooLarge");
+      default:
+        return t(fallbackKey);
     }
   };
 
-  const handleCreateIcon = async () => {
+  const handleSaveIcon = async (mode: "create" | "update") => {
     setError("");
 
-    if (!newIconSvg) {
-      setError(t("iconRequired"));
+    const verifiedSvg = prepareSvgForSubmit();
 
+    if (!verifiedSvg) {
       return;
     }
 
+    setIsSaving(true);
+
+    const failedMessageKey = mode === "create" ? "failedToCreateIcon" : "failedToUpdateIcon";
+
     try {
-      const response = await fetch("/api/icons", {
-        method: "POST",
-        body: JSON.stringify({
-          key: newIconKey,
-          svg: newIconSvg,
-          name: newIconName || newIconKey,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-
-        if (data.error === "Icon key already exists") {
-          setError(t("iconKeyExists"));
-        } else if (data.error === "Invalid SVG content") {
-          setError(t("invalidSvgContent"));
-        } else if (data.error === "Invalid icon key") {
-          setError(t("invalidIconKey"));
-        } else if (data.error === "Icon key can only contain letters, numbers, and hyphens") {
-          setError(t("iconKeyFormat"));
-        } else if (data.error === "Failed to sanitize SVG content") {
-          setError(t("dangerousSvgContent"));
-        } else {
-          setError(t("failedToCreateIcon"));
-        }
-
-        return;
+      if (mode === "create") {
+        await addIcon(newIconKey, verifiedSvg, newIconName);
+      } else {
+        await updateIcon(newIconKey, verifiedSvg, newIconName);
       }
 
-      // Reset form and refresh icons
+      const savedKey = newIconKey;
       setNewIconKey("");
       setNewIconSvg("");
       setNewIconName("");
       setIsCreating(false);
       setIsEditing(false);
-      await fetchIcons();
-
-      // Select the newly created icon
-      setTempSelectedIcon(newIconKey);
-    } catch (error) {
-      setError(t("failedToCreateIcon"));
-    }
-  };
-
-  const handleUpdateIcon = async () => {
-    setError("");
-
-    if (!newIconSvg) {
-      setError(t("iconRequired"));
-
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/icons", {
-        method: "PUT",
-        body: JSON.stringify({
-          key: newIconKey,
-          svg: newIconSvg,
-          name: newIconName || newIconKey,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-
-        if (data.error === "Icon key already exists") {
-          setError(t("iconKeyExists"));
-        } else if (data.error === "Invalid SVG content") {
-          setError(t("invalidSvgContent"));
-        } else if (data.error === "Invalid icon key") {
-          setError(t("invalidIconKey"));
-        } else if (data.error === "Icon key can only contain letters, numbers, and hyphens") {
-          setError(t("iconKeyFormat"));
-        } else if (data.error === "Failed to sanitize SVG content") {
-          setError(t("dangerousSvgContent"));
-        } else {
-          setError(t("failedToUpdateIcon"));
-        }
-
-        return;
-      }
-
-      // Reset form and refresh icons
-      setNewIconKey("");
-      setNewIconSvg("");
-      setNewIconName("");
-      setIsCreating(false);
-      setIsEditing(false);
-      await fetchIcons();
-
-      // Select the newly created icon
-      setTempSelectedIcon(newIconKey);
-    } catch (error) {
-      setError(t("failedToCreateIcon"));
+      setTempSelectedIcon(savedKey);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      setError(translateApiError(message, failedMessageKey));
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteIcon = async (iconKey: string) => {
     try {
-      const response = await fetch("/api/icons", {
-        method: "DELETE",
-        body: JSON.stringify({ key: iconKey }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to delete icon");
-
-        return;
-      }
-
-      const result = await response.json();
+      await deleteIcon(iconKey);
 
       // If the deleted icon was selected, clear selection
       if (tempSelectedIcon === iconKey) {
@@ -237,33 +200,9 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
         setSelectedIcon(undefined);
         onChange("");
       }
-
-      // Refresh icon list
-      await fetchIcons();
-
-      // Show usage warning if icon was in use
-      if (result.wasUsed) {
-        // The warning was already shown in the confirmation dialog
-      }
     } catch (error) {
       console.error("Failed to delete icon:", error);
     }
-  };
-
-  const checkIconUsage = async (iconKey: string) => {
-    try {
-      const response = await fetch(`/api/icons/${iconKey}/usage`);
-
-      if (response.ok) {
-        const result = await response.json();
-
-        return result.isUsed;
-      }
-    } catch (error) {
-      console.error("Failed to check icon usage:", error);
-    }
-
-    return undefined;
   };
 
   const renderIcon = (iconKey: string) => {
@@ -272,9 +211,9 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
     if (!icon) return null;
 
     return (
-      <div
-        dangerouslySetInnerHTML={{ __html: icon.svg }}
+      <SafeSvgRenderer
         className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+        svgContent={icon.svg}
       />
     );
   };
@@ -369,17 +308,17 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                   isInvalid={!!error && !newIconSvg}
                   label={t("svgContent")}
                   minRows={4}
-                  placeholder={t("svgContentPlaceholder")}
+                  placeholder="<svg viewBox='0 0 24 24'>...</svg>"
                   value={newIconSvg}
                   onChange={(e) => setNewIconSvg(e.target.value)}
                 />
-                {newIconSvg && (
+                {(error || svgContentError) && <p className="text-sm text-danger">{error || svgContentError}</p>}
+                {newIconSvg && !svgContentError && (
                   <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("preview")}</p>
-                    <div dangerouslySetInnerHTML={{ __html: newIconSvg }} className="w-12 h-12" />
+                    <SafeSvgRenderer width={48} height={48} svgContent={newIconSvg} />
                   </div>
                 )}
-                {error && <p className="text-sm text-danger">{error}</p>}
               </div>
             ) : (
               <div className="space-y-4">
@@ -393,7 +332,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                           variant={tempSelectedIcon === icon.key ? "solid" : "light"}
                           onPress={() => setTempSelectedIcon(icon.key)}
                         >
-                          <div dangerouslySetInnerHTML={{ __html: icon.svg }} className="w-6 h-6 shrink-0" />
+                          <SafeSvgRenderer className="shrink-0" width={24} height={24} svgContent={icon.svg} />
                         </Button>
                       </Tooltip>
                     </div>
@@ -449,7 +388,11 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
                 >
                   {t("cancel")}
                 </Button>
-                <Button color="primary" onPress={isCreating ? handleCreateIcon : handleUpdateIcon}>
+                <Button
+                  color="primary"
+                  isLoading={isSaving}
+                  onPress={() => handleSaveIcon(isCreating ? "create" : "update")}
+                >
                   {isCreating ? t("createIcon") : t("updateIcon")}
                 </Button>
               </>

@@ -144,7 +144,6 @@
     "iconName": "Icon Name (Optional)",
     "iconNamePlaceholder": "e.g., My Icon",
     "svgContent": "SVG Content",
-    "svgContentPlaceholder": "<svg viewBox=\"0 0 24 24\">...</svg>",
     "preview": "Preview:",
     "uniqueIdentifier": "Unique identifier for the icon",
     "pasteSvgCode": "Paste the SVG code here",
@@ -152,7 +151,7 @@
     "failedToCreateIcon": "Failed to create icon",
     "failedToUpdateIcon": "Failed to update icon",
     "iconKeyExists": "Icon key already exists",
-    "invalidSvgContent": "Invalid SVG content",
+    "invalidSvgStructure": "Invalid SVG structure",
     "select": "Select",
     "cancel": "Cancel",
     "createIcon": "Create Icon",
@@ -169,6 +168,8 @@
     "iconKeyFormat": "Icon key can only contain letters, numbers, and hyphens",
     "svgTooLarge": "SVG content is too large (max 100KB)",
     "dangerousSvgContent": "SVG contains potentially dangerous content",
+    "svgDimensionsWarningTitle": "Remove width and height from SVG",
+    "svgDimensionsWarningDescription": "The root <svg> tag has width or height attributes. Remove them so the icon scales correctly—use viewBox instead.",
     "editIcon": "Edit Icon"
   }
 }
