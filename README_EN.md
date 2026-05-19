@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./public/logo-dark.svg" width="70%">
-    <source media="(prefers-color-scheme: light)" srcset="./public/logo-light.svg" width="70%">
-    <img alt="fibofinance logo" src="./public/logo-light.svg" width="70%">
+    <source media="(prefers-color-scheme: dark)" srcset="./public/logo-dark.svg" width="60%">
+    <source media="(prefers-color-scheme: light)" srcset="./public/logo-light.svg" width="60%">
+    <img alt="fibofinance logo" src="./public/logo-light.svg" width="60%">
   </picture>
   <p align="center">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
