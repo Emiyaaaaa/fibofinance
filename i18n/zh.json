@@ -102,7 +102,12 @@
     "loginDescription": "请输入 {length} 位数字密码继续访问",
     "login": "登录",
     "loginFailed": "密码错误，请重试",
-    "demoMode": "演示环境不支持设置密码，个人部署后可使用"
+    "demoMode": "演示环境不支持设置密码，个人部署后可使用",
+    "forgotPassword": "找回密码",
+    "forgotPasswordTitle": "找回密码",
+    "forgotPasswordDescription": "出于安全考虑，密码无法在线找回。请进入数据库手动删除密码记录，删除后即可重新设置密码。",
+    "forgotPasswordHint": "操作步骤：连接你的数据库，进入 settings 表，删除或清空 password 字段对应的记录，如下图所示。",
+    "iKnow": "我知道了"
   },
   "financeGroup": {
     "confirm": "确认",

@@ -114,7 +114,12 @@
     "loginDescription": "Enter the {length}-digit numeric password to continue",
     "login": "Log in",
     "loginFailed": "Incorrect password, please try again",
-    "demoMode": "Password settings are disabled in the demo. Deploy your own instance to enable it."
+    "demoMode": "Password settings are disabled in the demo. Deploy your own instance to enable it.",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Recover password",
+    "forgotPasswordDescription": "For security reasons, the password cannot be recovered online. Please go to your database and remove the password record manually, then you can set a new one.",
+    "forgotPasswordHint": "Steps: connect to your database, open the settings table, and delete or clear the row storing the password, as shown below.",
+    "iKnow": "Got it"
   },
   "addFinance": {
     "confirmButton": "Add",

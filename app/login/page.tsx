@@ -1,12 +1,23 @@
 "use client";
 
-import { Button, InputOtp } from "@heroui/react";
+import {
+  Button,
+  InputOtp,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 import { Logo } from "@/components/icons";
 import { DEFAULT_PASSWORD_LENGTH, isValidNumericPassword, normalizePasswordLength } from "@/utils/password";
+import Link from "next/link";
 
 export default function LoginPage() {
   const t = useTranslations("password");
@@ -16,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,7 +94,36 @@ export default function LoginPage() {
             {t("login")}
           </Button>
         </form>
+        <Button className="text-default-500" size="sm" variant="light" onPress={onOpen}>
+          {t("forgotPassword")}
+        </Button>
       </div>
+
+      <Modal isOpen={isOpen} size="2xl" onClose={onClose}>
+        <ModalContent>
+          <ModalHeader>{t("forgotPasswordTitle")}</ModalHeader>
+          <ModalBody>
+            <p className="text-sm text-default-600">{t("forgotPasswordDescription")}</p>
+            <p className="text-sm text-default-500">{t("forgotPasswordHint")}</p>
+            <div className="overflow-hidden rounded-medium border border-default-200">
+              <Link href="/remove-password.png" target="_blank">
+                <Image
+                  src="/remove-password.png"
+                  alt={t("forgotPasswordTitle")}
+                  className="h-auto w-full"
+                  height={600}
+                  width={1200}
+                />
+              </Link>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onPress={onClose}>
+              {t("iKnow")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </main>
   );
 }
