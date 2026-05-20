@@ -33,7 +33,7 @@ const syncFinanceData = async () => {
         description TEXT,
         owner VARCHAR(255),
         type VARCHAR(255),
-        amount DECIMAL(10, 2) NOT NULL,
+        amount DECIMAL(10, 3) NOT NULL,
         icon VARCHAR(255),
         finance_group_id INTEGER,
         not_count BOOLEAN NOT NULL DEFAULT FALSE,
