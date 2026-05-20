@@ -46,10 +46,10 @@ Fork 仓库后使用 Vercel 部署（推荐，可以一键同步最新代码）
 部署成功
 ![部署截图](./public/deploy-success.png)
 
-链接数据库
+连接数据库，连接成功后会自动注入环境变量
 ![部署截图](./public/connect-database.png)
 
-链接数据库后需要重新部署
+连接数据库后需要重新部署
 ![部署截图](./public/redeploy.png)
 
 配置 AI 分析（可选）

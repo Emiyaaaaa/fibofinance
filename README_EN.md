@@ -46,7 +46,7 @@ Create a Neon database in Vercel
 Deployment successful
 ![Deployment screenshot](./public/deploy-success.png)
 
-Connect the database
+Connect the database, and the environment variables will be automatically injected after successful connection
 ![Deployment screenshot](./public/connect-database.png)
 
 Redeploy after connecting the database
