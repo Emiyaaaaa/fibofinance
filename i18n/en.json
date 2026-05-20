@@ -113,7 +113,8 @@
     "loginTitle": "Enter Password",
     "loginDescription": "Enter the {length}-digit numeric password to continue",
     "login": "Log in",
-    "loginFailed": "Incorrect password, please try again"
+    "loginFailed": "Incorrect password, please try again",
+    "demoMode": "Password settings are disabled in the demo. Deploy your own instance to enable it."
   },
   "addFinance": {
     "confirmButton": "Add",

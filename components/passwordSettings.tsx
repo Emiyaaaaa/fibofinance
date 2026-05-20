@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  addToast,
   Button,
   ButtonGroup,
   Chip,
@@ -90,13 +91,18 @@ export default function PasswordSettings() {
         body: JSON.stringify({ password, passwordLength }),
       });
 
+      if (res.status === 403) {
+        addToast({ color: "warning", description: t("demoMode") });
+        return;
+      }
+
       if (!res.ok) {
-        throw new Error("Failed to save password settings");
+        throw new Error(t("saveFailed"));
       }
 
       onClose();
-    } catch {
-      setError(t("saveFailed"));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : t("saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -112,15 +118,15 @@ export default function PasswordSettings() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to remove password");
+        throw new Error(t("removeFailed"));
       }
 
       setIsPasswordSet(false);
       setPassword("");
       setPasswordLength(DEFAULT_PASSWORD_LENGTH);
       onClose();
-    } catch {
-      setError(t("removeFailed"));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : t("removeFailed"));
     } finally {
       setRemoving(false);
     }
@@ -129,7 +135,7 @@ export default function PasswordSettings() {
   return (
     <>
       <RiLockPasswordLine className="cursor-pointer" onClick={onOpen} size={22} />
-      <Modal isOpen={isOpen} onClose={onClose} size="sm">
+      <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalContent>
           <ModalHeader className="items-center gap-2">
             {t("title")}
@@ -191,7 +197,12 @@ export default function PasswordSettings() {
               <Button variant="bordered" onPress={onClose} isDisabled={saving || removing}>
                 {t("cancel")}
               </Button>
-              <Button color="primary" type="submit" isLoading={saving} isDisabled={loading || removing}>
+              <Button
+                color="primary"
+                type="submit"
+                isLoading={saving}
+                isDisabled={loading || removing || password.length !== passwordLength}
+              >
                 {isPasswordSet ? t("update") : t("save")}
               </Button>
             </ModalFooter>

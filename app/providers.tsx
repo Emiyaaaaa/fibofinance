@@ -17,7 +17,7 @@ export interface ProvidersProps {
 export function Providers({ children, themeProps, locale, messages }: ProvidersProps) {
   return (
     <HeroUIProvider>
-      <ToastProvider placement="bottom-center" toastProps={{ timeout: 1000 }} />
+      <ToastProvider placement="top-center" toastProps={{ timeout: 3000 }} />
       <NextThemesProvider attribute="class" defaultTheme="dark" {...themeProps}>
         <NextIntlClientProvider
           getMessageFallback={({ namespace, key }) => {

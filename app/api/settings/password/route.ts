@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { isValidNumericPassword, normalizePasswordLength } from "@/utils/password";
+
+const isDemoMode = process.env.DEMO_MODE === "true";
+
+function createDemoModeResponse() {
+  return NextResponse.json({ error: "demo_mode" }, { status: 403 });
+}
 import {
   clearPasswordAuthCookie,
   createPasswordUnauthorizedResponse,
@@ -27,6 +33,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (isDemoMode) {
+    return createDemoModeResponse();
+  }
+
   const auth = await verifyPasswordRequest(request);
 
   if (!auth.ok) {
