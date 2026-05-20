@@ -33,20 +33,27 @@ https://fibofinance.cn
 
 ## 部署
 
-Vercel 一键部署
+Vercel 一键部署（不推荐，代码是全新仓库创建的形式而不是Fork的形式）
 
 [![Vercel 一键部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-创建 Neon 数据库
-![部署截图](./public/database.png)
+Fork 仓库后使用 Vercel 部署（推荐，可以一键同步最新代码）
+![部署截图](./public/vercel-new-project.png)
+
+在 Vercel 中创建 Neon 数据库
+![部署截图](./public/neon.png)
+
+部署成功
+![部署截图](./public/deploy-success.png)
 
 链接数据库
 ![部署截图](./public/connect-database.png)
 
-配置 AI 分析（可选）
-![部署截图](./public/settings-env.png)
+链接数据库后需要重新部署
+![部署截图](./public/redeploy.png)
 
-因为数据库初始化这步放在了构建过程中，所以如果没有连接数据就部署可能会失败，需要连接上数据库后重新部署。
+配置 AI 分析（可选）
+![部署截图](./public/ai-env.png)
 
 ## 本地开发
 

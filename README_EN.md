@@ -33,20 +33,27 @@ https://fibofinance.cn
 
 ## Deployment
 
-One-click deployment on Vercel
+One-click deployment on Vercel (not recommended, because it creates a brand-new repository instead of a fork)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/emiyaaaaa/fibofinance)
 
-Create a Neon database
-![Deployment screenshot](./public/database.png)
+Deploy on Vercel after forking the repository (recommended, because you can sync the latest code with one click)
+![Deployment screenshot](./public/vercel-new-project.png)
+
+Create a Neon database in Vercel
+![Deployment screenshot](./public/neon.png)
+
+Deployment successful
+![Deployment screenshot](./public/deploy-success.png)
 
 Connect the database
 ![Deployment screenshot](./public/connect-database.png)
 
-Configure AI analysis (optional)
-![Deployment screenshot](./public/settings-env.png)
+Redeploy after connecting the database
+![Deployment screenshot](./public/redeploy.png)
 
-Database initialization runs during the build process, so deployment may fail if the database is not connected. If that happens, connect the database and redeploy.
+Configure AI analysis (optional)
+![Deployment screenshot](./public/ai-env.png)
 
 ## Local Development
 
