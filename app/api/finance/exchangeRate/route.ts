@@ -6,6 +6,10 @@ import { requirePasswordAuth } from "@/utils/passwordServer";
 const TABLE = "exchange_rate_data";
 
 export async function GET(request: NextRequest) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -21,6 +25,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -45,6 +53,10 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 

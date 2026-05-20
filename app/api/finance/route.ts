@@ -4,6 +4,10 @@ import { sql } from "@/utils/sql";
 import { requirePasswordAuth } from "@/utils/passwordServer";
 
 const syncFinanceData = async (request: Request, group_id: number) => {
+  if (!sql) {
+    return;
+  }
+
   const date = request.headers.get("x-fetch-local-date");
 
   if (!date) {
@@ -39,6 +43,10 @@ const syncFinanceData = async (request: Request, group_id: number) => {
 };
 
 export async function GET(request: NextRequest) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -65,6 +73,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -82,6 +94,10 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -97,6 +113,10 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 

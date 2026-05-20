@@ -8,7 +8,7 @@ import {
   PasswordLength,
   normalizePasswordLength,
 } from "./password";
-import { sql, sqlExists } from "./sql";
+import { sql } from "./sql";
 
 export interface PasswordSettings {
   passwordMd5: string;
@@ -68,6 +68,10 @@ export const clearPasswordAuthCookie = (response: NextResponse) => {
 };
 
 const ensureSettingsTable = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS settings (
@@ -81,7 +85,7 @@ const ensureSettingsTable = async () => {
 };
 
 export const getPasswordSettings = async (): Promise<PasswordSettings | null> => {
-  if (!sqlExists) {
+  if (!sql) {
     return null;
   }
 
@@ -116,6 +120,10 @@ export const getPasswordSettings = async (): Promise<PasswordSettings | null> =>
 };
 
 export const setPasswordSettings = async (password: string, passwordLength: PasswordLength) => {
+  if (!sql) {
+    return;
+  }
+
   await ensureSettingsTable();
 
   const passwordMd5 = createPasswordMd5(password);
@@ -135,6 +143,10 @@ export const setPasswordSettings = async (password: string, passwordLength: Pass
 };
 
 export const deletePasswordSettings = async () => {
+  if (!sql) {
+    return;
+  }
+
   await ensureSettingsTable();
 
   await sql("DELETE FROM settings WHERE key = $1", [PASSWORD_SETTING_KEY]);

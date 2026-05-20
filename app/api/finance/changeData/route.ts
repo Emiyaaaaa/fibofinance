@@ -4,6 +4,10 @@ import { sql } from "@/utils/sql";
 import { requirePasswordAuth } from "@/utils/passwordServer";
 
 export async function GET(request: NextRequest) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 

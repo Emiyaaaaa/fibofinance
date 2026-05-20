@@ -4,6 +4,10 @@ import { sql } from "@/utils/sql";
 import { requirePasswordAuth } from "@/utils/passwordServer";
 
 export async function GET(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -12,6 +16,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -38,6 +46,10 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 
@@ -69,6 +81,10 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+  }
+
   const authResponse = await requirePasswordAuth(request);
   if (authResponse) return authResponse;
 

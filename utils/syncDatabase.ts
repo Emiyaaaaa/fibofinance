@@ -2,6 +2,10 @@ import { DEFAULT_EXCHANGE_RATE } from "./exchangeRate";
 import { sql } from "./sql";
 
 export const syncDatabase = async () => {
+  if (!sql) {
+    return;
+  }
+
   return Promise.all([
     syncFinanceData(),
     syncFinanceChangeData(),
@@ -15,6 +19,10 @@ export const syncDatabase = async () => {
 };
 
 const syncFinanceData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_data (
@@ -37,6 +45,10 @@ const syncFinanceData = async () => {
 };
 
 const syncFinanceChangeData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_change_data (
@@ -51,6 +63,10 @@ const syncFinanceChangeData = async () => {
 };
 
 const syncFinanceGroupData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_group_data (
@@ -74,6 +90,10 @@ const syncFinanceGroupData = async () => {
 };
 
 const syncFinanceGroup2Data = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS finance_group (
@@ -85,6 +105,10 @@ const syncFinanceGroup2Data = async () => {
 };
 
 const syncExchangeRateData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS exchange_rate_data (
@@ -109,6 +133,10 @@ const syncExchangeRateData = async () => {
 };
 
 const syncIconsData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS icons (
@@ -146,6 +174,10 @@ const syncIconsData = async () => {
 };
 
 const syncCurrencyData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS currency_data (
@@ -178,6 +210,10 @@ const syncCurrencyData = async () => {
 };
 
 const syncSettingsData = async () => {
+  if (!sql) {
+    return;
+  }
+
   await sql(
     `
       CREATE TABLE IF NOT EXISTS settings (

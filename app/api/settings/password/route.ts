@@ -42,6 +42,10 @@ export async function POST(request: Request) {
 
   const settings = await setPasswordSettings(password, passwordLength);
 
+  if (!settings) {
+    return NextResponse.json({ error: "Failed to set password settings" }, { status: 500 });
+  }
+
   const response = NextResponse.json({
     passwordLength: settings.passwordLength,
   });
