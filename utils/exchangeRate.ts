@@ -9,8 +9,8 @@ export const DEFAULT_EXCHANGE_RATE: {
     EUR: 0.1326,
     GBP: 0.1104,
     JPY: 20.7843,
-    XAU: 0.00117, // 克黄金
-    XAG: 0.089, // 克白银
+    XAU: 0.001, // 克黄金
+    XAG: 0.0625, // 克白银
   },
 };
 
