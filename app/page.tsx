@@ -34,6 +34,7 @@ const Page = () => {
   const query = useSearchParams();
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [sqlExists, setSqlExists] = useState<boolean | null>(null);
 
   const { initData: initGroupData, groupId, setGroupId } = useGroup();
   const { initData: initFinanceChangeData } = useFinanceChangeData();
@@ -46,12 +47,18 @@ const Page = () => {
   useEffect(() => {
     fetch("/api/auth/check")
       .then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        setSqlExists(data.sqlExists !== false);
+
         if (res.ok) {
           setIsAuthorized(true);
           return;
         }
 
-        const data = await res.json().catch(() => ({}));
+        if (data.sqlExists === false) {
+          return;
+        }
+
         const passwordLength = normalizePasswordLength(data.passwordLength ?? DEFAULT_PASSWORD_LENGTH);
 
         router.replace(`/login?length=${passwordLength}`);
@@ -92,6 +99,34 @@ const Page = () => {
       initFinanceChangeData();
     }
   }, [groupId, initFinanceChangeData, initFinanceData, isAuthorized]);
+
+  if (sqlExists === false) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <div className="max-w-xl w-full rounded-large border border-default-200 bg-content1 p-6 md:p-8 shadow-sm">
+          <h1 className="text-xl md:text-2xl font-semibold mb-3">{t("dbMissingTitle")}</h1>
+          <p className="text-default-600 text-sm md:text-base mb-4">{t("dbMissingDescription")}</p>
+          <pre className="bg-default-100 text-default-800 text-xs md:text-sm rounded-medium p-3 overflow-x-auto mb-4">
+{`DATABASE_URL="postgres://..."`}
+          </pre>
+          <p className="text-default-500 text-xs md:text-sm mb-5">{t("dbMissingHint")}</p>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              as={Link}
+              color="primary"
+              href="https://github.com/Emiyaaaaa/fibofinance#readme"
+              target="_blank"
+            >
+              {t("dbMissingDocs")}
+            </Button>
+            <Button variant="flat" onPress={() => window.location.reload()}>
+              {t("dbMissingRetry")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthorized) {
     return (

@@ -8,7 +8,7 @@ import {
   PasswordLength,
   normalizePasswordLength,
 } from "./password";
-import { sql } from "./sql";
+import { sql, sqlExists } from "./sql";
 
 export interface PasswordSettings {
   passwordMd5: string;
@@ -81,6 +81,10 @@ const ensureSettingsTable = async () => {
 };
 
 export const getPasswordSettings = async (): Promise<PasswordSettings | null> => {
+  if (!sqlExists) {
+    return null;
+  }
+
   await ensureSettingsTable();
 
   const rows = await sql("SELECT value FROM settings WHERE key = $1 LIMIT 1", [PASSWORD_SETTING_KEY]);

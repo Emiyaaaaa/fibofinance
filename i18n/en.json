@@ -11,7 +11,12 @@
     "aiAdviceErrorServer": "The advice service is temporarily unavailable. Please try again in a moment.",
     "aiAdviceErrorClient": "We couldn’t complete this request. Please try again or rephrase your question.",
     "aiAdviceErrorNetwork": "Network error. Check your connection and try again.",
-    "changeGroupSuccess": "Successfully switched to - {groupName}"
+    "changeGroupSuccess": "Successfully switched to - {groupName}",
+    "dbMissingTitle": "Database is not configured",
+    "dbMissingDescription": "DATABASE_URL is not set. The app needs a database connection to work. Add it to your deployment environment or local .env.local:",
+    "dbMissingHint": "After setting it, redeploy or restart the app and refresh this page.",
+    "dbMissingDocs": "View deployment docs",
+    "dbMissingRetry": "Refresh"
   },
   "addGroup": {
     "default": "Default",

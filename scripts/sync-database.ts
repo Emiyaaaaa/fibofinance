@@ -3,6 +3,11 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
 const main = async () => {
+  if (!process.env.DATABASE_URL) {
+    console.log("DATABASE_URL is not set, skip database sync");
+    return;
+  }
+
   const { syncDatabase } = await import("../utils/syncDatabase");
 
   await syncDatabase();

@@ -11,7 +11,12 @@
     "aiAdviceErrorServer": "建议服务暂时不可用，请稍后重试。",
     "aiAdviceErrorClient": "请求未能完成，请稍后重试或换个说法。",
     "aiAdviceErrorNetwork": "网络异常，请检查连接后重试。",
-    "changeGroupSuccess": "已成功切换至 - {groupName}"
+    "changeGroupSuccess": "已成功切换至 - {groupName}",
+    "dbMissingTitle": "尚未配置数据库",
+    "dbMissingDescription": "未检测到 DATABASE_URL 环境变量，应用需要连接数据库才能使用。请在部署环境或本地 .env.local 中配置：",
+    "dbMissingHint": "配置完成后请重新部署或重启应用，并刷新页面。",
+    "dbMissingDocs": "查看部署文档",
+    "dbMissingRetry": "刷新页面"
   },
   "addGroup": {
     "default": "默认",
