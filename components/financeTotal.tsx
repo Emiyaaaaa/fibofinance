@@ -11,11 +11,7 @@ import useFinanceChangeData from "@/utils/store/useFinanceChangeData";
 import { SparkLineChart } from "@/components/tremor/sparkChart";
 import { useEffect, useMemo, useState } from "react";
 import { Finance, FinanceChange } from "@/types";
-
-type TrendDataItem = {
-  date: string;
-  amount: number;
-};
+import { buildFinanceTrend } from "@/utils/financeTrend";
 
 type FinanceChangeWithData = FinanceChange & {
   financeData: Finance[];
@@ -82,22 +78,13 @@ export default function FinanceTotal() {
   const groupTrendData = useMemo(() => {
     if (!latestRates) return [];
 
-    return changeData
-      .map((item) => ({
-        date: item.date,
-        amount: toFixed2(
-          getTotalFinance(item.financeData, defaultCurrency, {
-            rates: latestRates,
-            useLatestRates: true,
-          })
-        ),
-      }))
-      .filter((item, index, data) => item.amount !== data[index - 1]?.amount);
+    return buildFinanceTrend(changeData, defaultCurrency);
   }, [changeData, defaultCurrency, latestRates]);
 
   const allTrendData = useMemo(() => {
     if (!latestRates) return [];
 
+    // 按日期升序聚合：每个日期把各 group 的"最新一份" financeData 累加起来
     const latestFinanceDataByGroup = new Map<number, Finance[]>();
     const dataByDate = [...allChangeData]
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -106,26 +93,24 @@ export default function FinanceTotal() {
         return acc;
       }, {});
 
-    return Object.entries(dataByDate)
-      .map(([date, items]) => {
-        items.forEach((item) => {
-          latestFinanceDataByGroup.set(Number(item.group_id), item.financeData);
-        });
+    const aggregated = Object.entries(dataByDate).map(([date, items]) => {
+      items.forEach((item) => {
+        latestFinanceDataByGroup.set(Number(item.group_id), item.financeData);
+      });
 
-        return {
-          date,
-          amount: toFixed2(
-            getTotalFinance([...latestFinanceDataByGroup.values()].flat(), defaultCurrency, {
-              rates: latestRates,
-              useLatestRates: true,
-            })
-          ),
-        };
-      })
-      .filter((item, index, data) => item.amount !== data[index - 1]?.amount);
+      return {
+        date,
+        financeData: [...latestFinanceDataByGroup.values()].flat(),
+      };
+    });
+
+    return buildFinanceTrend(aggregated, defaultCurrency, {
+      rates: latestRates,
+      useLatestRates: true,
+    });
   }, [allChangeData, defaultCurrency, latestRates]);
 
-  const displayTrendData: TrendDataItem[] = showAll ? allTrendData : groupTrendData;
+  const displayTrendData = showAll ? allTrendData : groupTrendData;
   const displayTrend = displayTrendData.length > 1;
 
   const displayAmount = showAll ? allAmount : groupAmount;
@@ -153,7 +138,7 @@ export default function FinanceTotal() {
         <SparkLineChart
           data={displayTrendData}
           index="date"
-          categories={["amount"]}
+          categories={["total"]}
           colors={["primary"]}
           autoMinValue
           className="py-2 ml-4"

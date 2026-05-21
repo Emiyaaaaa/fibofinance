@@ -23,7 +23,7 @@ export const getTotalFinance = (
 
       return acc + Number(amountCNY);
     } else {
-      const rate = rates?.[item.currency] ?? DEFAULT_EXCHANGE_RATE.rates[item.currency] ?? 1;
+      const rate = rateTable[item.currency] ?? 1;
       return acc + Number(item.amount) / rate;
     }
   }, 0);

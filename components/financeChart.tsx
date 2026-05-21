@@ -13,6 +13,7 @@ import { getBetweenDateLength } from "@/utils/dateRange";
 import { Finance } from "@/types";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { getTotalFinance } from "@/utils/totalFinance";
+import { buildFinanceTrend } from "@/utils/financeTrend";
 import useFinanceGroupData from "@/utils/store/useFinanceGroupData";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
@@ -207,21 +208,8 @@ export default function FinanceChart() {
       };
     });
 
-    // 数据去重
-    const uniqueChangeData: FinanceChangeChartData[] = [];
-    checkedChangeData.forEach((item, index) => {
-      const financeData = item.financeData;
-      const lastFinanceData = checkedChangeData[index - 1]?.financeData;
-
-      const total = getTotalFinance(financeData, t("defaultCurrency"));
-      const lastTotal = lastFinanceData ? getTotalFinance(lastFinanceData, t("defaultCurrency")) : 0;
-
-      if (total === lastTotal) {
-        return;
-      }
-
-      uniqueChangeData.push({ ...item, total });
-    });
+    // 数据去重（与 SparkLineChart 共用同一个工具函数，保证口径一致）
+    const uniqueChangeData: FinanceChangeChartData[] = buildFinanceTrend(checkedChangeData, t("defaultCurrency"));
 
     uniqueChangeData.forEach((item, index) => {
       const lastItem = uniqueChangeData[index - 1];
