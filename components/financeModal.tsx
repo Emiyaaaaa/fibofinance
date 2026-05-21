@@ -16,6 +16,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  addToast,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -40,6 +41,7 @@ export default function FinanceModal() {
   const financeT = useTranslations("finance");
   const [type, setType] = useState("current");
   const [icon, setIcon] = useState<string | undefined>();
+  const [submiting, setSubmiting] = useState(false);
   const [financeGroupId, setFinanceGroupId] = useState<number | undefined>();
   const [currency, setCurrency] = useState<string>();
   const [notCount, setIgnoreInTotal] = useState(false);
@@ -74,9 +76,10 @@ export default function FinanceModal() {
     }
   }, [isOpen, submitType, props?.data?.type, props?.data?.icon, props?.data?.not_count]);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget)) as Partial<Finance>;
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData) as Partial<Finance>;
 
     const oldData = props?.data;
     const newData = {
@@ -95,22 +98,21 @@ export default function FinanceModal() {
     }
 
     if (submitType === "create") {
-      fetchWithTime("/api/finance", {
+      await fetchWithTime("/api/finance", {
         method: "POST",
         body: JSON.stringify(newData),
-      }).finally(() => {
-        updateData();
-        updateChangeData();
-        updateTotalData();
+      }).then(() => {
+        return Promise.all([updateData(), updateChangeData(), updateTotalData()]);
       });
     } else if (submitType === "update" && props?.data?.id !== undefined) {
-      fetchWithTime("/api/finance", {
+      if (props?.data?.id === undefined) {
+        throw new Error("Data ID is undefined");
+      }
+      return fetchWithTime("/api/finance", {
         method: "PATCH",
         body: JSON.stringify({ ...newData, id: props!.data!.id }),
-      }).finally(() => {
-        updateData();
-        updateChangeData();
-        updateTotalData();
+      }).then(() => {
+        return Promise.all([updateData(), updateChangeData(), updateTotalData()]);
       });
     }
   };
@@ -132,8 +134,18 @@ export default function FinanceModal() {
         <ModalHeader className="flex flex-col gap-1">{addFinanceT("title")}</ModalHeader>
         <Form
           onSubmit={(e) => {
-            onSubmit(e);
-            onClose();
+            setSubmiting(true);
+            onSubmit(e)
+              .then(onClose)
+              .catch(() => {
+                addToast({
+                  color: "danger",
+                  description: submitType === "create" ? addFinanceT("createFailed") : addFinanceT("updateFailed"),
+                });
+              })
+              .finally(() => {
+                setSubmiting(false);
+              });
           }}
         >
           <ModalBody>
@@ -263,7 +275,7 @@ export default function FinanceModal() {
             <Button color="primary" variant="bordered" onPress={() => onClose()}>
               {addFinanceT("close")}
             </Button>
-            <Button color="primary" type="submit">
+            <Button color="primary" type="submit" isLoading={submiting}>
               {submitType === "create" ? addFinanceT("confirmButton") : addFinanceT("updateButton")}
             </Button>
           </ModalFooter>

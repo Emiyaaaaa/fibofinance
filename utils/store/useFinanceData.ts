@@ -72,12 +72,12 @@ export const useFinanceData = () => {
 
   const updateData = useCallback(() => {
     if (!groupId) return;
-    financeDataStore.fetchData(groupId);
+    return financeDataStore.fetchData(groupId);
   }, [groupId]);
 
   const initData = useCallback(() => {
     if (!groupId) return;
-    financeDataStore.initData(groupId);
+    return financeDataStore.initData(groupId);
   }, [groupId]);
 
   return {

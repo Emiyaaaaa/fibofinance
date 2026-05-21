@@ -128,7 +128,9 @@
     "title": "Add Finance",
     "defaultCurrency": "USD",
     "delete": "Delete",
-    "close": "Close"
+    "close": "Close",
+    "createFailed": "Failed to add finance",
+    "updateFailed": "Failed to update finance"
   },
   "confirmModal": {
     "confirm": "Confirm",

@@ -127,7 +127,9 @@
     "defaultCurrency": "CNY",
     "delete": "删除",
     "updateButton": "更新",
-    "close": "关闭"
+    "close": "关闭",
+    "createFailed": "添加资产失败",
+    "updateFailed": "更新资产失败"
   },
   "confirmModal": {
     "confirm": "确认",

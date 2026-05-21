@@ -23,8 +23,8 @@ type StoreType = {
   } | null;
   setData: (data: StoreType["data"]) => void;
   setDateRange: (dateRange: StoreType["dateRange"]) => void;
-  initData: (group_id: number) => void;
-  updateData: (group_id: number) => void;
+  initData: (group_id: number) => Promise<void>;
+  updateData: (group_id: number) => Promise<void>;
   filterDataByDateRange: () => void;
 };
 
@@ -124,8 +124,8 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
 
     set({ filteredData });
   },
-  initData: (group_id: number) => {
-    get().updateData(group_id);
+  initData: async (group_id: number) => {
+    await get().updateData(group_id);
     set({ inited: true });
   },
 }));
@@ -135,19 +135,13 @@ export const useFinanceChangeData = () => {
   const { groupId } = useGroup();
 
   const initData = useCallback(() => {
-    if (!groupId) {
-      return;
-    }
-
-    financeChangeDataStore.initData(groupId);
+    if (!groupId) return;
+    return financeChangeDataStore.initData(groupId);
   }, [groupId]);
 
   const updateData = useCallback(() => {
-    if (!groupId) {
-      return;
-    }
-
-    financeChangeDataStore.updateData(groupId);
+    if (!groupId) return;
+    return financeChangeDataStore.updateData(groupId);
   }, [groupId]);
 
   return {
