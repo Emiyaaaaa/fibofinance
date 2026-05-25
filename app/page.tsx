@@ -138,11 +138,13 @@ const Page = () => {
 
   return (
     <>
-      <header className="w-full pt-6 px-6 flex items-center md:h-[80px] md:pt-0">
-        <Logo />
-        <FinanceTotal />
-        <div className="flex-1" />
-        <div className="flex gap-4 items-center">
+      <header className="w-full pt-6 px-3 md:px-6 flex flex-wrap items-center gap-x-3 gap-y-3 md:h-[80px] md:flex-nowrap md:pt-0">
+        <Logo className="shrink-0" />
+        <div className="order-3 w-full md:order-none md:w-auto md:flex-1 md:min-w-0 md:ml-1">
+          <FinanceTotal />
+        </div>
+        <div className="flex-1 md:hidden min-w-0" />
+        <div className="flex gap-2 md:gap-4 items-center shrink-0 ml-auto md:ml-0">
           <GroupSwitcher />
           <ExchangeRateSettings />
           <PasswordSettings />

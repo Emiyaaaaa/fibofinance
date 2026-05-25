@@ -118,32 +118,30 @@ export default function FinanceTotal() {
   if (!displayAmount) return null;
 
   return (
-    <>
-      <Tooltip content={showAll ? t("switchToGroup") : t("switchToAll")}>
-        <span
-          className="hidden md:flex items-center gap-2 cursor-pointer select-none"
-          style={{ fontFamily: "Rajdhani" }}
-          onClick={() => setShowAll((v) => !v)}
-        >
-          <span className="text-primary text-xl md:text-4xl font-bold">
-            <NumberFlow
-              value={displayAmount}
-              prefix={currencyMap[defaultCurrency]?.symbol}
-              format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
-            />
-          </span>
+    <Tooltip content={showAll ? t("switchToGroup") : t("switchToAll")}>
+      <div
+        className="flex items-center gap-2 cursor-pointer select-none min-w-0"
+        style={{ fontFamily: "Rajdhani" }}
+        onClick={() => setShowAll((v) => !v)}
+      >
+        <span className="text-primary text-xl md:text-4xl font-bold shrink-0">
+          <NumberFlow
+            value={displayAmount}
+            prefix={currencyMap[defaultCurrency]?.symbol}
+            format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
+          />
         </span>
-      </Tooltip>
-      {displayTrend && (
-        <SparkLineChart
-          data={displayTrendData}
-          index="date"
-          categories={["total"]}
-          colors={["primary"]}
-          autoMinValue
-          className="py-2 ml-4"
-        />
-      )}
-    </>
+        {displayTrend && (
+          <SparkLineChart
+            data={displayTrendData}
+            index="date"
+            categories={["total"]}
+            colors={["primary"]}
+            autoMinValue
+            className="py-2 shrink-0"
+          />
+        )}
+      </div>
+    </Tooltip>
   );
 }
