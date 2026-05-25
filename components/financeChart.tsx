@@ -272,7 +272,7 @@ export default function FinanceChart() {
   }
 
   return (
-    <div className="relative w-full px-4">
+    <div className="relative w-full">
       <div className="flex flex-wrap items-center gap-4 my-4">
         <Switch color="primary" isSelected={showUnCount} size="sm" onValueChange={setShowUnCount}>
           <div className="text-sm opacity-80">{t("showUnCount")}</div>

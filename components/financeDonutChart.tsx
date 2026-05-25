@@ -34,7 +34,7 @@ export default function FinanceDonutChart() {
   const defaultCurrencySymbol = currencyMap[t("defaultCurrency")]?.symbol || t("defaultCurrency");
 
   return (
-    <div className="flex gap-4 w-full px-4">
+    <div className="flex w-full justify-center">
       <DonutChart
         data={chartData1}
         category="type"
