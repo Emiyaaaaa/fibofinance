@@ -1,5 +1,6 @@
 import NumberFlow from "@number-flow/react";
 import { Tooltip } from "@heroui/react";
+import { useIsMobile } from "@heroui/use-is-mobile";
 import { getTotalFinance } from "@/utils/totalFinance";
 import { toFixed2 } from "@/utils";
 import { useTranslations } from "next-intl";
@@ -27,6 +28,7 @@ export default function FinanceTotal() {
   const [showAll, setShowAll] = useState(false);
   const [allChangeData, setAllChangeData] = useState<FinanceChangeWithData[]>([]);
   const defaultCurrency = t("defaultCurrency");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     let ignore = false;
@@ -134,7 +136,7 @@ export default function FinanceTotal() {
           </span>
         </span>
       </Tooltip>
-      {displayTrend && (
+      {displayTrend && !isMobile && (
         <SparkLineChart
           data={displayTrendData}
           index="date"

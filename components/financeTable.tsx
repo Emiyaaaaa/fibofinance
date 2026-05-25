@@ -20,7 +20,7 @@ import IconRenderer from "./iconRenderer";
 
 import { chartColors, convertCurrency, financeTypeColors, financeTypeOrder, toFixed2 } from "@/utils";
 import useFinanceModal from "@/utils/store/useFinanceModal";
-import useClientWidth from "@/utils/hook/useClientWidth";
+import { useIsMobile } from "@heroui/use-is-mobile";
 import useFinanceData from "@/utils/store/useFinanceData";
 import { Finance } from "@/types";
 import { FinanceString } from "@/components/financeString";
@@ -48,18 +48,16 @@ export default function FinanceTable() {
   });
 
   const { onOpen } = useFinanceModal();
-  const clientWidth = useClientWidth();
-
-  const showUpdateTime = clientWidth > 768;
+  const isMobile = useIsMobile();
 
   const columns = useMemo(() => {
     return [
       { key: "name", label: t("name") },
       { key: "type", label: t("type") },
       { key: "amount", label: t("amount") },
-      showUpdateTime ? { key: "updated_at", label: t("updateTime") } : null,
+      isMobile ? null : { key: "updated_at", label: t("updateTime") },
     ].filter(Boolean) as { key: string; label: string }[];
-  }, [showUpdateTime, t]);
+  }, [isMobile, t]);
 
   const rows = useMemo(() => {
     return data.map((item) => {
