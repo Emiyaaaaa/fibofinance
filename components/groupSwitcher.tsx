@@ -15,7 +15,7 @@ import {
   Checkbox,
   Spinner,
 } from "@heroui/react";
-import { RiAddLine, RiDeleteBinLine, RiEditLine } from "@remixicon/react";
+import { RiAddLine, RiArrowDropDownLine, RiDeleteBinLine, RiEditLine } from "@remixicon/react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -129,9 +129,14 @@ function GroupSwitcher() {
       </Modal>
       <Dropdown>
         <DropdownTrigger>
-          <Button size="sm" color="primary" className="h-6">
+          <Button size="sm" color="primary" className="h-6 gap-0.5">
             {!inited && <Spinner classNames={{ dots: "bg-black translate-y-[-50%]" }} variant="dots" size="sm" />}
             {currentGroup?.name}
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 800 800" fill="currentColor">
+              <g transform="translate(0,800) scale(0.1,-0.1)">
+                <path d="M2202 5280 c-212 -44 -359 -249 -323 -451 19 -112 49 -154 235 -336 304 -297 761 -748 1181 -1165 451 -447 453 -449 596 -471 81 -12 163 -1 239 35 39 18 220 192 891 858 463 459 856 850 873 868 140 151 138 383 -4 536 -98 104 -227 151 -352 128 -136 -25 -128 -17 -889 -772 -386 -382 -703 -695 -705 -695 -2 0 -148 142 -325 315 -886 868 -1077 1054 -1113 1081 -78 58 -211 88 -304 69z" />
+              </g>
+            </svg>
           </Button>
         </DropdownTrigger>
         <DropdownMenu disallowEmptySelection selectedKeys={selectedKeys} selectionMode="single">

@@ -107,16 +107,11 @@ const Page = () => {
           <h1 className="text-xl md:text-2xl font-semibold mb-3">{t("dbMissingTitle")}</h1>
           <p className="text-default-600 text-sm md:text-base mb-4">{t("dbMissingDescription")}</p>
           <pre className="bg-default-100 text-default-800 text-xs md:text-sm rounded-medium p-3 overflow-x-auto mb-4">
-{`DATABASE_URL="postgres://..."`}
+            {`DATABASE_URL="postgres://..."`}
           </pre>
           <p className="text-default-500 text-xs md:text-sm mb-5">{t("dbMissingHint")}</p>
           <div className="flex flex-wrap gap-3">
-            <Button
-              as={Link}
-              color="primary"
-              href="https://github.com/Emiyaaaaa/fibofinance#readme"
-              target="_blank"
-            >
+            <Button as={Link} color="primary" href="https://github.com/Emiyaaaaa/fibofinance#readme" target="_blank">
               {t("dbMissingDocs")}
             </Button>
             <Button variant="flat" onPress={() => window.location.reload()}>
@@ -142,7 +137,7 @@ const Page = () => {
         <Logo />
         <FinanceTotal />
         <div className="flex-1" />
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 items-center md:gap-4">
           <GroupSwitcher />
           <ExchangeRateSettings />
           <PasswordSettings />
