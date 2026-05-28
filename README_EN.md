@@ -15,9 +15,9 @@
   <img alt="fibofinance demo" src="./public/en/demo.png">
 </p>
 
-[English](./README.md) | [简体中文](./README_ZH.md)
+[English](./README_EN.md) | [简体中文](./README.md)
 
-FiboFinance is a lightweight, self-hosted asset tracking app: record assets, view trends and allocation, and get AI analysis when needed.
+FiboFinance is a lightweight, self-hosted asset tracking app that tracks asset changes by recording current asset values, moving beyond traditional bookkeeping.
 
 ## Demo
 
@@ -25,11 +25,11 @@ https://fibofinance.cn
 
 ## Highlights
 
-- Self-hosted, data-secure, and password-protected
-- Supports group management
-- Multi-currency support with custom exchange rates (silver, gold, and similar assets can be recorded by gram and automatically converted to CNY)
-- Supports trend charts, allocation pie charts, and history records
-- Supports AI analysis
+- Easy deployment, data security, and password protection
+- Personal and family asset grouping without mixing assets
+- Multi-currency support with custom exchange rates (silver, gold, and similar assets can be recorded by gram)
+- Asset trend charts and flexible comparison of asset changes
+- Configure an AI key for asset allocation recommendations
 
 ## Deployment
 
