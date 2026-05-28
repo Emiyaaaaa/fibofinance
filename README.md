@@ -11,6 +11,7 @@
     <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
     <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-blue">
     <img alt="Self-hosted" src="https://img.shields.io/badge/self--hosted-vercel-black">
+    <img alt="Mobile Friendly" src="https://img.shields.io/badge/mobile--friendly-yes-brightgreen">
   </p>
   <img alt="fibofinance demo" src="./public/zh/demo.png">
 </p>
