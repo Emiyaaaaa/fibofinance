@@ -13,7 +13,7 @@
     <img alt="Mobile Friendly" src="https://img.shields.io/badge/mobile--friendly-yes-brightgreen">
   </p>
   <p align="center">
-    <a href="./README_EN.md">English</a> | <a href="./README_ZH.md">简体中文</a>
+    <a href="./README.md">English</a> | <a href="./README_ZH.md">简体中文</a>
   </p>
   <img alt="fibofinance demo" src="./public/en/demo.png">
 </p>
