@@ -22,7 +22,7 @@ FiboFinance 是一个轻量的自部署资产记录应用，通过记录资产�
 
 ## Demo
 
-https://fibofinance-demo.vercel.app
+https://fibofinance.cn
 
 ## 亮点
 
