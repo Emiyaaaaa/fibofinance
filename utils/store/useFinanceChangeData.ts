@@ -86,7 +86,7 @@ const useFinanceChangeDataStore = create<StoreType>((set, get) => ({
     const exchangeRateStore = useFinanceExchangeRateDataStore.getState();
 
     dataWithFinanceData.forEach((entry) => {
-      const ts = new Date(entry.date).getTime();
+      const ts = new Date(entry.date).setHours(24, 0, 0, 0);
       const rate = exchangeRateStore.getRateForTimestamp(ts);
       entry.financeData = entry.financeData.map((f) => {
         const r = rate[f.currency] ?? 1;
